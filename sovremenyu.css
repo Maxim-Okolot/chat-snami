@@ -1,0 +1,175 @@
+/* Глобальные стили для тела страницы */
+body.top100-body {
+  background: linear-gradient(120deg, #e0e7ff 0%, #f7fafc 100%); /* Нежный градиентный фон */
+  font-family: 'Segoe UI', Arial, sans-serif; /* Современный шрифт */
+  margin: 0;
+  color: #222; /* Темный цвет текста для хорошей читаемости */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Минимальная высота равна высоте области просмотра */
+}
+
+/* Контейнер для всего содержимого */
+.top100-container {
+  flex-grow: 1; /* Позволяет контейнеру растягиваться */
+  max-width: 1000px; /* Ограничение максимальной ширины */
+  margin: 40px auto 40px auto; /* Центрирование и отступы */
+  background: #fff; /* Белый фон */
+  border-radius: 18px; /* Сильно скругленные углы */
+  box-shadow: 0 8px 32px rgba(0, 2, 31, 0.1); /* Мягкая тень для объема */
+  padding: 32px 18px 28px 18px; /* Внутренние отступы */
+}
+
+/* Заголовок рейтинга */
+.top100-title {
+  color: #2a7ae2; /* Яркий синий цвет */
+  font-size: 2.5em; /* Большой размер шрифта */
+  font-weight: bold;
+  margin-bottom: 32px;
+  text-align: center;
+  letter-spacing: 1.5px; /* Увеличенный межбуквенный интервал */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Легкая тень для выделения */
+}
+
+/* Обертка для таблицы, чтобы обеспечить горизонтальную прокрутку */
+.top100-table-wrap {
+  overflow-x: auto; /* Горизонтальная прокрутка при необходимости */
+  margin-bottom: 24px;
+}
+
+/* Стили самой таблицы */
+.top100-table {
+  width: 100%;
+  border-collapse: separate; /* Раздельные ячейки для скругления */
+  border-spacing: 0 10px; /* Пространство между строками */
+  background: transparent;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Стили заголовков таблицы */
+.top100-table th.header {
+  background: linear-gradient(135deg, #e7f0fd 0%, #d9e8fc 100%); /* Градиентный фон */
+  color: #2a7ae2;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.2em;
+  padding: 14px 16px;
+  border-bottom: none; /* Убрана нижняя граница */
+  position: sticky; /* Фиксация заголовка при прокрутке */
+  top: 0;
+  z-index: 1;
+}
+
+/* Стили ячеек данных таблицы */
+.top100-table td.cell {
+  background: #ffffff; /* Белый фон ячеек */
+  padding: 14px 16px;
+  text-align: center;
+  font-size: 1.1em;
+  color: #333;
+  border-bottom: 1px solid #e0e7ff; /* Разделительная линия */
+}
+
+/* При наведении на строку */
+.top100-table tr:hover td.cell {
+  background: #e7f0fd; /* Легкий фон при наведении */
+  transition: background 0.15s ease-in-out;
+}
+
+/* Убираем нижнюю границу у последней строки */
+.top100-table tr:last-child td.cell {
+  border-bottom: none;
+}
+
+/* Скругление углов у крайних ячеек */
+.top100-table td.cell:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.top100-table td.cell:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Навигация по страницам */
+.top100-nav {
+  text-align: center;
+  margin-top: auto; /* Прижатие к низу */
+  padding-top: 20px;
+}
+
+/* Стили ссылок и кнопок навигации */
+.top100-nav a, .top100-nav b {
+  display: inline-block;
+  margin: 0 7px;
+  padding: 10px 18px;
+  border-radius: 10px; /* Скругленные углы */
+  background: #e7f0fd;
+  color: #2a7ae2;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Стиль для активной страницы */
+.top100-nav b {
+  background: #2a7ae2;
+  color: #fff;
+}
+
+/* Эффект при наведении на ссылки */
+.top100-nav a:hover {
+  background: #2a7ae2;
+  color: #fff;
+  transform: translateY(-2px); /* Небольшой подъем */
+}
+
+/* Адаптивность для экранов до 768px */
+@media (max-width: 768px) {
+  .top100-container {
+    padding: 20px 3vw;
+    margin: 20px 10px;
+  }
+  .top100-title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+  .top100-table th.header, .top100-table td.cell {
+    padding: 10px 8px;
+    font-size: 1em;
+  }
+  .top100-table th.header {
+    font-size: 1.1em;
+  }
+  .top100-nav a, .top100-nav b {
+    padding: 7px 12px;
+    margin: 0 5px;
+    font-size: 0.95em;
+  }
+}
+
+/* Адаптивность для маленьких экранов до 480px */
+@media (max-width: 480px) {
+  .top100-title {
+    font-size: 1.5em;
+  }
+  .top100-table th.header, .top100-table td.cell {
+    padding: 8px 5px;
+    font-size: 0.9em;
+  }
+  .top100-nav a, .top100-nav b {
+    padding: 5px 10px;
+    font-size: 0.9em;
+  }
+  /* Скрытие менее важных колонок для экономии места */
+  .top100-table td:nth-child(6), /* Просмотры */
+  .top100-table th:nth-child(6),
+  .top100-table td:nth-child(7), /* Рефералы */
+  .top100-table th:nth-child(7),
+  .top100-table td:nth-child(8), /* Викторина */
+  .top100-table th:nth-child(8) {
+    display: none;
+  }
+}

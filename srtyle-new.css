@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="чат С нами"/>
+  <meta name="keywords" content="Чат для отдыха / Радио Иволга / Радио Кайф / Радио Delight /  Добро пожаловать в чат! Знакомства, Общение и многое другое.">
+  <title>чат "С нами"</title>
+  <link rel="icon" href="" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v6.7.2/css/pro.min.css">
+  <script src="../?inc=informer&amp;getmsg=1&amp;inchat=1&amp;lastreg=10&amp;birthday=1&amp;forum=0&amp;counter=1&amp;lastban=5&amp;birthday=1&amp;randfotos=4&amp;lasttopics=3&amp;lastmsgs=5"></script>
+  <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <style>
+    @font-face {
+      font-family: 'Spectral';
+      src: url('https://snami.mpchat.com/fonts/Spectral.ttf');
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: url('https://vmfile.com/upload/751/4272577882.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Spectral', Arial, sans-serif;
+      min-height: 100vh;
+      color: #fff;
+    }
+    .navbar {
+      background: rgba(0,0,0,0.8);
+      transition: background 0.3s;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.2);
+    }
+    .navbar-brand img {
+      height: 48px;
+      transition: height 0.3s;
+    }
+    .greatVibesFont {
+      font-family: 'Spectral', cursive;
+      letter-spacing: 1px;
+    }
+    .main-flex {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      align-items: stretch;
+      margin-top: 3rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    .login-wrap, .carousel-wrap {
+      background: rgba(25, 25, 40, 0.05);
+      border-radius: 1.2rem;
+      box-shadow: 0 4px 32px 0 rgba(0,0,0,0.05);
+      padding: 2rem 1.5rem;
+      min-width: 320px;
+      max-width: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      animation: fadeIn 1.2s;
+    }
+    .carousel-wrap {
+      padding: 1rem 0.5rem;
+      justify-content: center;
+      align-items: center;
+    }
+    .carousel-inner img {
+      border-radius: 1rem;
+      box-shadow: 0 4px 32px 0 rgba(0,0,0,0.25);
+      max-height: 300px;
+      object-fit: cover;
+    }
+    .section-xl {
+      padding: 2rem 0 1rem 0;
+    }
+    .news-cards-row {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .post-classic {
+      background: rgba(25, 25, 40, 0.38);
+      border-radius: 1.2rem;
+      padding: 1.5rem 1rem;
+      min-width: 260px;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: 0 0 16px 0 rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+      color: #f8f9fa;
+      animation: fadeIn 1.2s;
+      text-align: center;
+      backdrop-filter: blur(2px);
+    }
+    .post-classic h5 {
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+    .post-classic .icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #00c3ff;
+      text-shadow: 0 2px 8px #0008;
+      text-align: center;
+      display: block;
+    }
+    .news-list {
+      text-align: center;
+      margin: 0.5rem 0 0 0;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .news-list a {
+      color: #00c3ff;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .news-list a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+    .footer-img {
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 0 0 8px 0 rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.3s;
+      max-width: 100%;
+      height: 48px;
+      object-fit: cover;
+      filter: brightness(0.95) blur(0.5px);
+    }
+    .footer-img:hover {
+      transform: scale(1.09) rotate(-2deg);
+      box-shadow: 0 0 24px 0 #00c3ff99, 0 0 8px 0 rgba(0,0,0,0.22);
+      filter: brightness(1.15) blur(0px);
+    }
+    footer {
+      background: linear-gradient(90deg, rgba(0,0,0,0.18) 0%, rgba(0,195,255,0.15) 100%);
+      color: #eaf6ff;
+      border-radius: 1rem 1rem 0 0;
+      margin-top: 2rem;
+      padding-top: 0.6rem;
+      box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.07);
+      font-size: 0.97rem;
+      min-height: 54px;
+      animation: fadeInFooter 1.2s;
+      border-top: 1.5px solid #00c3ff44;
+    }
+    .footer-glow {
+      color: #fff;
+      text-shadow: 0 0 8px #00c3ff, 0 0 18px #00c3ff88;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      font-size: 1.13rem;
+      animation: glow 2.2s infinite alternate;
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 8px #00c3ff, 0 0 18px #00c3ff88;
+      }
+      to {
+        text-shadow: 0 0 18px #00c3ff, 0 0 36px #00c3ffcc;
+      }
+    }
+    @media (max-width: 991px) {
+      .main-flex, .news-cards-row {
+        flex-direction: column !important;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .login-wrap, .carousel-wrap, .post-classic {
+        max-width: 100%;
+        min-width: 0;
+      }
+      .footer-img { height: 40px; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    @keyframes fadeInFooter {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/img/Новый проект (3).png" alt="Divi Logo" id="logoImg">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Переключить навигацию">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link mx-2 active" aria-current="page" href="index.html">ГЛАВНАЯ</a></li>
+          <li class="nav-item"><a class="nav-link mx-2" href="/?inc=top100">ТОП</a></li>
+          <li class="nav-item"><a class="nav-link mx-2" href="/?inc=forum">ФОРУМ</a></li>
+          <li class="nav-item"><a class="nav-link mx-2" href="/?inc=gallery">ГАЛЕРЕЯ</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <div id="hero" style="background:rgba(0,0,0,0.2); min-height: 60vh; display: flex; flex-direction: column; justify-content: center;">
+      <h1 class="display-3 text-center text-white greatVibesFont" style="padding-top:20vh; text-shadow: 0px 6px 4px rgba(0,0,0,0.8)">
+        Добро пожаловать в чат "С нами"!
+      </h1>
+      <h2 class="display-6 text-center text-white greatVibesFont" style="text-shadow: 0px 2px 4px rgba(0,0,0,0.5)">
+        Здесь Вы найдете множество тем для обсуждения, обзаведетесь единомышленниками и возможностью делиться идеями и мнениями в дружелюбной атмосфере...
+      </h2>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="main-flex">
+      <div class="login-wrap">
+        <h4 class="mb-4 text-center">АВТОРИЗАЦИЯ</h4>
+        <form method="post" name="gochat" action="index.php" id="gochat">
+          <script type="text/javascript">
+            if(typeof(i_aidn)=="undefined") alert("Ошибка: Установите скрипт информера в начало документа!");
+            if(typeof i_aidn !== "undefined" && i_aidn) document.write("<input type=hidden name=i_aidn value="+i_aidn+">");
+            if(typeof mynick !== "undefined" && mynick && typeof myid !== "undefined" && myid) document.write("<input type=hidden name=nick value='"+mynick+"'><input type=hidden name=id value='"+myid+"'><b>"+mynick+"<\/b> <a href=?cookie_off=1>выйти?<\/a><br><br>");
+            else {
+                document.write("<input class='form-control mb-3' name=nick type=text placeholder='Ваш логин'>");
+                document.write("<input class='form-control mb-3' name=pass type=password placeholder='Пароль'>");
+                document.write("<div class='login-pass mb-3'><span><input type=checkbox name=cookie_on> - запомнить</span><a href=index.php?inc=mail class='float-end text-white-50'>Забыли пароль?<\/a></div>");
+            }
+          </script>
+          <button type="submit" class="btn btn-primary w-100">Войти</button>
+        </form>
+        <div class="text-center mt-3">
+          <a href='index.php?inc=reg&ref='+ref; target="iframe" class="text-info">Регистрация</a>
+        </div>
+      </div>
+      <div class="carousel-wrap">
+        <div id="myCarousel" class="carousel slide" data-bs-ride="carousel" style="max-width:400px; margin:auto;">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="../img/mytitul/слайд-один.png" class="d-block w-100" alt="Первый слайд">
+            </div>
+            <div class="carousel-item">
+              <img src="../img/mytitul/слайд-два.png" class="d-block w-100" alt="Второй слайд">
+            </div>
+            <div class="carousel-item">
+              <img src="../img/mytitul/слайд-три.png" class="d-block w-100" alt="Третий слайд">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Предыдущий</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="visually-hidden">Следующий</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section class="section-xl text-center">
+      <h2 class="display-5 text-white greatVibesFont mb-4" style="text-shadow: 0px 6px 4px rgba(0,0,0,0.5)">Последние новости чата</h2>
+      <div class="news-cards-row">
+        <div class="post-classic">
+          <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
+          <h5>Новенькие</h5>
+          <div id="new-users" class="news-list"></div>
+        </div>
+        <div class="post-classic">
+          <div class="icon"><i class="fa-solid fa-cake-candles"></i></div>
+          <h5>Именинники</h5>
+          <div id="birthday-users" class="news-list"></div>
+        </div>
+        <div class="post-classic">
+          <div class="icon"><i class="fa-solid fa-users"></i></div>
+          <h5>Сейчас в чате</h5>
+          <div class="news-list" style="font-size:1.3rem;">
+            <span id="in-chat">0</span> человек
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center">
+    <div class="container p-2">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-4 col-md-2 mb-1">
+          <img src="https://snami.mpchat.com/data/foto/1750773206.jpg" class="footer-img" alt="">
+        </div>
+        <div class="col-4 col-md-2 mb-1">
+          <img src="https://snami.mpchat.com/data/gallery/image/1744466220.jpg" class="footer-img" alt="">
+        </div>
+        <div class="col-4 col-md-2 mb-1">
+          <img src="https://i.postimg.cc/50nLBB8g/1748424287.png" class="footer-img" alt="">
+        </div>
+        <div class="col-4 col-md-2 mb-1">
+          <img src="https://snami.mpchat.com/data/gallery/image/1752049913.jpg" class="footer-img" alt="">
+        </div>
+        <div class="col-4 col-md-2 mb-1">
+          <img src="https://snami.mpchat.com/data/foto/1750356240.jpg" class="footer-img" alt="">
+        </div>
+        <div class="col-4 col-md-2 mb-1">
+          <img src="https://snami.mpchat.com/img/no_avatar_par.png" class="footer-img" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="text-center p-2 footer-glow" style="background: rgba(0,0,0,0.05);">
+      чат "С нами" © 2025
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    var mainNav = document.getElementById('mainNav')
+    var logoImg = document.getElementById('logoImg')
+    var heroActive = false
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 200) {
+        if (!heroActive) {
+          heroActive = true
+          mainNav.classList.add('bg-dark')
+          if(window.innerWidth < 956) return;
+          logoImg.className = 'consize'
+        }
+      } else {
+        if (heroActive) {
+          heroActive = false
+          mainNav.classList.remove('bg-dark')
+          if(window.innerWidth < 956) return;
+          logoImg.className = ''
+        }
+      }
+    });
+
+    // Новости чата
+    function fillInformerCards() {
+      // Новенькие (первые 3)
+      if (typeof i_lastreg !== "undefined" && Array.isArray(i_lastreg) && i_lastreg.length > 0) {
+        var html = "";
+        for (var i = 0; i < Math.min(3, i_lastreg.length); i++) {
+          var i_nick = i_lastreg[i][0], i_color = i_lastreg[i][1], i_userid = i_lastreg[i][4];
+          html += "<a href='?inc=info&userid=" + i_userid + "' target='_blank'><span style='color:" + i_color + "'>" + i_nick + "</span></a><br>";
+        }
+        $("#new-users").html(html);
+      } else {
+        $("#new-users").text("Нет данных");
+      }
+
+      // Именинники
+      if (typeof i_birthday !== "undefined" && Array.isArray(i_birthday) && i_birthday.length > 0) {
+        var htmlB = "";
+        for (var i = 0; i < i_birthday.length; i++) {
+          var i_nick = i_birthday[i][0], i_color = i_birthday[i][1];
+          htmlB += "<a href='?inc=info&nick=" + i_nick + "' target='_blank'><span style='color:" + i_color + "'>" + i_nick + "</span></a><br>";
+        }
+        $("#birthday-users").html(htmlB);
+      } else {
+        $("#birthday-users").text("нет таких");
+      }
+
+      // Онлайн
+      if (typeof i_inchat !== "undefined") {
+        $("#in-chat").text(i_inchat);
+      } else {
+        $("#in-chat").text("0");
+      }
+    }
+
+    // Ждём загрузки информера, потом заполняем карточки
+    function waitInformerVars(attempts) {
+      if (typeof attempts === "undefined") attempts = 0;
+      if (
+        (typeof i_lastreg !== "undefined" && Array.isArray(i_lastreg)) ||
+        (typeof i_birthday !== "undefined" && Array.isArray(i_birthday)) ||
+        (typeof i_inchat !== "undefined")
+      ) {
+        fillInformerCards();
+      } else if (attempts < 20) {
+        setTimeout(function(){ waitInformerVars(attempts+1); }, 300);
+      } else {
+        fillInformerCards(); // покажет "нет данных"
+      }
+    }
+    $(function() {
+      waitInformerVars();
+    });
+  </script>
+</body>
+</html>

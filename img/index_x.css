@@ -1,0 +1,87 @@
+body {
+font-family: 'Rubik One', sans-serif;
+color:#76e7cdfa;
+background: url('2fon.jpg') center center fixed no-repeat;
+-moz-background-size: cover; /* Firefox до 4.0 */
+-webkit-background-size: cover; /* Safari и Chrome */
+-o-background-size: cover; /* Opera до версии 10.53 */
+background-size: cover; /* CSS3 */
+}
+@media only all and (max-width: 1023px) and (max-height: 767px) {
+body {
+-webkit-background-size: 1023px 767px;/* Safari и Chrome */
+-o-background-size: 1023px 767px;/* Opera до версии 10.53 */
+-moz-background-size: 1023px 767px; /* Firefox до 4.0 */
+background-size: 1023px 767px; /* CSS3 */
+}
+}
+
+.in {
+margin-top : 0;
+margin-bottom : 0;
+margin : 0;
+padding : 0;
+background: linear-gradient(45deg, #082bdb, #12ed74, #fb0505);
+}
+
+input {
+COLOR: black;
+BORDER: rgba(248,245,245,0.47) solid 2px;
+box-shadow: 0 0 8px rgb(83, 83, 80) inset, 0 0 10px rgb(44, 40, 40);
+BACKGROUND: rgba(0,0,0,0.5);
+BORDER-TOP-LEFT-RADIUS: 6px;
+BORDER-TOP-RIGHT-RADIUS: 6px;
+BORDER-BOTTOM-RIGHT-RADIUS: 6px;
+BORDER-BOTTOM-LEFT-RADIUS: 6px;
+BORDER-STYLE: solid;
+BORDER-WIDTH: 1px;
+MARGIN: 0 0 5px;
+PADDING: 5px;
+border: 1px solid   rgba(119, 116, 116, 0.73);
+background: rgba(136, 136, 130, 0.31);
+border-style: solid;
+border-width: 1px;
+margin: 0px 0px 5px;
+padding: 5px;
+}
+table { 
+background: rgb(10 11 16 / 40%);
+}
+td .title {
+PADDING: 3px;
+    BORDER-TOP-LEFT-RADIUS: 5px;
+    BORDER-TOP-RIGHT-RADIUS: 5px;
+    BORDER-BOTTOM-RIGHT-RADIUS: 5px;
+    BORDER-BOTTOM-LEFT-RADIUS: 5px;
+    box-shadow: 0 0 5px 2px rgb(15 20 20 / 42%);
+    BORDER-COLOR: #6c666645;
+    /* BORDER-STYLE: solid; */
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+table .titles {
+background: rgb(111 141 143 / 14%);
+    PADDING: 3px;
+    BORDER-TOP-LEFT-RADIUS: 5px;
+    BORDER-TOP-RIGHT-RADIUS: 5px;
+    BORDER-BOTTOM-RIGHT-RADIUS: 5px;
+    BORDER-BOTTOM-LEFT-RADIUS: 5px;
+    BOX-SHADOW: 0 0 5px 2px rgb(89 94 94 / 42%);
+    BORDER-COLOR: #00020200;
+    BORDER-STYLE: solid;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+   A {color: #8ad7e347; /* Цвет ссылок */}
+   A:visited {color: #ecf0f147; /* Цвет посещенных ссылок */}
+   A:active {color: #ecf0f147r; /* Цвет активных ссылок */}
+   A:hover {text-decoration: underline; color: #ecf0f147;}
+   
+h4 {
+font-size: 30px;
+}

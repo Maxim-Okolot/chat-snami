@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Афиша чата "С нами"</title>
+  <meta name="viewport" content="width=400, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      width: 400px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #ffb6c1 0%, #6a5acd 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .logo {
+      font-size: 2.5em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-top: 30px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 10px #ff69b4, 0 0 20px #6a5acd;
+      font-family: 'Pacifico', cursive, sans-serif;
+    }
+    .poster-content {
+      margin: 40px 30px 0 30px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 20px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(2px);
+    }
+    .main-title {
+      font-size: 1.7em;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-shadow: 0 0 8px #fff, 0 0 18px #ff69b4;
+    }
+    .radio-list {
+      margin: 20px 0 20px 0;
+      padding: 0;
+      list-style: none;
+      text-align: center;
+    }
+    .radio-list li {
+      font-size: 1.2em;
+      margin: 8px 0;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 6px 0;
+      box-shadow: 0 2px 8px 0 rgba(255, 182, 193, 0.2);
+    }
+    .djs {
+      margin: 20px 0 10px 0;
+      text-align: center;
+    }
+    .djs span {
+      display: inline-block;
+      margin: 6px 10px;
+      padding: 5px 12px;
+      background: linear-gradient(90deg, #ff69b4 0%, #6a5acd 100%);
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 1em;
+      box-shadow: 0 2px 8px 0 rgba(106, 90, 205, 0.2);
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 8px #ff69b4, 0 0 18px #6a5acd;
+    }
+    /* Декоративные музыкальные элементы */
+    .note {
+      position: absolute;
+      font-size: 2.2em;
+      opacity: 0.18;
+      animation: float 7s infinite linear;
+    }
+    .note1 { top: 80px; left: 30px; animation-delay: 0s;}
+    .note2 { top: 200px; right: 40px; animation-delay: 2s;}
+    .note3 { bottom: 120px; left: 60px; animation-delay: 4s;}
+    .note4 { bottom: 60px; right: 80px; animation-delay: 1s;}
+    @keyframes float {
+      0% { transform: translateY(0) scale(1);}
+      50% { transform: translateY(-30px) scale(1.2);}
+      100% { transform: translateY(0) scale(1);}
+    }
+  </style>
+  <!-- Для красивого шрифта логотипа -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="logo">С нами</div>
+  <div class="poster-content">
+    <div class="main-title">В нашем чате ВСЕГДА МУЗЫКА!</div>
+    <div style="text-align:center; font-size:1.1em; margin-bottom:10px;">
+      Слушай сразу три радио:
+    </div>
+    <ul class="radio-list">
+      <li>✨ Радио "Иволга"</li>
+      <li>✨ Радио "Кайф"</li>
+      <li>✨ Радио "Delice"</li>
+    </ul>
+    <div style="text-align:center; font-size:1.1em; margin-bottom:10px;">
+      Весёлые игры и викторины, сумасшедшие диджеи:
+    </div>
+    <div class="djs">
+      <span>DJ Иволга</span>
+      <span>DJ Kot</span>
+      <span>DJ Melodia</span>
+      <span>DJ Slava</span>
+    </div>
+    <div class="footer">
+      Романтика, драйв и экшн — присоединяйся к нам!
+    </div>
+  </div>
+  <!-- Декоративные музыкальные ноты -->
+  <div class="note note1">🎵</div>
+  <div class="note note2">🎶</div>
+  <div class="note note3">🎼</div>
+  <div class="note note4">🎷</div>
+</body>
+</html>

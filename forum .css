@@ -1,0 +1,155 @@
+/* Импорт современных шрифтов */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@400;700&display=swap');
+
+/* Общие стили страницы */
+body.body-forum {
+  font-family: 'Inter', 'Montserrat', Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #ece9e6, #ffffff);
+  color: #222;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+/* Заголовки */
+.title {
+  font-family: 'Montserrat', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.4em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Таблицы и ячейки */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+td, th {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+/* Заголовки таблиц */
+td.title, th.title {
+  background-color: #f7f7f7;
+  font-family: 'Montserrat', 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.2em;
+  color: #222;
+}
+
+/* Ссылки */
+a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Кнопки */
+input.ok, input[type=submit] {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Montserrat', 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1em;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: all 0.3s;
+}
+input.ok:hover, input[type=submit]:hover {
+  background: linear-gradient(135deg, #764ba2, #667eea);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+}
+
+/* Поля ввода */
+input.text, textarea {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  font-size: 1em;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+input.text:focus, textarea:focus {
+  border-color: #007bff;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+  outline: none;
+}
+
+/* Стиль для сообщений */
+.message {
+  background: rgba(255,255,255,0.8);
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.message:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+/* Стиль для заголовков сообщений */
+.message-author {
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* Стиль для времени сообщений */
+.message-time {
+  font-size: 0.85em;
+  color: #999;
+  float: right;
+}
+
+/* Стиль для подписи */
+.signature hr {
+  width: 200px;
+  height: 1px;
+  background-color: #000;
+  border: none;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+/* Стиль для навигационных элементов */
+select, .ok {
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  font-size: 1em;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  body.body-forum {
+    padding: 10px;
+  }
+  table {
+    font-size: 0.9em;
+  }
+  input.ok, input[type=submit] {
+    width: 100%;
+  }
+}

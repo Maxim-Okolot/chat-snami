@@ -1,0 +1,237 @@
+@font-face {
+  font-family: 'OldTown';
+  src: url('../../assets/fonts/old-town.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kapelka';
+  src: url('../../assets/fonts/kapelka.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Artemis cursive';
+  src: url('../../assets/fonts/artemis-cursive.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Farabee';
+  src: url('../../assets/fonts/farabee.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Equilibrist';
+  src: url('../../assets/fonts/equilibrist.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Spectral';
+  src: url('../../assets/fonts/spectral.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sriracha';
+  src: url('../../assets/fonts/sriracha.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DR Agu Script';
+  src: url('../../assets/fonts/dr-agu-script.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lobster';
+  src: url('../../assets/fonts/lobster.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Candara';
+  src: url('../../assets/fonts/candara.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bressay Trial';
+  src: url('../../assets/fonts/bressay-trial.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gunny Rewritten';
+  src: url('../../assets/fonts/gunny-rewritten.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Segoe Print';
+  src: url('../../assets/fonts/segoe-print.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Faberge';
+  src: url('../../assets/fonts/faberge.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Oktyabrina-script';
+  src: url('../../assets/fonts/oktyabrina-script.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'lucidaconsole';
+  src: url('../../assets/fonts/lucidaconsole.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Palatino Linotype';
+  src: url('../../assets/fonts/palatino-linotype.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'couriercyrillic';
+  src: url('../../assets/fonts/couriercyrillic.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kereru';
+  src: url('../../assets/fonts/kereru.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ST-Warmovie-noncommercial';
+  src: url('../../assets/fonts/st-warmovie-noncommercial.otf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Romanesque';
+  src: url('../../assets/fonts/romanesque.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stonehenge';
+  src: url('../../assets/fonts/stonehenge.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andy_Bold';
+  src: url('../../assets/fonts/andy-bold.otf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'XPLOR_Bold-Regular';
+  src: url('../../assets/fonts/xplor-bold-regular.otf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FoxcroftNF RUS Regular';
+  src: url('../../assets/fonts/foxcroftnf-rus-regular.otf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bounded';
+  src: url('../../assets/fonts/bounded.ttf');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/extra-light.ttf');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/light.ttf');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/regular.ttf');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/medium.ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/semi-bold.ttf');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/bold.ttf');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('../../assets/fonts/manrope/extra-bold.ttf');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
