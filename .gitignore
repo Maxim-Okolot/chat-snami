@@ -1,2 +1,4 @@
 .idea
 .sys
+api/yandex_translate.local.php
+config.php
