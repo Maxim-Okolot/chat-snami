@@ -8,12 +8,8 @@
   <link rel="stylesheet" href="../assets/css/profile.css">
 
   <script src="/profile-rating.js"></script>
-  <script src="//vk.com/js/api/openapi.js?116"></script>
-  <script>VK.init({apiId: 4785918, onlyWidgets: true});</script>
   <script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
 </head>
-
-
 
 <body>
 
