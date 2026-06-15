@@ -7,9 +7,7 @@
 
   <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js>"></script>
   <script src="?inc=informer&getmsg=1&inchat=1&lastreg=10&birthday=1>"></script>
   <script>%scripts%</script>
 
@@ -176,13 +174,12 @@
       </ul>
 
       <label class="chat-menu__checkbox">
-        <input type="checkbox" checked="checked" onclick="zvukmsgno=this.checked?1:0;" title="вкл/откл звуки входящих сообщений">
+        <input type="checkbox" checked onclick="zvukmsgno=this.checked?1:0;" title="вкл/откл звуки входящих сообщений">
         <span>Звуки в чате</span>
       </label>
 
-
       <label for="useGnCheckbox" class="chat-menu__checkbox">
-        <input type="checkbox" id="useGnCheckbox" onclick="toggleGn()" title="Вкл-выкл графические ники">
+        <input type="checkbox" id="useGnCheckbox" checked onclick="toggleGn()" title="Вкл-выкл графические ники">
         <span>Показывать графники</span>
       </label>
     </nav>
@@ -195,7 +192,7 @@
       }));
 
       function toggleGn() {
-        var cb = document.getElementById('useGnCheckbox');
+        let cb = document.getElementById('useGnCheckbox');
         localStorage.setItem('use_gn', cb.checked ? '1' : '0');
         window.use_gn = cb.checked ? 1 : 0;
       }
@@ -211,7 +208,6 @@
         }
       });
     </script>
-
 
     <div class="users-wrap">
       <p class="users-wrap__online">Сейчас онлайн: <span class="users-wrap__online-count" id="count">0</span></p>

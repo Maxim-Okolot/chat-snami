@@ -84,8 +84,16 @@ select {
 
   > div {
     width: 100%;
-    margin: 10px 0 0;
-    padding: 10px;
+    margin: 25px 0 0;
+    position: relative;
+
+    > p {
+      padding-right: 65px;
+    }
+  }
+
+  font img {
+    height: 50px;
   }
 }
 
@@ -103,7 +111,12 @@ select {
   display: none;
 }
 
-.message-everyone, .private-message {
+#leftdiv a img.graf_nick, #leftdiv .snimik-bot-label--graphic {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.message-everyone, .private-message, .message-for-me {
   background: #eef3f8;
   border-radius: 8px;
   padding: 8px 12px 10px;
@@ -121,20 +134,44 @@ select {
 }
 
 .private-message {
-  border: 1px solid #b8d4ec;
-  border-left: 4px solid #4a90e2;
+  background: rgba(241, 241, 241, .5);
+  border: 1px solid rgba(255, 0, 0, .5);
+  border-left: 4px solid rgba(255, 0, 0, .5);
+  margin: 4px 0;
 }
 
-.private-header {
+.message-for-me {
+  border: 1px solid #b8d4ec;
+  border-left: 4px solid #4a90e2;
+  margin: 4px 0;
+  background: rgba(241, 241, 241, .5);
+}
+
+.private-header, .message-for-me__header {
   margin: 0 0 6px;
   font-size: 13px;
   color: #2c5282;
+  font-weight: 600;
 }
 
 .message-everyone {
   border: 1px solid rgb(255, 192, 203);
   border-left: 4px solid rgb(255, 192, 203);
   background: rgba(255, 192, 203, .5);
+}
+
+.time-message {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #636363;
+  transition: .3s ease;
+  cursor: pointer;
+  font: 400 12px/1 var(--font);
+
+  &:hover {
+    color: var(--color-black);
+  }
 }
 
 /*style left-sidebar
@@ -415,11 +452,21 @@ select {
   display: inline-block;
   vertical-align: middle;
   max-height: 35px;
-  width: auto;
+  width: 25px;
 }
 
-.nick-list__privat-link, .nick-list__mw {
-  vertical-align: middle;
+.nick-list__privat-link {
+  width: 42px;
+  height: 42px;
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .nick-list__ign-spacer {
@@ -427,7 +474,7 @@ select {
   display: inline-block;
 }
 
-#users .nick-list a {
+#users .nick-list > a {
   font-weight: 600;
   text-decoration: none;
   display: block;
@@ -465,6 +512,29 @@ select {
 #man .nick-list__section-title {
   color: #4a7ab8;
 }
+
+.icon-love, .icon-clan {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.icon-clan::before {
+  background: center/cover url("../img/icons/clan.svg");
+}
+
+.icon-love::before {
+  background: center/cover url("../img/icons/ring.svg");
+}
+
 
 /*style right-sidebar
 ---------------------*/
