@@ -16,7 +16,6 @@
 
 
 <body id="telo">
-<audio id="Sound"></audio>
 
 <!-- HIDDEN FRAMES -->
 <iframe name=hidden width=0 height=0 style="display:none;"></iframe>
@@ -174,12 +173,12 @@
       </ul>
 
       <label class="chat-menu__checkbox">
-        <input type="checkbox" checked onclick="zvukmsgno=this.checked?1:0;" title="вкл/откл звуки входящих сообщений">
+        <input type="checkbox" id="checkSound" checked title="вкл/откл звуки входящих сообщений">
         <span>Звуки в чате</span>
       </label>
 
-      <label for="useGnCheckbox" class="chat-menu__checkbox">
-        <input type="checkbox" id="useGnCheckbox" checked onclick="toggleGn()" title="Вкл-выкл графические ники">
+      <label class="chat-menu__checkbox">
+        <input type="checkbox" id="checkGraphNick" checked onclick="toggleGn()" title="Вкл-выкл графические ники">
         <span>Показывать графники</span>
       </label>
     </nav>
@@ -299,6 +298,17 @@
       </div>
       <!-- радио плеер заканчивается -->
     </div>
+
+    <script>
+
+      const accordionHeader = document.querySelector('.accordion__header'),
+        accordionBody = document.querySelector('.accordion__body');
+
+      accordionHeader.addEventListener('click', () => {
+        accordionHeader.classList.toggle('open');
+      });
+
+    </script>
 
 </aside>
 <!-- end sidebar -->

@@ -959,19 +959,51 @@ var SNAMIK_BOT = (function () {
     version: '5.4'
   };
 
-})(); // --- END SNAMIK BOT v5 -----------------------------------------------
+})(); // --- END SNAMIK BOT v5 --------------------------------------
 
-// Статусы
-// 0 — Гость
-// 1 — Админ
-// 2 — Зам админа
-// 3 — Главный модератор
-// 4 — Пользователь
-// 5 — Житель
-// 6 — Техник
-// 7 — Радиоведущий
-// 8 — Радиоведущая
-// 9 — Модер
+ /*
+ --- СТАТУСЫ ПОЛЬЗОВАТЕЛЕЙ ------------------------------------------
+ 0 — Гость
+ 1 — Админ
+ 2 — Зам админа
+ 3 — Главный модератор
+ 4 — Пользователь
+ 5 — Житель
+ 6 — Техник
+ 7 — Радиоведущий
+ 8 — Радиоведущая
+ 9 — Модер
+
+ --- СТАТУСЫ СООБЩЕНИЙ -----------------------------------------------
+ 0 — Простое в общий чат
+ 1 — Кому-то в общий чат
+ 2 — Мне в общий чат
+ 3 — Приватно кому-то
+ 4 — Приватно мне
+*/
+
+
+const User = {
+
+}
+
+const settings = {
+  nomerp: 0,
+  nomers: 0,
+  repeat: 0, // Количество сообщений в топике. 0 - отмена
+  topicMessages: 15, // Через сколько сообщений
+  numberRoom: 0, // Номер комнаты в которой выводить топик
+  chatImages: 0, // 1 - картинки не отображаются, 0 - отображаются
+  roomLog: 0, // Загрузка последних сообщений при переходе в комнату, 1 - вкл (перезагрузка фрейма)
+  privateFrame: 0, // Приват в отдельном фрейме: 0 - выкл, 1 - вкл (необходимо настроить фреймовую систему)
+  genderSeparate: 0, // Использовать никлист с разделением по полам: 0 - выкл, 1 - вкл
+
+  // Статусы модераторов
+  moderStats: [1, 2, 3, 8, 14, 11, 12],
+
+  // Топик - выводится во фрейме сообщений сразу после загрузки
+  topic: "<div class='topic'></div>",
+}
 
 var nomerp = 0;
 var nomers = 0;
@@ -982,15 +1014,6 @@ var nomerroom = 0;// номер комнаты в которой выводит�
 var moderstats = new Array(1, 2, 3, 8, 14, 11, 12);
 /* Топик - выводится в фрейме сообщений сразу после загрузки */
 var topic = "<br><center><img src=''></center>";
-
-/* Кнопка удаления сообщения */
-var closebut = '<a href="#" title="Удалить это сообщение" onMouseOver="this.parentNode.style.backgroundColor = &#39;#EEE8AA&#39; " onMouseOut="this.parentNode.style.backgroundColor=null" onclick="parent.hidden.location.href = \'index.php?inc=write&\'+ parent.yourkey+\'&text=/remove \'+ this.parentNode.getElementsByTagName(\'font\')[0].innerHTML; return false" class="delete"><span><img src="https://chat2254.mpchat.com/img/delete.png" width=20  height=20 border=0></span></a>';
-if (regist != 1) {
-  var topic = "<br><center><p style=' padding-top:30px; padding-bottom:3px; margin-top:10px;border:20px solid #333333; width:100%; border-radius:4px 4px 4px 4px; font-family:Verdana; Font-size:15px;'><font color=#gray><b> Зарегистрируйтесь " + mynick + "</font> <b>! </b><a href=\"index.php?inc=reg\" target=\"_blank\"><font color=red size=3><u>Регистрация</u></font></a></font></p><br></center><br>";
-  var povtor = 1;
-  var soobwenie = 3;
-  var nomerroom = 0
-}
 
 /* 1 - картинки не отображаются, 0 - отображаются */
 var img_no = 0;
@@ -1091,6 +1114,8 @@ tdela[''] = "От нас уходит %nick%. Всем пока!";
 tdela['FunnyBunny'] = "От нас уходит Администратор чата  %nick%. Всем пока, до скорого!";
 tdela['SweetBanny'] = "От нас уходит Администратор чата  %nick%. Всем пока, до скорого!";
 
+console.log(tdela);
+
 
 /* Отметка сообщений: 0-обычные, 1-мои, 2-мне, 3-приват_мой, 4-приват_мне, 5-приват_мой2, 6-приват_мне2 */
 var symbols = new Array();
@@ -1189,44 +1214,46 @@ var ign_imgoff = "https://imgs.su/upload/809/3860897265.png";
 var ign_imgon = "https://imgs.su/upload/809/1639481662.png";
 
 
-/* [Функции - общие] */
+//  --- ОБЩИЕ Функции ЧАТА -----------------------------------------------
 
-var zvukmsgno = 1; //для кнопки вкл/откл по умол 1- вкл 0 -выкл
-if (getcookie("zvukmsg")) zvukmsgno = getcookie("zvukmsg");
 
-function sound_msg_play(cmd) {
-  if (zvukmsgno != 1 || !loaded) return;
-  var sound = '';
-  switch (cmd) {
-    case 0:
-      sound = '../assets/audio/personal-message.mp3';
-      break; /*входящее сообщение*/
-    case 1:
-      sound = '../assets/audio/privat-message.mp3';
-      break; /*приватное сообщение*/
-    case 6:
-      sound = '../assets/audio/chat-login.mp3';
-      break; /*вход пользователя в чат*/
-    case 7:
-      sound = '../assets/audio/exit.mp3';
-      break; /*выход пользователя из чата*/
-    default:
-      return;
-  }
-  if (!sound) return;
+// Воспроизведение звуков
+const sound = {
+  status: true, //для кнопки вкл/откл по умолчанию true - вкл, false - откл
 
-  var t = document.getElementById("Sound");
-  if (!t) return;
-  t.src = sound + "?" + (new Date).getTime();
-  try {
-    var playPromise = t.play();
-    if (playPromise && typeof playPromise.catch === 'function') {
-      playPromise.catch(function () {
-      });
+  checkSound: () => {
+    if (!document.querySelector('#checkSound').checked) sound.status = false;
+  },
+
+  play: (cmd) => {
+    if (getcookie("sound")) sound.status = getcookie("sound");
+
+    let soundSrc = null;
+
+    switch (cmd) {
+      case 0: /*входящее сообщение*/
+        soundSrc = '../assets/audio/personal-message.mp3';
+        break;
+      case 1: /*приватное сообщение*/
+        soundSrc = '../assets/audio/privat-message.mp3';
+        break;
+      case 6: /*вход пользователя в чат*/
+        soundSrc = '../assets/audio/chat-login.mp3';
+        break;
+      case 7: /*выход пользователя из чата*/
+        soundSrc = '../assets/audio/exit.mp3';
     }
-  } catch (e) {
+
+    const audio = new Audio(soundSrc);
+
+    try {
+      audio.play();
+    } catch (error) {
+      console.error("Ошибка воспроизведения:", error);
+    }
   }
 }
+
 
 
 /* Мигалка */
@@ -1298,7 +1325,7 @@ function str_plus(a) {
     document.title = title_zip;
     this.b = 0
   }
-};
+}
 
 /* Открывает новое окно с нужными размерами(для удобства) */
 function wo(url, name, w, h, scroll) {
@@ -1357,7 +1384,6 @@ function setgn(cmd, nick) {
     } else {
       set_out = '<span style="position:relative;"><img src="https://vmfile.com/upload/849/3984787100.jpg"><span style="position:absolute; width:160px; bottom:0;left:50%;transform:translateX(-50%);color:#4d2b0d;font: bold 15px Bressay Trial;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;">' + nick + '</span></span>'
     }
-
 
   } else if (use_gr == 1 && grna[nick] != null && grna[nick] && grok[cmd] == 1) set_out = gr(nick, grna[nick]);
   return set_out;
@@ -1579,7 +1605,7 @@ function add(nick, colornick, st, mw, icon, status, inchat, time, room, love, cl
   }
 }
 
-function del(nick, colornick, st, mw, icon, status, inchat, time, room, userid) {
+function deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid) {
 
   if (loaded == 0) return;
   for (var i = 0; i < us.length; i++)
@@ -1596,7 +1622,6 @@ function del(nick, colornick, st, mw, icon, status, inchat, time, room, userid) 
     seprules(-1, st, mw);
   }
 }
-
 
 /* Добавление ника в список участников */
 function format(i, row) {
@@ -1914,320 +1939,323 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
   set_text = setgr(cmd, nick, text);
   set_time = "<span class='time-message' onclick='parent.sendto(\" см. " + time + " \");'>" + time + "</span> ";
 
-  /* Вывод простого сообщения */
-  if (cmd == 0) {
-    symbol = symbols[0];
-    if (nick == mynick) symbol = symbols[1];
-    if (tonick == mynick || text.split(" " + mynick + ":").length > 1) {
-      symbol = symbols[2];
-      if (nick != nick_r) sound_msg_play(cmd);
-    }
-    if (text.indexOf('[Снамик] ') === 0) {
-      var snamikRest = text.substring('[Снамик] '.length);
-      try {
-        if (typeof SNAMIK_BOT !== 'undefined' && SNAMIK_BOT.formatMessage) {
-          snamikRest = SNAMIK_BOT.formatMessage(snamikRest);
-        }
-      } catch (e) {
+  switch (cmd) {
+    /* Вывод простого сообщения */
+    case 0:
+      symbol = symbols[0];
+
+      if (nick === mynick) symbol = symbols[1];
+
+      if (tonick == mynick || text.split(" " + mynick + ":").length > 1) {
+        symbol = symbols[2];
+        if (nick != nick_r) sound.play(cmd);
       }
-      var snamikMsgClass = snamikRest.indexOf('snimik-bot-cmdlist') >= 0
-        ? 'snimik-bot-msg snimik-bot-msg--rich'
-        : 'snimik-bot-msg';
-      set_nick = snamikBotLabelHtml(cmd, sizenick, facenick) +
-        wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
-      set_text = " <span class=\"" + snamikMsgClass + "\" size=" + size + " color=" + color + " face='" + face + "'>" + setgr(cmd, nick, snamikRest) + "</span> ";
-    } else {
-      set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
-      set_text = " <font size=" + size + " color=" + color + " face='" + face + "'>" + set_text + "</font> ";
-    }
-    a1 = '/vsem ';
-    if (text.substring(0, a1.length) == a1) {
-      text = text.substr(a1.length, text.length - a1.length);
-      text = text.substr(tonick.length);
-      wr(`<div class='message-everyone'> ${set_time} ${set_nick} ${text}</div>`);
-      if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/4278361492.mp3' autoplay></audio>");
-      return 1;
-    }
-    a2 = '/dev ';
-    if (text.substring(0, a2.length) == a2) {
-      text = text.substr(a2.length, text.length - a2.length);
-      text = text.substr(tonick.length);
-      wr("<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(72, 6, 7, 0.7);margin: 5px 0px'>" + set_time + "</font>" + set_nick + "<img src=https://i.postimg.cc/SKZpgcJL/image.png> </font></a><font color=480607 face=Arial Black font size=4px><b>" + text + "</b></font></p>");
-      if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/2023391579.mp3' autoplay></audio>");
-      return 1;
-    }
-    a3 = '/parn ';
-    if (text.substring(0, a3.length) == a3) {
-      text = text.substr(a3.length, text.length - a3.length);
-      text = text.substr(tonick.length);
-      wr("<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(25, 25, 112, 0.7);margin: 5px 0px'>" + set_time + "</font>" + set_nick + "<img src=https://i.postimg.cc/bvw7Sd3Z/image.png> </font></a><font color=191970 face=Arial Black font size=4px><b>" + text + "</b></font></p>");
-      if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/70197033.mp3' autoplay></audio>");
-      return 1;
-    }
-    var msgBody = symbol + set_time + set_nick + set_text;
-    if (isMessageAddressedToMe(nick, tonick, text)) {
-      towr = wrapMessageForMe(msgBody);
-    } else {
-      towr = msgBody + '<br>';
-    }
-    if (nick == mynick || tonick == mynick) myhistory += towr;
-    if (nick == nick_r && loaded == 1) {
-      window.setTimeout("wr('" + towr.split("'").join("\\'") + "');if('" + tonick + "'=='" + mynick + "')sound_msg_play(0);", delay_r * 1000);
-    } else wr(towr);
-  }
 
-  /* Вывод приватных сообщений */
-  if (cmd == 1 || cmd == 2) {
-    symbol = symbols[0];
-    if (nick == mynick) symbol = symbols[3];
-    if (tonick == mynick) {
-      symbol = symbols[4];
-      sound_msg_play(cmd);
-    }
+      if (text.indexOf('[Снамик] ') === 0) {
+        var snamikRest = text.substring('[Снамик] '.length);
+        try {
+          if (typeof SNAMIK_BOT !== 'undefined' && SNAMIK_BOT.formatMessage) {
+            snamikRest = SNAMIK_BOT.formatMessage(snamikRest);
+          }
+        } catch (e) {
+        }
+        var snamikMsgClass = snamikRest.indexOf('snimik-bot-cmdlist') >= 0
+          ? 'snimik-bot-msg snimik-bot-msg--rich'
+          : 'snimik-bot-msg';
+        set_nick = snamikBotLabelHtml(cmd, sizenick, facenick) +
+          wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
+        set_text = " <span class=\"" + snamikMsgClass + "\" size=" + size + " color=" + color + " face='" + face + "'>" + setgr(cmd, nick, snamikRest) + "</span> ";
+      } else {
+        set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
+        set_text = " <font size=" + size + " color=" + color + " face='" + face + "'>" + set_text + "</font> ";
+      }
+      a1 = '/vsem ';
+      if (text.substring(0, a1.length) == a1) {
+        text = text.substr(a1.length, text.length - a1.length);
+        text = text.substr(tonick.length);
+        wr(`<div class='message-everyone'><div>Всем:</div> ${set_time} ${set_nick} ${text}</div>`);
+        if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/4278361492.mp3' autoplay></audio>");
+        return 1;
+      }
+      a2 = '/dev ';
+      if (text.substring(0, a2.length) == a2) {
+        text = text.substr(a2.length, text.length - a2.length);
+        text = text.substr(tonick.length);
+        wr("<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(72, 6, 7, 0.7);margin: 5px 0px'>" + set_time + "</font>" + set_nick + "<img src=https://i.postimg.cc/SKZpgcJL/image.png> </font></a><font color=480607 face=Arial Black font size=4px><b>" + text + "</b></font></p>");
+        if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/2023391579.mp3' autoplay></audio>");
+        return 1;
+      }
+      a3 = '/parn ';
+      if (text.substring(0, a3.length) == a3) {
+        text = text.substr(a3.length, text.length - a3.length);
+        text = text.substr(tonick.length);
+        wr("<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(25, 25, 112, 0.7);margin: 5px 0px'>" + set_time + "</font>" + set_nick + "<img src=https://i.postimg.cc/bvw7Sd3Z/image.png> </font></a><font color=191970 face=Arial Black font size=4px><b>" + text + "</b></font></p>");
+        if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/70197033.mp3' autoplay></audio>");
+        return 1;
+      }
+      var msgBody = symbol + set_time + set_nick + set_text;
+      if (isMessageAddressedToMe(nick, tonick, text)) {
+        towr = wrapMessageForMe(msgBody);
+      } else {
+        towr = msgBody + '<br>';
+      }
+      if (nick == mynick || tonick == mynick) myhistory += towr;
+      if (nick == nick_r && loaded == 1) {
+        window.setTimeout("wr('" + towr.split("'").join("\\'") + "');if('" + tonick + "'=='" + mynick + "') sound.play(0);", delay_r * 1000);
+      } else wr(towr);
 
-    symbol2 = "";
-    if (nick == mynick) symbol2 = symbols[5];
-    if (tonick == mynick) symbol2 = symbols[6];
+      break;
 
-    if (cmd == 2) {
+    /* Вывод приватных сообщений */
+    case 1:
+    case 2:
+      symbol = symbols[0];
+      if (nick == mynick) symbol = symbols[3];
+      if (tonick == mynick) {
+        symbol = symbols[4];
+        sound.play(cmd);
+      }
+
       symbol2 = "";
-      set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'none');
-    } else {
-      set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'priv');
-    }
+      if (nick == mynick) symbol2 = symbols[5];
+      if (tonick == mynick) symbol2 = symbols[6];
 
-    set_text = "<font size=" + size + " color=" + color + " face='" + face + "'> " + set_text + "</font>";
-
-    // Формируем сообщение
-    var towrContent = symbol + set_nick + set_text + set_time;
-
-    // Создаем приватное сообщение с классом
-    var privMsgHtml = `<div class="private-message"><div class="private-header">Приватно от ${nick}:</div>${towrContent}</div>`;
-
-    // Вставляем сообщение в нужный контейнер
-    if (nick == mynick || tonick == mynick) myhistory += towrContent;
-
-    if (cmd == 1 && privatok == 1) {
-      var obj = document.getElementById("privatdiv");
-      var newDiv = document.createElement('div');
-      newDiv.innerHTML = privMsgHtml;
-      obj.appendChild(newDiv);
-      obj.scrollTop = obj.scrollHeight;
-    } else if (cmd == 1) {
-      wr(privMsgHtml);
-    } else if (cmd == 2) {
-      if (nick == mynick) pnick = tonick; else pnick = nick;
-      if (pu[pnick] == null || pu[pnick].closed) {
-        if (pt[pnick] == undefined) pt[pnick] = "";
-        pt[pnick] += towrContent;
-        var text = "приглашает пообщаться в отдельном ";
-        if (nick != mynick) text = "приглашаю начать общение в отдельном ";
-        wr(set_time + symbol + set_nick + text +
-          " <a href='#' onclick='var pnick1=\"" + pnick + "\"; " +
-          "pu[pnick1]=window.open(\"index.php?inc=privat&pnick=\"+pnick1,\"\",\"scrollbars=no,width=500,height=400,resizable=yes\"); return false;'>приват окне</a>");
+      if (cmd == 2) {
+        symbol2 = "";
+        set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'none');
       } else {
-        pu[pnick].wr(towrContent);
+        set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'priv');
       }
-    }
-  }
-  /* Вывод выделенного сообщения '/me' или '/msg' */
-  if (cmd == 3) {
-    sound_msg_play(cmd);
-    wr(set_time + "<b>Сообщение от <font size=2 color=" + colornick + ">" + set_nick + "</font></b> <i>" + set_text + "</i><br>");
-  }
 
+      set_text = "<font size=" + size + " color=" + color + " face='" + face + "'> " + set_text + "</font>";
 
-  /* [ cmd==4 Вывод сообщения о вызове ] */
-// и сам вызов окном с музыкой '/call nick'
-  if (cmd == 4) {
-    if (loaded == 1) {
-      if (!times_call[tonick]) times_call[tonick] = 0;
-      if (timeCall() - times_call[tonick] > times_call_delay) {
-        times_call[tonick] = timeCall();
-        times_call_who[tonick] = set_nick;
-        if (tonick == mynick && loaded == 1)
-          if (snd_call_on == 1) {
-            getSound('/by-FeNIX/call');
-            setTimeout('var tocall=document.getElementById("sounddiv"); tocall.innerHTML="";', 50000);
-            ChatAlert("Вас пытаются разбудить пользователь " + nick + "!");
-          }
-        if (!invisible[nick]) wr(set_time + "<img src='https://s1.iconbird.com/ico/0912/fugue/w16h161349011841alarmclockblue.png' border='0'> " + set_nick + " <i> Запустил будильник для " + tonick + ".</i><br>");
-      } else if (set_nick == mynick && tonick != mynick && loaded == 1) {
-        var call_alert_txt = "<font>Пользователю с ником \"" + tonick + "\" уже был запущен будильник </font>";
-        if (times_call_who[tonick] == mynick) call_alert_txt += "<font> вами!</font>";
-        else call_alert_txt += "<font>.</font><br><font>Запустил будильник пользователь с ником \"" + times_call_who[tonick] + "\".</font>";
-        call_alert_txt += "<br><div style='margin-top:20px;'><font>Повторный вызов возможен через: </font>";
-        ChatAlert(call_alert_txt + "<form name='count' style='display: inline-block;'><input type='text' size='20' name='count2' class='count2' readonly></form></div>");
-        countdown(times_call_delay - timeCall() + times_call[tonick], tonick);
+      // Формируем сообщение
+      var towrContent = symbol + set_nick + set_text + set_time;
+
+      // Создаем приватное сообщение с классом
+      var privMsgHtml = `<div class="private-message"><div class="private-header">Приватно от ${nick}:</div>${towrContent}</div>`;
+
+      // Вставляем сообщение в нужный контейнер
+      if (nick == mynick || tonick == mynick) myhistory += towrContent;
+
+      if (cmd == 1 && privatok == 1) {
+        var obj = document.getElementById("privatdiv");
+        var newDiv = document.createElement('div');
+        newDiv.innerHTML = privMsgHtml;
+        obj.appendChild(newDiv);
+        obj.scrollTop = obj.scrollHeight;
+      } else if (cmd == 1) {
+        wr(privMsgHtml);
+      } else if (cmd == 2) {
+        if (nick == mynick) pnick = tonick; else pnick = nick;
+
+        if (pu[pnick] == null || pu[pnick].closed) {
+          if (pt[pnick] == undefined) pt[pnick] = "";
+          pt[pnick] += towrContent;
+          let text = '';
+
+          if (nick != mynick) text = "приглашаю начать общение в отдельном ";
+          wr(set_time + symbol + set_nick + text +
+            " <a href='#' onclick='var pnick1=\"" + pnick + "\"; " +
+            "pu[pnick1]=window.open(\"index.php?inc=privat&pnick=\"+pnick1,\"\",\"scrollbars=no,width=500,height=400,resizable=yes\"); return false;'>приват окне</a>");
+        } else {
+          pu[pnick].wr(towrContent);
+        }
       }
-    }
+      break;
 
-  }
+    /* Вывод выделенного сообщения '/me' или '/msg' */
+    case 3:
+      sound.play(cmd);
+      wr(set_time + "<b>Сообщение от <font size=2 color=" + colornick + ">" + set_nick + "</font></b> <i>" + set_text + "</i><br>");
 
-  /* Вывод сообщения об удалении '/kill nick' и сам процесс */
-  if (cmd == 5) {
-    sound_msg_play(cmd);
-    if (tonick == mynick && loaded == 1 && kill != 6 && kill != 7) {
-      if ((kill == 1) || (kill == 2) || (kill == 3)) {
-        act = "kill";
-        setcookie(parent.chatlogin.replace("-", "_") + "_mpban", tonick, timeout);
+    /* [ cmd==4 Вывод сообщения о вызове ] и сам вызов окном с музыкой '/call nick' */
+    case 4:
+      if (loaded == 1) {
+        if (!times_call[tonick]) times_call[tonick] = 0;
+        if (timeCall() - times_call[tonick] > times_call_delay) {
+          times_call[tonick] = timeCall();
+          times_call_who[tonick] = set_nick;
+          if (tonick == mynick && loaded == 1)
+            if (snd_call_on == 1) {
+              getSound('/by-FeNIX/call');
+              setTimeout('var tocall=document.getElementById("sounddiv"); tocall.innerHTML="";', 50000);
+              ChatAlert("Вас пытаются разбудить пользователь " + nick + "!");
+            }
+          if (!invisible[nick]) wr(set_time + "<img src='https://s1.iconbird.com/ico/0912/fugue/w16h161349011841alarmclockblue.png' border='0'> " + set_nick + " <i> Запустил будильник для " + tonick + ".</i><br>");
+        } else if (set_nick == mynick && tonick != mynick && loaded == 1) {
+          var call_alert_txt = "<font>Пользователю с ником \"" + tonick + "\" уже был запущен будильник </font>";
+          if (times_call_who[tonick] == mynick) call_alert_txt += "<font> вами!</font>";
+          else call_alert_txt += "<font>.</font><br><font>Запустил будильник пользователь с ником \"" + times_call_who[tonick] + "\".</font>";
+          call_alert_txt += "<br><div style='margin-top:20px;'><font>Повторный вызов возможен через: </font>";
+          ChatAlert(call_alert_txt + "<form name='count' style='display: inline-block;'><input type='text' size='20' name='count2' class='count2' readonly></form></div>");
+          countdown(times_call_delay - timeCall() + times_call[tonick], tonick);
+        }
       }
-      if (kill == 4) act = "window";
-      if (kill == 5) act = "prav";
-      parent.location.href = "exit.html?" + parent.yourkey + "&act=" + act + "&timeout=" + timeout + "&grund=" + text;
-    }
-    var kill_timeout = 0;
-    if (text.length > 0) text = " Причина: " + text + ". ";
-    if (timeout > 0) {
-      kill_timeout = timeout * 60;
-      if (timeout < 61) timeout = "На " + timeout + " минут.";
-      if (timeout == 1440) timeout = "На день!";
-      if (timeout == 10080) timeout = "На неделю!";
-      if (timeout == 43200) timeout = "На месяц!";
-      if (timeout > 1000000) timeout = "Навсегда!";
-    }
-    if (loaded == 1 && mynick == tonick) {
-      kill_timer(kill_timeout);
-    }
-    wr("<font onclick='sendto(\" см. " + time + " \");'>" + time + "</font><i><a href='' onclick=\"parent.tonick('" + nick + ": '); return false;\"><font color=" + colornick + ">АДМИНИСТРАЦИЯ</font></a> " + deltxt[kill] + " " + tonick + ".</i> " + timeout + text + "<br>");
-  }
+      break;
 
+    /* Вывод сообщения об удалении '/kill nick' и сам процесс */
+    case 5:
+      sound.play(cmd);
+      if (tonick == mynick && loaded == 1 && kill != 6 && kill != 7) {
+        if ((kill == 1) || (kill == 2) || (kill == 3)) {
+          act = "kill";
+          setcookie(parent.chatlogin.replace("-", "_") + "_mpban", tonick, timeout);
+        }
+        if (kill == 4) act = "window";
+        if (kill == 5) act = "prav";
+        parent.location.href = "exit.html?" + parent.yourkey + "&act=" + act + "&timeout=" + timeout + "&grund=" + text;
+      }
+      var kill_timeout = 0;
+      if (text.length > 0) text = " Причина: " + text + ". ";
+      if (timeout > 0) {
+        kill_timeout = timeout * 60;
+        if (timeout < 61) timeout = "На " + timeout + " минут.";
+        if (timeout == 1440) timeout = "На день!";
+        if (timeout == 10080) timeout = "На неделю!";
+        if (timeout == 43200) timeout = "На месяц!";
+        if (timeout > 1000000) timeout = "Навсегда!";
+      }
+      if (loaded == 1 && mynick == tonick) {
+        kill_timer(kill_timeout);
+      }
+      wr("<font onclick='sendto(\" см. " + time + " \");'>" + time + "</font><i><a href='' onclick=\"parent.tonick('" + nick + ": '); return false;\"><font color=" + colornick + ">АДМИНИСТРАЦИЯ</font></a> " + deltxt[kill] + " " + tonick + ".</i> " + timeout + text + "<br>");
 
-  /* Вывод входа юзера в чат и добавление в нклист через add() */
-  if (cmd == 6) {
-    if (inchat == '0' && room == myroom) {
-      sound_msg_play(cmd);
-      set_nick = "<a href='' onclick=\"tonick('" + nick + ": '); return false;\"><font color=" + colornick + "><b><font color=ff0000 face=Verdana font size=10px>" + set_nick + "</font></a>";
-      tadd = "<img src=https://i.postimg.cc/zfGtkbzb/onlin-1.gif><b><font color=000080 face=Verdana font size=4px>Добро пожаловать в чат С нами! </font> %nick%  ";
-      if (tadda[nick] != null && tadda[nick]) tadd = tadda[nick].replace(nick, "%nick%");
-      if (tadd.search("%nick%") == -1) tadd = "%nick% " + tadd;
-      tadd = tadd.replace("%nick%", set_nick);
-      wr(set_time + "<b><font color=000080 face=Verdana font size=4px>" + tadd + "</font><br>");
-    }
-    add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
-  }
+      break;
 
-  /* Вывод выхода юзера из чата и удаление из никлиста через del() */
-  if (cmd == 7) {
-    if (inchat == '1' && room == myroom) {
-      sound_msg_play(cmd);
-      set_nick = "<b><font color=#ff0000>" + set_nick + "</b>";
-      tdel = "<b><font color=000080 face=Verdana font size=4px>Нас покидает %nick%  </font>";
-      if (tdela[nick] != null && tdela[nick]) tdel = tdela[nick].replace(nick, "%nick%");
-      if (tdel.search("%nick%") == -1) tdel = "%nick% " + tdel;
-      tdel = tdel.replace("%nick%", set_nick);
-      wr(set_time + "<b><font color=000080 face=Verdana font size=4px>" + tdel + "</font><br>");
-    }
-    del(nick, colornick, st, mw, icon, status, inchat, time, room, userid);
-  }
-  /* Сообщение о смене статуса участника и его изменение */
-  if (cmd == 8) {
+    /* Вывод входа юзера в чат и добавление в нклист через add() */
+    case 6:
+      if (inchat == '0' && room == myroom) {
+        sound.play(cmd);
+        set_nick = "<a href='' onclick=\"tonick('" + nick + ": '); return false;\"><font color=" + colornick + "><b><font color=ff0000 face=Verdana font size=10px>" + set_nick + "</font></a>";
+        tadd = "<img src=https://i.postimg.cc/zfGtkbzb/onlin-1.gif><b><font color=000080 face=Verdana font size=4px>Добро пожаловать в чат С нами! </font> %nick%  ";
+        if (tadda[nick] != null && tadda[nick]) tadd = tadda[nick].replace(nick, "%nick%");
+        if (tadd.search("%nick%") == -1) tadd = "%nick% " + tadd;
+        tadd = tadd.replace("%nick%", set_nick);
+        wr(set_time + "<b><font color=000080 face=Verdana font size=4px>" + tadd + "</font><br>");
+      }
+      add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
 
-    sound_msg_play(cmd);
-    status = text;
-    for (var i = 0; i < us.length; i++) if (us[i] != null && us[i][0] == nick) {
-      us[i][5] = status;
-      if (icqtxt[status]) wr(set_time + "<font size=2 color=" + colornick + "><b>" + set_nick + "</b></font> <i>" + icqtxt[status] + "</i><br>");
-      var obj = document.getElementById("!" + nick);
-      if (obj) format(i, obj);
+      break;
 
-    }
-  }
+    /* Вывод выхода юзера из чата и удаление из никлиста через deleteUser() */
+    case 7:
+      if (inchat === '1' && room === myroom) {
+        sound.play(cmd);
+        set_nick = "<b><font color=#ff0000>" + set_nick + "</b>";
+        tdel = "<b><font color=000080 face=Verdana font size=4px>Нас покидает %nick%  </font>";
+        if (tdela[nick] != null && tdela[nick]) tdel = tdela[nick].replace(nick, "%nick%");
+        if (tdel.search("%nick%") == -1) tdel = "%nick% " + tdel;
+        tdel = tdel.replace("%nick%", set_nick);
+        wr(set_time + "<b><font color=000080 face=Verdana font size=4px>" + tdel + "</font><br>");
+      }
+      deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid);
+      break;
 
-
-  /* Функция обработки сообщений викторины */
-  if (cmd == 9) {
-    if (text == "end") text1 = "это слово уже угаданно или время вышло";
-    else if (text == "") text1 = "вы не угадали это слово";
-    else {
-      if (mynick == nick) text1 = 'вы только что отгадали слово "' + text + '" и получаете 30 пунктов';
-      else text1 = 'только что отгадал(а) слово "' + text + '"';
-    }
-    wr(set_time + "<font size=4 color=" + colornick + "><b>" + set_nick + "</b></font> <i>" + text1 + "</i><br>");
-  }
-
-
-  /* Функция перехода в комнаты */
-  if (cmd == 10) {
-
-    oldroom = room;
-    setroom = text;
-    if (loaded == 1) {
+    /* Сообщение о смене статуса участника и его изменение */
+    case 8:
+      sound.play(cmd);
+      status = text;
       for (var i = 0; i < us.length; i++) if (us[i] != null && us[i][0] == nick) {
-        us[i][6] = setroom;
-        update(oldroom, -1);
-        update(setroom, 1);
+        us[i][5] = status;
+        if (icqtxt[status]) wr(set_time + "<font size=2 color=" + colornick + "><b>" + set_nick + "</b></font> <i>" + icqtxt[status] + "</i><br>");
+        var obj = document.getElementById("!" + nick);
+        if (obj) format(i, obj);
       }
-      if (nick == mynick) {
-        myroom = setroom;
-        if (roomlog == 1) {
-          document.getElementById("leftdiv").innerHTML = "Подождите, осуществляется переход в другую комнату ...";
-          window.setTimeout("loadframes();", 2000);
-          mystyle = rooms[myroom][2];
-          window.setTimeout("setstyle(mystyle);", 4000);
-          return;
-        }
-        ucc = new Array();
-        document.getElementById("leftdiv").innerHTML = "";
-        document.getElementById('users').innerHTML = userlist;
-        window.setTimeout("for(var i=0;i<us.length;i++) if(us[i]!=null) add(us[i][0],us[i][1],us[i][2],us[i][3],us[i][4],us[i][5],'','',us[i][6],us[i][7],us[i][8],us[i][9]);", 500);
-        mystyle = rooms[myroom][2];
-        setstyle(mystyle);
-      } else {
+
+      break;
+
+
+    /* Функция обработки сообщений викторины */
+    case 9:
+      if (text == "end") text1 = "это слово уже угаданно или время вышло";
+      else if (text == "") text1 = "вы не угадали это слово";
+      else {
+        if (mynick == nick) text1 = 'вы только что отгадали слово "' + text + '" и получаете 30 пунктов';
+        else text1 = 'только что отгадал(а) слово "' + text + '"';
+      }
+      wr(set_time + "<font size=4 color=" + colornick + "><b>" + set_nick + "</b></font> <i>" + text1 + "</i><br>");
+
+      break;
+
+    case 10:
+      oldroom = room;
+      setroom = text;
+      if (loaded == 1) {
         for (var i = 0; i < us.length; i++) if (us[i] != null && us[i][0] == nick) {
-          if (myroom == setroom) {
-            add(us[i][0], us[i][1], us[i][2], us[i][3], us[i][4], us[i][5], '', '', us[i][6], us[i][7], us[i][8], us[i][9]);
-          } else if (myroom == oldroom) {
-            var obj = document.getElementById("!" + nick);
-            if (obj) nicklistRemove(obj);
-            seprules(-1, us[i][2], us[i][3]);
+          us[i][6] = setroom;
+          update(oldroom, -1);
+          update(setroom, 1);
+        }
+        if (nick == mynick) {
+          myroom = setroom;
+          if (roomlog == 1) {
+            document.getElementById("leftdiv").innerHTML = "Подождите, осуществляется переход в другую комнату ...";
+            window.setTimeout("loadframes();", 2000);
+            mystyle = rooms[myroom][2];
+            window.setTimeout("setstyle(mystyle);", 4000);
+            return;
+          }
+          ucc = new Array();
+          document.getElementById("leftdiv").innerHTML = "";
+          document.getElementById('users').innerHTML = userlist;
+          window.setTimeout("for(var i=0;i<us.length;i++) if(us[i]!=null) add(us[i][0],us[i][1],us[i][2],us[i][3],us[i][4],us[i][5],'','',us[i][6],us[i][7],us[i][8],us[i][9]);", 500);
+          mystyle = rooms[myroom][2];
+          setstyle(mystyle);
+        } else {
+          for (var i = 0; i < us.length; i++) if (us[i] != null && us[i][0] == nick) {
+            if (myroom == setroom) {
+              add(us[i][0], us[i][1], us[i][2], us[i][3], us[i][4], us[i][5], '', '', us[i][6], us[i][7], us[i][8], us[i][9]);
+            } else if (myroom == oldroom) {
+              var obj = document.getElementById("!" + nick);
+              if (obj) nicklistRemove(obj);
+              seprules(-1, us[i][2], us[i][3]);
+            }
           }
         }
       }
-    }
-    towr = "";
-    if (nick == mynick && loaded == 1) towr = set_time + "<i>Вы перешли в комнату -> <b>" + rooms[setroom][0] + "</b>.</i><br>";
-    else if (myroom == setroom) towr = set_time + "<i><a href='' onclick=\"tonick('" + nick + ": '); return false;\"><font color=" + colornick + ">" + nick + "</font></a> приходит к нам из комнаты -> <b>" + rooms[oldroom][0] + "</b>.</i><br>";
-    else if (myroom == oldroom) towr = set_time + "<i>" + nick + " уходит в комнату -> <b>" + rooms[setroom][0] + "</b>.</i><br>";
-    if (nick == mynick) myhistory += towr;
-    wr(towr);
+      towr = "";
+      if (nick == mynick && loaded == 1) towr = set_time + "<i>Вы перешли в комнату -> <b>" + rooms[setroom][0] + "</b>.</i><br>";
+      else if (myroom == setroom) towr = set_time + "<i><a href='' onclick=\"tonick('" + nick + ": '); return false;\"><font color=" + colornick + ">" + nick + "</font></a> приходит к нам из комнаты -> <b>" + rooms[oldroom][0] + "</b>.</i><br>";
+      else if (myroom == oldroom) towr = set_time + "<i>" + nick + " уходит в комнату -> <b>" + rooms[setroom][0] + "</b>.</i><br>";
+      if (nick == mynick) myhistory += towr;
+      wr(towr);
 
+      break;
+
+    /* Функция вывода уведомлений */
+    case 11:
+      if (text == "post" && tonick == mynick) wr(set_time + "Мажордом (шопотом): <i>Вам от <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> новое письмо-с, извольте прочесть: <a href=?inc=post&" + yourkey + " target=_blank>\"" + var9 + "\"</a></i><br>");
+      if (text == "reg") wr(set_time + "Мажордом (торжественно): <i>У нас новый пользователь <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a>.</i><br>");
+      if (text == "clan") wr(set_time + "Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> вступил(а) в клан \"" + var9 + "\".</i><br>");
+      if (text == "gallery") wr(set_time + "Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> добавил(а) новую <a href=?inc=gallery&gallery=" + nick + "&foto=" + var9 + " target=_blank>фотографию</a> в галерею.</i><br>");
+      if (text == "gb") wr(set_time + "Мажордом (громогласно): <i>Новое сообщение от <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> в <a href=?inc=gb target=_blank>гостевой</a>.</i><br>");
+
+      if (text == "forum")
+        wr(
+          "<div style='max-width: 500px; margin: 15px auto; padding: 15px; border-radius: 12px; background-color: #f0f4f8; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-family: Arial, sans-serif; color: #333; display: flex; align-items: center; flex-wrap: nowrap;'>" +
+          "<div style='flex: 0 0 auto; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-right: 15px;'>" +
+          "<div style='width: 40px; height: 40px; background-color: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; font-weight: bold;'>!</div>" +
+          "</div>" +
+          "<div style='flex: 1 1 auto;'>" +
+          "<h2 style='margin: 0 0 5px; font-size: 18px; font-weight: 600; color: #2c3e50;'>Внимание!</h2>" +
+          "<p style='margin: 0; font-size: 14px; line-height: 1.4;'>" +
+          "Новое сообщение от <a href='?inc=info&nick=" + nick + "' target='_blank' style='color: #2980b9; font-weight: 600; text-decoration: underline;'>" + set_nick + "</a> в теме форума " +
+          "<a href='?inc=forum&forum=" + var11 + "&topic=" + var10 + "' target='_blank' style='color: #2980b9; font-weight: 600; text-decoration: underline;'>\"" + var9 + "\"</a>." +
+          "</p>" +
+          "</div>" +
+          "</div>" +
+          "<style>" +
+          "@media(max-width: 600px) {" +
+          "div[style*='max-width: 500px'] { flex-direction: column; align-items: flex-start; padding: 10px; }" +
+          "div[style*='width: 50px'] { width: 40px; height: 40px; margin-bottom: 10px; }" +
+          "h2 { font-size: 16px; }" +
+          "p { font-size: 13px; }" +
+          "}" +
+          "</style>"
+        );
   }
 
-  /* Функция вывода уведомлений */
-  /* Функция вывода уведомлений */
-  if (cmd == 11) {
-    if (text == "post" && tonick == mynick) wr(set_time + "Мажордом (шопотом): <i>Вам от <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> новое письмо-с, извольте прочесть: <a href=?inc=post&" + yourkey + " target=_blank>\"" + var9 + "\"</a></i><br>");
-    if (text == "reg") wr(set_time + "Мажордом (торжественно): <i>У нас новый пользователь <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a>.</i><br>");
-    if (text == "clan") wr(set_time + "Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> вступил(а) в клан \"" + var9 + "\".</i><br>");
-    if (text == "gallery") wr(set_time + "Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> добавил(а) новую <a href=?inc=gallery&gallery=" + nick + "&foto=" + var9 + " target=_blank>фотографию</a> в галерею.</i><br>");
-    if (text == "gb") wr(set_time + "Мажордом (громогласно): <i>Новое сообщение от <a href=?inc=info&nick=" + nick + " target=_blank><font color=" + colornick + ">" + set_nick + "</font></a> в <a href=?inc=gb target=_blank>гостевой</a>.</i><br>");
-
-    if (text == "forum")
-      wr(
-        "<div style='max-width: 500px; margin: 15px auto; padding: 15px; border-radius: 12px; background-color: #f0f4f8; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-family: Arial, sans-serif; color: #333; display: flex; align-items: center; flex-wrap: nowrap;'>" +
-        "<div style='flex: 0 0 auto; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-right: 15px;'>" +
-        "<div style='width: 40px; height: 40px; background-color: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; font-weight: bold;'>!</div>" +
-        "</div>" +
-        "<div style='flex: 1 1 auto;'>" +
-        "<h2 style='margin: 0 0 5px; font-size: 18px; font-weight: 600; color: #2c3e50;'>Внимание!</h2>" +
-        "<p style='margin: 0; font-size: 14px; line-height: 1.4;'>" +
-        "Новое сообщение от <a href='?inc=info&nick=" + nick + "' target='_blank' style='color: #2980b9; font-weight: 600; text-decoration: underline;'>" + set_nick + "</a> в теме форума " +
-        "<a href='?inc=forum&forum=" + var11 + "&topic=" + var10 + "' target='_blank' style='color: #2980b9; font-weight: 600; text-decoration: underline;'>\"" + var9 + "\"</a>." +
-        "</p>" +
-        "</div>" +
-        "</div>" +
-        "<style>" +
-        "@media(max-width: 600px) {" +
-        "div[style*='max-width: 500px'] { flex-direction: column; align-items: flex-start; padding: 10px; }" +
-        "div[style*='width: 50px'] { width: 40px; height: 40px; margin-bottom: 10px; }" +
-        "h2 { font-size: 16px; }" +
-        "p { font-size: 13px; }" +
-        "}" +
-        "</style>"
-      );
-  }
-  /* Конец функция */
 }
 
 

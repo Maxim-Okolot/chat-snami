@@ -569,6 +569,35 @@ select {
   width: 95%;
 }
 
+.accordion__header {
+  position: relative;
+
+  &::after {
+    content: "";
+    width: 15px;
+    height: 9px;
+    background: center / cover url(../img/arrow-bottom.svg) no-repeat;
+    transition: .3s ease;
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-100%);
+  }
+
+  &.open + .accordion__body {
+    height: max-content;
+  }
+
+  &.open::after {
+    transform: translateY(-100%) rotate(180deg);
+  }
+}
+
+.accordion__body {
+  height: 0;
+  overflow: hidden;
+}
+
 
 /*style footer
 ---------------------*/
