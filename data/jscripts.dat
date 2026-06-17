@@ -1072,17 +1072,17 @@ var use_gn = 1;
 var gnok = new Array(1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 /* для добавления граф. ников (img/flash) используйте фаил gn.js */
 var gna = new Array;
-document.write('<scr' + 'ipt src=gn.js?' + Math.random() + '></scr' + 'ipt>');
+document.write('<scr' + 'ipt src=../../assets/js/gn.js?' + Math.random() + '></scr' + 'ipt>');
 
 /* Градиент: 0 - выкл, 1 - вкл, позиции в списке - это номера функций "cmd" от 0-10(11-никлист)  */
 var use_gr = 1;
 var grok = new Array(1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0);
-if (use_gr == 1) document.write("<" + "script src=gradient.js></" + "script>");
+if (use_gr == 1) document.write("<" + "script src=../../assets/js/gradient.js></" + "script>");
 
 /* Градиент текста */
 /* для добавления градиента тексту используйте фаил gr.js */
 var gra = new Array;
-document.write('<scr' + 'ipt src=gr.js?' + Math.random() + '></scr' + 'ipt>');
+document.write('<scr' + 'ipt src=../../assets/js/gr.js?' + Math.random() + '></scr' + 'ipt>');
 
 /* Градиент ника */
 var grna = new Array;

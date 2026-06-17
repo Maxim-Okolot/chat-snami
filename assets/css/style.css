@@ -44,17 +44,21 @@ body {
   color: var(--color-black);
   font: 400 14px/1.3 'Manrope', 'Rubik One', sans-serif;
   width: 100%;
-  height: 100vh;
-  display: grid;
-  grid-template-columns: 270px 1fr 270px;
-  grid-template-rows: 1fr auto;
-  grid-template-areas:
-    "left-sidebar content right-sidebar"
-    "left-sidebar footer right-sidebar";
-  grid-gap: 0 10px;
   background: #c8d0db;
   padding: 16px;
+
+  &.chat-body {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 270px 1fr 270px;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+    "left-sidebar content right-sidebar"
+    "left-sidebar footer right-sidebar";
+    grid-gap: 0 10px;
+  }
 }
+
 
 select {
   padding: 6px 12px;

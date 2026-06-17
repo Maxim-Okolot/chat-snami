@@ -1,13 +1,49 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <title>С нами</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>С нами — веб-чат для общения онлайн</title>
+  <meta name="description" content="Чат «С нами» — общение в реальном времени, приватные сообщения, смайлы, викторина, радио и сообщество с форумом, галереей и магазином.">
+  <meta name="keywords" content="чат, веб-чат, общение онлайн, с нами, mpchat, смайлы, приват, радио, форум, галерея">
+  <meta name="author" content="С нами">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="Russian">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#4a90e2">
+  <meta name="application-name" content="С нами">
+  <meta name="color-scheme" content="light">
+
+  <link rel="canonical" href="https://snami.mpchat.com/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="С нами">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="С нами — веб-чат для общения онлайн">
+  <meta property="og:description" content="Чат «С нами» — общение в реальном времени, приватные сообщения, смайлы, викторина, радио и сообщество с форумом, галереей и магазином.">
+  <meta property="og:url" content="https://snami.mpchat.com/">
+  <meta property="og:image" content="https://snami.mpchat.com/assets/img/logo.png">
+  <meta property="og:image:alt" content="Логотип чата С нами">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="С нами — веб-чат для общения онлайн">
+  <meta name="twitter:description" content="Чат «С нами» — общение в реальном времени, приватные сообщения, смайлы, викторина, радио и сообщество с форумом, галереей и магазином.">
+  <meta name="twitter:image" content="https://snami.mpchat.com/assets/img/logo.png">
+  <meta name="twitter:image:alt" content="Логотип чата С нами">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="С нами">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
 
   <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="../assets/img/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="../assets/img/favicon.ico">
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js>"></script>
+  <script src="../assets/js/jquery.js"></script>
   <script src="?inc=informer&getmsg=1&inchat=1&lastreg=10&birthday=1>"></script>
   <script>%scripts%</script>
 
@@ -15,7 +51,7 @@
 </head>
 
 
-<body id="telo">
+<body class="chat-body" id="telo">
 
 <!-- HIDDEN FRAMES -->
 <iframe name=hidden width=0 height=0 style="display:none;"></iframe>
@@ -671,6 +707,7 @@
   <!-- end game quiz -->
 </footer>
 <!-- end footer -->
+
 
 <script src="https://myradio24.com/player/player.js?v3.31" data-radio="lenin" data-interval=15 data-vmid=0 data-lang="ru"></script>
 </body>
