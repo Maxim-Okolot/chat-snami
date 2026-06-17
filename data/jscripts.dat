@@ -961,45 +961,11 @@ var SNAMIK_BOT = (function () {
 
 })(); // --- END SNAMIK BOT v5 --------------------------------------
 
- /*
- --- СТАТУСЫ ПОЛЬЗОВАТЕЛЕЙ ------------------------------------------
- 0 — Гость
- 1 — Админ
- 2 — Зам админа
- 3 — Главный модератор
- 4 — Пользователь
- 5 — Житель
- 6 — Техник
- 7 — Радиоведущий
- 8 — Радиоведущая
- 9 — Модер
+//  --- НАСТРОЙКИ ЧАТА -----------------------------------------------
 
- --- СТАТУСЫ СООБЩЕНИЙ -----------------------------------------------
- 0 — Простое в общий чат
- 1 — Кому-то в общий чат
- 2 — Мне в общий чат
- 3 — Приватно кому-то
- 4 — Приватно мне
-*/
 
-var nomerp = 0;
-var nomers = 0;
-var povtor = 1;// сколько раз печатать топик для отмены повтора поставьте ноль
-var soobwenie = 15;// через сколько сообщений
-var nomerroom = 0;// номер комнаты в которой выводить топик
-/* Статусы модераторов (через запятую) */
-var moderstats = new Array(1, 2, 3, 8, 14, 11, 12);
 /* Топик - выводится в фрейме сообщений сразу после загрузки */
 var topic = "<br><center><img src=''></center>";
-
-/* Кнопка удаления сообщения */
-var closebut = '<a href="#" title="Удалить это сообщение" onMouseOver="this.parentNode.style.backgroundColor = &#39;#EEE8AA&#39; " onMouseOut="this.parentNode.style.backgroundColor=null" onclick="parent.hidden.location.href = \'index.php?inc=write&\'+ parent.yourkey+\'&text=/remove \'+ this.parentNode.getElementsByTagName(\'font\')[0].innerHTML; return false" class="delete"><span><img src="https://chat2254.mpchat.com/img/delete.png" width=20  height=20 border=0></span></a>';
-if (regist != 1) {
-  var topic = "<br><center><p style=' padding-top:30px; padding-bottom:3px; margin-top:10px;border:20px solid #333333; width:100%; border-radius:4px 4px 4px 4px; font-family:Verdana; Font-size:15px;'><font color=#gray><b> Зарегистрируйтесь " + mynick + "</font> <b>! </b><a href=\"index.php?inc=reg\" target=\"_blank\"><font color=red size=3><u>Регистрация</u></font></a></font></p><br></center><br>";
-  var povtor = 1;
-  var soobwenie = 3;
-  var nomerroom = 0
-}
 
 /* 1 - картинки не отображаются, 0 - отображаются */
 var img_no = 0;
@@ -1067,6 +1033,8 @@ censor['FunnyBunny'] = 1;
 var ignorer = new Array();
 ignorer['FunnyBunny'] = 1;
 
+
+
 /* Граф. ники: 0 - выкл, 1 - вкл, позиции в списке - это номера функций "cmd" от 0-10(11-никлист) */
 var use_gn = 1;
 var gnok = new Array(1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1);
@@ -1091,7 +1059,7 @@ grna['adm'] = new Array('#ff0000', '#00ff00', '#0000ff');
 /* Личный текст приветствия при входе в чат, используйте %nick% для расположения ника */
 var tadda = new Array;
 tadda[' '] = "К нам приходит %nick%. Всем привет!";
-tadda['Фортуна'] = 'Меня зовут, %nick%  и мне поручено передать вам привет.  От кого? От моего сердца вам мои любимые! <img src=https://imgs.su/upload/737/4168556838.gif>';
+tadda['Фортуна'] = 'Меня зовут, %nick% и мне поручено передать вам привет.  От кого? От моего сердца вам мои любимые! <img src=https://imgs.su/upload/737/4168556838.gif>';
 
 
 /* Личный текст прощания входе в чат, используйте %nick% для расположения ника */
@@ -1099,8 +1067,6 @@ var tdela = new Array;
 tdela[''] = "От нас уходит %nick%. Всем пока!";
 tdela['FunnyBunny'] = "От нас уходит Администратор чата  %nick%. Всем пока, до скорого!";
 tdela['SweetBanny'] = "От нас уходит Администратор чата  %nick%. Всем пока, до скорого!";
-
-console.log(tdela);
 
 
 /* Отметка сообщений: 0-обычные, 1-мои, 2-мне, 3-приват_мой, 4-приват_мне, 5-приват_мой2, 6-приват_мне2 */
@@ -1200,15 +1166,19 @@ var ign_imgoff = "https://imgs.su/upload/809/3860897265.png";
 var ign_imgon = "https://imgs.su/upload/809/1639481662.png";
 
 
-//  --- ОБЩИЕ Функции ЧАТА -----------------------------------------------
+//  --- ОБЩИЕ ФУНКЦИИ ЧАТА -----------------------------------------------
 
 
 // Воспроизведение звуков
 const sound = {
-  status: 1, //для кнопки вкл/откл по умол 1 - вкл 0 - выкл
+  status: true, //для кнопки вкл/откл по умолчанию true - вкл, false - откл
+
+  checkSound: () => {
+    if (!document.querySelector('#checkSound').checked) sound.status = false;
+  },
 
   play: (cmd) => {
-    if (getcookie("sound")) this.status = getcookie("sound");
+    if (getcookie("sound")) sound.status = getcookie("sound");
 
     let soundSrc = null;
 
@@ -1227,49 +1197,25 @@ const sound = {
     }
 
     const audio = new Audio(soundSrc);
-
-    try {
-      audio.play();
-    } catch (error) {
-      console.error("Ошибка воспроизведения:", error);
-    }
+    audio.play();
   }
 }
 
 
+/* Мерцание отвеченного сообщения */
+function blinking(msgId) {
+  if (msgId == null || msgId === '') return false;
+  let id = String(msgId);
+  let div = document.querySelector(`#leftdiv > div[data-id="${id}"]`);
+  if (!div) return false;
 
-/* Мигалка */
-var showdivtimer = new Array();
+  div.classList.add('blink');
 
-function showdiv(id, cmd, repet, opacity, n) {
-  repet = repet || 11;
-  //сколько раз мигать +1
-  opacity = opacity || 100;
-  n = n || -10;
-  if (opacity == 100) {
-    n = -10;
-    repet--
-  }
-  if (opacity == 0) {
-    n = 10;
-  }
-  var div = document.getElementById(id);
-  if (cmd == 1 && privatok == 1) {
-    var privatDiv = document.getElementById(id);
-    if (privatDiv) div = privatDiv;
-  }
-  if (!div) return;
-  if (window.ActiveXObject) {
-    var h = div.offsetHeight;
-    div.style.height = h;
-    div.style.filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=" + opacity + ")";
-  } else {
-    div.style.opacity = opacity / 100
-  }
-  ;opacity += n;
-  showdivtimer[id] = setTimeout("showdiv('" + id + "'," + cmd + "," + repet + "," + opacity + "," + n + ")", 100);
-  if (repet == 0)
-    clearTimeout(showdivtimer[id]);
+  setTimeout(function() {
+    div.classList.remove('blink');
+  }, 3000);
+
+  return true;
 }
 
 /* Функция изменения загружаемой картинки */
@@ -1300,7 +1246,7 @@ function str_plus(a) {
   if (!this.b) {
     this.b = 0
   }
-  ;
+
   if (a == 1) {
     document.title = "[" + ++this.b + "] " + title_zip
   } else {
@@ -1515,6 +1461,13 @@ function wr(text) {
   }
   var div = document.createElement('div');
   div.innerHTML = text;
+  var timeEl = div.querySelector('.time-message');
+  var timeStr = timeEl ? timeEl.textContent : null;
+  if (!timeStr) {
+    var timeMatch = text.match(/\b(\d{2}:\d{2}:\d{2})\b/);
+    if (timeMatch) timeStr = timeMatch[1];
+  }
+  if (timeStr) div.dataset.id = timeStr.replace(/\:/g, '');
   leftdiv.appendChild(div);
   if (loaded == 1) up();
 }
@@ -1809,7 +1762,7 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
           }
         }
       }
-      ;
+
       if (nick != mynick || timeremovez == null) return;
       text = 'Вы удалили сообщение/я с ' + timeremovez;
     }
@@ -1884,22 +1837,17 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
     time = d.toTimeString().substr(0, 8);
   }
 
-  /* Мигалка */
-  var timeremovez = [];
-  var timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)/g);
+  /* Добавление мерцания (ссылка «см. ЧЧ:ММ:СС» → data-id на строке лога) */
+   timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)/g);
+
   if (timeremovez != null) {
-    for (var i = 0; i < timeremovez.length; i++) {
-      var obj = document.getElementById("leftdiv");
-      var div = obj.getElementsByTagName('div');
-      for (var k = 0; k < div.length; k++) {
-        if (div[k].innerHTML.search(timeremovez[i]) >= 0) {
-          timeremoveid = timeremovez[i].replace(/см\.\s|\:/g, "");
-          text = text.replace(timeremovez[i], "<span  onclick=\"showdiv('" + timeremoveid + "',0);\">" + timeremovez[i] + "</span>");
-          div[k].id = timeremoveid;
-          if (loaded == 1 && mynick == tonick)
-            showdiv(timeremoveid, 0)
-        }
-      }
+    for (let i = 0; i < timeremovez.length; i++) {
+      var msgId = timeremovez[i].replace(/см\.\s|\:/g, '');
+      text = text.replace(
+        timeremovez[i],
+        '<span class="reply-ref" onclick="blinking(\'' + msgId + '\'); return false;">' + timeremovez[i] + '</span>'
+      );
+      if (loaded === 1 && mynick === tonick) blinking(msgId);
     }
   }
 
@@ -2600,6 +2548,7 @@ function loadframes() {
 
 var interval = window.setTimeout('wr("<font color=red>Чат не был загружен в установленное время, вероятно некоторые элементы страницы грузятся очень долго, <a href=# onclick=\'loadframes(); return false;\'>нажмите для продолжения</a> ...</font>");', 10000);
 
-/* Загрузка чата сразу после загрузки HTML */
-if (document.addEventListener) document.addEventListener('DOMContentLoaded', loadframes, false);
-else if (document.attachEvent) document.attachEvent('onreadystatechange', loadframes);
+
+
+/* Загрузка чата сразу после загрузки DOM */
+document.addEventListener('DOMContentLoaded', loadframes);

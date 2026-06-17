@@ -52,35 +52,32 @@
 
 
 <body class="chat-body" id="telo">
-
-<!-- HIDDEN FRAMES -->
 <iframe name=hidden width=0 height=0 style="display:none;"></iframe>
 
 <aside class="left-sidebar">
   <div class="left-sidebar__wrapper">
-    <script type="text/javascript">
-      setInterval(function () {
-        date = new Date(),
-          h = date.getHours(),
-          m = date.getMinutes(),
-          s = date.getSeconds(),
-          h = (h < 10) ? '0' + h : h,
-          m = (m < 10) ? '0' + m : m,
-          s = (s < 10) ? '0' + s : s,
-          document.getElementById('time').innerHTML = h + ':' + m + ':' + s;
-      }, 1000);
-    </script>
-
     <span class="left-sidebar__date">
       <span class="left-sidebar__time" id="time">00:00:00</span>
-      <script language="javascript" type="text/javascript">
-      var d = new Date();
-      var day=new Array("Воскресенье","Понедельник","Вторник", "Среда","Четверг","Пятница","Суббота");
 
-      var month=new Array("января","февраля","марта","апреля","мая","июня", "июля","августа","сентября","октября","ноября","декабря");
+      <script>
+        const timeEl = document.querySelector('#time');
 
-      document.write(day[d.getDay()]+" " +d.getDate()+ " " + month[d.getMonth()]
-        + " " + d.getFullYear() + " ");
+        setInterval(function () {
+           let date = new Date(), h = date.getHours(), m = date.getMinutes(), s = date.getSeconds();
+             h = (h < 10) ? '0' + h : h;
+             m = (m < 10) ? '0' + m : m;
+             s = (s < 10) ? '0' + s : s;
+
+          timeEl.innerHTML = `${h} : ${m} : ${s}`;
+         }, 1000);
+
+         var d = new Date();
+         var day = new Array("Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота");
+
+         var month = new Array("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря");
+
+         document.write(day[d.getDay()] + " " + d.getDate() + " " + month[d.getMonth()]
+           + " " + d.getFullYear() + " ");
     </script>
     </span>
 
@@ -101,10 +98,9 @@
         <option value="12">в ярости</option>
       </select>
 
-      <!--  Форма для перехода по комнатам (видна если есть комнаты)  -->
       <script>
           if(rooms.length > 1) {
-            document.write("<select class=ok name=selectroom onchange=\"setmyroom(this.value);\">");
+            document.write('<select class=ok name=selectroom onchange="setmyroom(this.value);">');
             for(var i=0;i<rooms.length;i++) {if(i==myroom) sel="selected"; else sel="";
               document.write("<option value="+i+" "+sel+">"+rooms[i][0]+" (0)");
             }
@@ -708,6 +704,12 @@
 </footer>
 <!-- end footer -->
 
+<script>
+  (() => {
+    const blockSelectStatus = document.querySelector('.left-sidebar__select-status');
+
+  })();
+</script>
 
 <script src="https://myradio24.com/player/player.js?v3.31" data-radio="lenin" data-interval=15 data-vmid=0 data-lang="ru"></script>
 </body>

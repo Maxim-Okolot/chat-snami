@@ -59,7 +59,6 @@ body {
   }
 }
 
-
 select {
   padding: 6px 12px;
   border-radius: 8px;
@@ -175,6 +174,25 @@ select {
 
   &:hover {
     color: var(--color-black);
+  }
+}
+
+.blink {
+  animation: blincking .5s ease infinite alternate ;
+}
+
+.reply-ref {
+  cursor: pointer;
+}
+
+
+@keyframes blincking {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: .1;
   }
 }
 
