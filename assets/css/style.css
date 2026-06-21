@@ -767,3 +767,158 @@ select {
   display: none;
   margin-top: 15px;
 }
+
+@media (max-width: 600px) {
+  body {
+    padding: 8px;
+  }
+
+  body.chat-body {
+    height: auto;
+    min-height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(360px, 1fr) auto auto;
+    grid-template-areas:
+      "left-sidebar"
+      "content"
+      "footer"
+      "right-sidebar";
+    grid-gap: 8px;
+  }
+
+  .content, .left-sidebar, .right-sidebar, .footer {
+    border-radius: 14px;
+  }
+
+  .content {
+    padding: 14px;
+    min-width: 0;
+  }
+
+  .chat-list {
+    padding-right: 6px;
+
+    > div {
+      margin-top: 14px;
+
+      > p {
+        padding-right: 0;
+        word-break: break-word;
+      }
+    }
+  }
+
+  .left-sidebar, .right-sidebar {
+    height: auto;
+    max-height: 25vh;
+    padding: 14px 8px 14px 14px;
+  }
+
+  .message-everyone, .private-message, .message-for-me {
+    & a {
+      img {
+        width: 100px;
+      }
+    }
+  }
+
+  .chat-list {
+    font img {
+      height: auto;
+    }
+  }
+
+  .left-sidebar__wrapper,
+  .right-sidebar__wrapper {
+    align-items: stretch;
+    padding-right: 6px;
+  }
+
+  .left-sidebar__date {
+    margin-bottom: 14px;
+  }
+
+  .left-sidebar__time {
+    font-size: 18px;
+  }
+
+  .chat-menu {
+    padding: 8px 0;
+  }
+
+  .chat-menu__item,
+  .chat-menu__checkbox {
+    padding: 9px 12px;
+  }
+
+  .users-wrap {
+    padding: 8px 0;
+  }
+
+  .user-list {
+    margin-top: 16px;
+  }
+
+  .nick-list__row {
+    grid-template-columns: 36px 1fr auto;
+    gap: 4px;
+  }
+
+  .nick-list__privat-link {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nick-list__icons img {
+    width: 22px;
+    max-height: 28px;
+  }
+
+  .right-sidebar__wrapper {
+    gap: 12px;
+  }
+
+  .accordion,
+  .accordion img {
+    width: 100%;
+  }
+
+  .footer {
+    padding: 12px;
+  }
+
+  .footer-form {
+    gap: 10px;
+  }
+
+  .footer-form__top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+
+    > div {
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+  }
+
+  .footer-form__bottom {
+    grid-template-columns: 1fr 40px;
+    grid-gap: 8px;
+  }
+
+  .footer__message {
+    min-width: 0;
+    padding: 11px 12px;
+  }
+
+  .footer__btn {
+    min-height: 32px;
+  }
+
+  .right-sidebar {
+    display: none;
+  }
+
+}

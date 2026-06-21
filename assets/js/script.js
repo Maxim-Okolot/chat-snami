@@ -1169,16 +1169,28 @@ var ign_imgon = "https://imgs.su/upload/809/1639481662.png";
 //  --- ОБЩИЕ ФУНКЦИИ ЧАТА -----------------------------------------------
 
 
-// Воспроизведение звуков
+/* Воспроизведение звуков */
 const sound = {
-  status: true, //для кнопки вкл/откл по умолчанию true - вкл, false - откл
+  _status: 1, //для кнопки вкл/откл по умолчанию 1 - вкл, 0 - откл
 
-  checkSound: () => {
-    if (!document.querySelector('#checkSound').checked) sound.status = false;
+  // проверка настройки при старте/перезагрузке страницы
+  checkStatus: function () {
+    const saved = +localStorage.getItem('sound');
+    if (saved === null) return;
+    this._status = saved === 1 ? 1 : 0;
+    this._checkbox.checked = this._status === 1;
   },
 
-  play: (cmd) => {
-    if (getcookie("sound")) sound.status = getcookie("sound");
+  // вкл/откл звука пользователем
+  changeStatus: function () {
+    this._checkbox.addEventListener('change', () => {
+      this._status = this._checkbox.checked ? 1 : 0;
+      localStorage.setItem('sound', this._status);
+    });
+  },
+
+  play: function (cmd){
+    if (!this._status) return false;
 
     let soundSrc = null;
 
@@ -1194,16 +1206,35 @@ const sound = {
         break;
       case 7: /*выход пользователя из чата*/
         soundSrc = '../assets/audio/exit.mp3';
+        break;
+      default: return false;
     }
 
-    const audio = new Audio(soundSrc);
-    audio.play();
+    let promise = new Audio(soundSrc).play();
+
+    if (promise !== undefined) {
+      promise.then(_ => {
+        console.log("Playback started!")
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+  },
+
+  init: function () {
+    this._checkbox = document.querySelector('#checkSound');
+    this.checkStatus();
+    this.changeStatus();
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  sound.init();
+});
+
 
 /* Мерцание отвеченного сообщения */
-function blinking(msgId) {
+let blinking = (msgId) => {
   if (msgId == null || msgId === '') return false;
   let id = String(msgId);
   let div = document.querySelector(`#leftdiv > div[data-id="${id}"]`);
@@ -1217,6 +1248,47 @@ function blinking(msgId) {
 
   return true;
 }
+
+/* Функция добавления графника или градиента для ника */
+let setGraphNick = (cmd, nick) => {
+  let setOut = null;
+
+  let generateWelcomeImage = (username) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 150;
+    canvas.height = 50;
+    // Градиент
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, '#FDF2F5');
+    gradient.addColorStop(1, '#FFFFFF');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Текст ника
+    ctx.font = 'bold 15px Bressay Trial, sans-serif';
+    ctx.fillStyle = '#4d2b0d';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(username, canvas.width / 2, canvas.height / 2);
+
+    return canvas.toDataURL('image/png');
+  }
+
+  if (use_gn === 1) {
+    if (gna[nick] != null && gna[nick]) {
+      setOut = `<img src="${gna[nick]}" class="graf_nick">`
+    } else {
+      setOut = `<img src="${generateWelcomeImage(nick)}" class="graf_nick">`
+    }
+  }
+
+  return setOut;
+}
+
+
+//-------------------------------------------------------------------------------------------------------------
+
+
 
 /* Функция изменения загружаемой картинки */
 var id_img = 0;
@@ -1302,20 +1374,7 @@ function ign_ok(nick) {
   for (var i = 0; i < ign.length; i++) if (nick == ign[i]) return 1;
 }
 
-/* Функция добавления граф. ника или градиента для ника */
-function setgn(cmd, nick) {
-  var set_out = nick;
-  if (use_gn == 1 && gnok[cmd] == 1) {
-    if (gna[nick] != null && gna[nick]) {
-      if (gna[nick].match(/^[0-9a-z.:\/_-]+\.(swf)$/i)) set_out = '<embed src=' + gna[nick] + '>';
-      else set_out = '<img src=' + gna[nick] + ' class="graf_nick">';
-    } else {
-      set_out = '<span style="position:relative;"><img src="https://vmfile.com/upload/849/3984787100.jpg"><span style="position:absolute; width:160px; bottom:0;left:50%;transform:translateX(-50%);color:#4d2b0d;font: bold 15px Bressay Trial;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;">' + nick + '</span></span>'
-    }
 
-  } else if (use_gr == 1 && grna[nick] != null && grna[nick] && grok[cmd] == 1) set_out = gr(nick, grna[nick]);
-  return set_out;
-}
 
 /* Убирает дублирующий ник в начале текста (если set_nick уже выводит отправителя) */
 function stripLeadingNickFromText(text, nick, tonick) {
@@ -1339,17 +1398,17 @@ function stripLeadingNickFromText(text, nick, tonick) {
 
 /* Ссылка на ник в ленте: графический ник без обёртки <font>, иначе — цвет/шрифт как раньше */
 function wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, tonickMode) {
-  var gn = setgn(cmd, nick);
+  var gn = setGraphNick(cmd, nick);
   var graphic = (gn.indexOf('<') !== -1);
   var oc = (tonickMode === 'priv') ? ("ptonick('" + nick + ": '); return false;") : (tonickMode === 'none' ? "return false;" : ("tonick('" + nick + ": '); return false;"));
   var open = " <a href='' onclick=\"" + oc + "\">";
-  if (graphic) return open + gn + "</a> ";
+  if (graphic) return open + gn + "</a>";
   return open + "<span size=" + sizenick + " color=" + colornick + " face='" + facenick + "'>" + gn + "</span></a> ";
 }
 
 /* Префикс ника в начале текста (общий / приват) — графник без <font>, если есть */
 function wrapInlineTonick(cmd, tonick, size, color, face, tonickMode) {
-  var gn = setgn(cmd, tonick);
+  var gn = setGraphNick(cmd, tonick);
   var graphic = (gn.indexOf('<') !== -1);
   var oc = (tonickMode === 'priv') ? ("parent.ptonick('" + tonick + ": '); return false;") : ("parent.tonick('" + tonick + ": '); return false;");
   var open = "<a href='' onclick=\"" + oc + "\">";
@@ -1357,10 +1416,10 @@ function wrapInlineTonick(cmd, tonick, size, color, face, tonickMode) {
   return open + "<span size=" + size + " color=" + color + " face='" + face + "'>" + gn + "</span></a>";
 }
 
-/* Подпись бота «Снамик» в ленте: свой графник из gna/градиент setgn, иначе зелёный текст (не заглушка без gna) */
+/* Подпись бота «Снамик» в ленте: свой графник из gna/градиент setGraphNick, иначе зелёный текст (не заглушка без gna) */
 function snamikBotLabelHtml(cmd, sizenick, facenick) {
   var sBot = 'Снамик';
-  var gn = setgn(cmd, sBot);
+  var gn = setGraphNick(cmd, sBot);
   var isDefaultNickPlate = (gn.indexOf('position:relative') !== -1 &&
     (gn.indexOf('4080531237') !== -1 || gn.indexOf('3984787100') !== -1));
   if (gn.indexOf('<') !== -1 && !isDefaultNickPlate) {
@@ -1563,7 +1622,7 @@ function format(i, row) {
   if (us[i] == null) return "";
   var nick = us[i][0], color = us[i][1], stat = us[i][2], stat2 = us[i][5], mw_u = us[i][3], icon = us[i][4],
     love = us[i][7], clan = us[i][8], userid = us[i][9];
-  var set_nick = setgn(11, nick);
+  var set_nick = setGraphNick(11, nick);
   var set_privat = privat_s;
   if (icon_on) {
     if (icon == "" || icon == 0) icon = icon1;
@@ -1836,7 +1895,7 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
   }
 
   /* Добавление мерцания (ссылка «см. ЧЧ:ММ:СС» → data-id на строке лога) */
-   timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)/g);
+  timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)/g);
 
   if (timeremovez != null) {
     for (let i = 0; i < timeremovez.length; i++) {
@@ -1850,7 +1909,7 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
   }
 
   /* Добавление граф ников, градиента и формат времени */
-  set_nick = setgn(cmd, nick);
+  set_nick = setGraphNick(cmd, nick);
 
   if (tonick && text.substring(0, 1) != "/") {
     if (cmd == 1 || cmd == 2) {
@@ -1902,7 +1961,7 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
         text = text.substr(a1.length, text.length - a1.length);
         text = text.substr(tonick.length);
         wr(`<div class='message-everyone'><div>Всем:</div> ${set_time} ${set_nick} ${text}</div>`);
-        if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/4278361492.mp3' autoplay></audio>");
+        if (sound.status && loaded) wr("<audio src='chat/img/4278361492.mp3' autoplay></audio>");
         return 1;
       }
       a2 = '/dev ';
@@ -1910,7 +1969,7 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
         text = text.substr(a2.length, text.length - a2.length);
         text = text.substr(tonick.length);
         wr("<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(72, 6, 7, 0.7);margin: 5px 0px'>" + set_time + "</font>" + set_nick + "<img src=https://i.postimg.cc/SKZpgcJL/image.png> </font></a><font color=480607 face=Arial Black font size=4px><b>" + text + "</b></font></p>");
-        if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/2023391579.mp3' autoplay></audio>");
+        if (sound.status && loaded) wr("<audio src='chat/img/2023391579.mp3' autoplay></audio>");
         return 1;
       }
       a3 = '/parn ';
@@ -1918,7 +1977,7 @@ function f(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, v
         text = text.substr(a3.length, text.length - a3.length);
         text = text.substr(tonick.length);
         wr("<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(25, 25, 112, 0.7);margin: 5px 0px'>" + set_time + "</font>" + set_nick + "<img src=https://i.postimg.cc/bvw7Sd3Z/image.png> </font></a><font color=191970 face=Arial Black font size=4px><b>" + text + "</b></font></p>");
-        if (zvukmsgno == 1 && loaded) wr("<audio src='chat/img/70197033.mp3' autoplay></audio>");
+        if (sound.status && loaded) wr("<audio src='chat/img/70197033.mp3' autoplay></audio>");
         return 1;
       }
       var msgBody = symbol + set_time + set_nick + set_text;

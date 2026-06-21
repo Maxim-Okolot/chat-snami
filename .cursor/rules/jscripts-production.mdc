@@ -1,0 +1,11 @@
+---
+description: Продакшен использует data/jscripts.dat, а не assets/js/script.js
+alwaysApply: true
+---
+
+# JavaScript чата — только jscripts.dat
+
+- **Продакшен:** `data/jscripts.dat` — единственный файл, который подключается на сайте.
+- **`assets/js/script.js`** — локальная копия/черновик, **не используется в продакшене**.
+
+При изменениях логики чата править **`data/jscripts.dat`**. Синхронизацию в `script.js` делать только если пользователь явно просит.
