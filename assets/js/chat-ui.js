@@ -194,8 +194,18 @@ class ChatFormHiddenFields {
   }
 }
 
-/** Optgroup модерации в select[name=cmd]. */
+/** Optgroup модерации в select[name=cmd] — команды из jscripts.dat (cmd === 0). */
 class ChatAdminActions {
+  static MODERATION_ACTIONS = [
+    { cmd: 'alert', label: 'алерт-вызов' },
+    { cmd: 'clear', label: 'очистить фрейм' },
+    { cmd: 'reload', label: 'перезагрузить чат' },
+    { cmd: 'ignore', label: 'полный игнор' },
+    { cmd: 'remove', label: 'стереть сообщение' },
+    { cmd: 'deportation', label: 'в темницу' },
+    { cmd: 'amnesty', label: 'амнистия' },
+  ];
+
   static init() {
     if (Number(typeof admin !== 'undefined' ? admin : 0) !== 1) return;
 
@@ -205,17 +215,12 @@ class ChatAdminActions {
     const label = 'Модерация';
     if (select.querySelector(`optgroup[label="${label}"]`)) return;
 
-    const privileges = {
-      clear: 'очистить',
-      reload: 'перезагрузить',
-    };
-
     const group = document.createElement('optgroup');
     group.label = label;
 
-    Object.entries(privileges).forEach(([key, text]) => {
+    ChatAdminActions.MODERATION_ACTIONS.forEach(({ cmd, label: text }) => {
       const option = document.createElement('option');
-      option.value = `/${key}`;
+      option.value = `/${cmd} `;
       option.textContent = text;
       group.append(option);
     });

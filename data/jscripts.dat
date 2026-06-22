@@ -179,7 +179,7 @@ class ChatConfig {
     if (typeof admin === 'undefined' || Number(admin) !== 1) return;
     if (typeof mynick === 'undefined' || !mynick) return;
 
-    const keys = ['clearer', 'reloader'];
+    const keys = ['clearer', 'reloader', 'alerter', 'ignorer', 'remover', 'censor'];
     for (const key of keys) this[key][mynick] = 1;
   }
 }

@@ -126,14 +126,14 @@ else fail('нет applyAdminPrivileges в jscripts.dat');
 const adminUiChecks = [
   ['ChatAdminMenu', chatUi.includes('class ChatAdminMenu') && chatUi.includes('Number(typeof admin')],
   ['ChatAdminActions', chatUi.includes('class ChatAdminActions') && chatUi.includes('Модерация')],
-  ['optgroup clear/reload', /clear.*reload/s.test(chatUi) && !chatUi.includes('алерт-вызов')],
+  ['optgroup все команды', chatUi.includes('алерт-вызов') && chatUi.includes('deportation') && chatUi.includes('amnesty')],
 ];
 for (const [name, pass] of adminUiChecks) {
   if (pass) ok(`admin UI: ${name}`);
   else fail(`admin UI: ${name}`);
 }
 
-const modCommands = ['/clear', '/reload'];
+const modCommands = ['/clear', '/reload', '/alert', '/ignore', '/remove', '/deportation', '/amnesty'];
 for (const cmd of modCommands) {
   if (jscripts.includes(`"${cmd}"`) || jscripts.includes(`'${cmd}'`) || jscripts.includes(`=== "${cmd}"`) || jscripts.includes(`=== '${cmd}'`) || jscripts.includes(`substr(0, ${cmd.length}) === "${cmd}"`) || jscripts.includes(`substr(0, ${cmd.length + 1}) === "${cmd}"`)) {
     ok(`команда ${cmd} обрабатывается в jscripts.dat`);
