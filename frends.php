@@ -82,7 +82,7 @@ mysqli_query($db,"DELETE FROM `snami_frends` WHERE `user` = '".$user['id']."' AN
 mysqli_query($db,"DELETE FROM `snami_frends` WHERE `user` = '".$no."' AND `frend` = '".$user['id']."' LIMIT 1") or die(mysqli_error($db));
 mysqli_query($db,"DELETE FROM `snami_frends_new` WHERE `user` = '".$no."' AND `to` = '".$user['id']."' LIMIT 1") or die(mysqli_error($db));
 mysqli_query($db,"DELETE FROM `snami_frends_new` WHERE `user` = '".$user['id']."' AND `to` = '".$no."' LIMIT 1") or die(mysqli_error($db));
-header("Location: index.php?inc=info&userid=".$ok."&frend_no=".$ok."");
+header("Location: index.php?inc=info&userid=".$no."&frend_no=".$no."");
 
 exit; 
 }
@@ -117,7 +117,7 @@ if (isset($_GET['otm'])) {
 $no = intval($_GET['otm']);
 $res=mysqli_query($db,"SELECT COUNT(*) AS `c` FROM `$tb_users` WHERE `id` = '".$no."' LIMIT 1") or die(mysqli_error($db));
 $row=mysqli_fetch_assoc($res); $count_users=$row['c'];
-if($count_users == 0) {print json_encode('no users');}
+if($count_users == 0) {print json_encode('no users'); exit;}
 $res1=mysqli_query($db,"SELECT COUNT(*) AS `c` FROM `snami_frends_new` WHERE (`user` = '".$user['id']."' AND `to` = '".$no."') OR (`user` = '".$no."' AND `to` = '".$user['id']."') LIMIT 1") or die(mysqli_error($db));
 $row1=mysqli_fetch_assoc($res1); $count_users2=$row1['c'];
 if ($count_users2>0){
@@ -130,6 +130,7 @@ mysqli_query($db,"OPTIMIZE TABLE `snami_frends_new`") or die(mysqli_error($db));
 print json_encode('otm');
 exit;
 }
+print json_encode('no request');
 exit;
 }
 // Удаляем из друзей
@@ -137,7 +138,7 @@ if (isset($_GET['del'])) {
 $del = intval($_GET['del']); 
 $res=mysqli_query($db,"SELECT COUNT(*) AS `c` FROM `$tb_users` WHERE `id` = '".$del."' LIMIT 1") or die(mysqli_error($db));
 $row=mysqli_fetch_assoc($res); $count_users=$row['c'];
-if($count_users == 0) {print json_encode('no users');}
+if($count_users == 0) {print json_encode('no users'); exit;}
 $res1=mysqli_query($db,"SELECT COUNT(*) AS `c` FROM `snami_frends` WHERE (`user` = '".$user['id']."' AND `frend` = '".$del."') OR (`user` = '".$del."' AND `frend` = '".$user['id']."') LIMIT 1") or die(mysqli_error($db));
 $row1=mysqli_fetch_assoc($res1); $count_users2=$row1['c'];
 if ($count_users2>0)    {
@@ -149,7 +150,8 @@ mysqli_query($db,"OPTIMIZE TABLE `snami_frends`") or die(mysqli_error($db));
 mysqli_query($db,"OPTIMIZE TABLE `snami_frends_new`") or die(mysqli_error($db));
 print json_encode('del');
 exit;
-} 
+}
+print json_encode('no frend');
 exit; 
 }
 /*=============== ГЕТ ЗАПРОСЫ МОДА КОНЕЦ ===============*/

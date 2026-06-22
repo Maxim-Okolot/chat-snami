@@ -289,7 +289,7 @@
 
 
 
-<script src="/js/friends.js?45.%loadtime%"></script>
+<script src="../assets/js/friends.js?46.%loadtime%"></script>
 
 <script>
   const profile = {
@@ -624,23 +624,6 @@
       });
     }
 
-    document.querySelectorAll('.profile-friend-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = parseInt(btn.getAttribute('data-userid'), 10);
-        var act = btn.getAttribute('data-action');
-        if (!id || !act) return;
-        if (typeof FriendManager === 'undefined') {
-          alert('Не загружен скрипт друзей');
-          return;
-        }
-        if (act === 'add') FriendManager.sendRequest(id);
-        else if (act === 'cancel') FriendManager.cancelRequest(id);
-        else if (act === 'remove') {
-          var n = btn.getAttribute('data-nick') || '';
-          FriendManager.removeFriend(id, n);
-        }
-      });
-    });
   });
 </script>
 </body>
