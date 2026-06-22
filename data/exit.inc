@@ -1,6 +1,6 @@
 %include=header.html%
 
-<center>
+<span style="display:block;text-align:center">
 
 <script>
 var out="";
@@ -23,5 +23,5 @@ document.write(out);
 <br>
 <br>
 
-</center>
+</span>
 

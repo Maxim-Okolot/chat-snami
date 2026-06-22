@@ -278,7 +278,7 @@ hr {
 </head>
 <body class="set-body">
 <div class="centered-box">
-<center>
+<span style="display:block;text-align:center">
 <h1>Настройки</h1>
 <script>
 if(saveok!='') {
@@ -292,7 +292,7 @@ print=print+'<a href="javascript:window.close();">закрыть</a><br><br>';
 document.write(print);
 }
 </script>
-</center>
+</span>
 <form action='' method=post enctype="multipart/form-data" name=set onsubmit="document.set.submit.value='Подождите ...';document.set.submit.disabled=true;">
 <input type=hidden name=save value=ok>
 <input type=hidden name=id value=%id%>
@@ -484,7 +484,7 @@ setInterval('document.getElementById("my_time").innerHTML=time_now()',1000)
 
 
 </table>
-<center><input type=submit name=submit value='Сохранить настройки' class=ok></center>
+<span style="display:block;text-align:center"><input type=submit name=submit value='Сохранить настройки' class=ok></span>
 </form>
 </div>
 </body>

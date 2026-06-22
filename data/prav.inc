@@ -2,7 +2,7 @@
 %include=body1.html%
 
 <br>
-<center><b>Правила поведения в чате</b></center><br>
+<span style="display:block;text-align:center"><b>Правила поведения в чате</b></span><br>
 
 <p><b>1 Уважение</b><br>
 Уважайте других посетителей чата, и они будут уважать вас!<br>

@@ -816,7 +816,7 @@ center > a:hover {
 </style>
 </head>
 <body class=shop-body>
-<center><b>Виртуальный магазин</b><br><br>
+<span style="display:block;text-align:center"><b>Виртуальный магазин</b><br><br>
 <a href=?inc=$inc&do=buy>Магазин</a> | <a href=?inc=$inc&do=my>Мои вещи</a> | <a href=?inc=$inc&do=extra>Функции</a> $modlinks
 <br><br>
 $changenickform
@@ -824,7 +824,7 @@ $changenickform
 $error
 $output
 <br><br>
-</center>
+</span>
 </body>
 </html>
 ";

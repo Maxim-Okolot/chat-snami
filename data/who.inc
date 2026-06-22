@@ -8,7 +8,7 @@
 
 </head>
 <body class=who-body>
-<center>
+<span style="display:block;text-align:center">
 <b>Кто сегодня был</b><br><br>
 <table>
 <script>
@@ -20,6 +20,6 @@ for(var i=0;i<u.length;i++) {
 </script>
 </table><br>
 Всего за день: <b><script>document.write(u.length);</script></b>
-</center>
+</span>
 </body>
 </html>

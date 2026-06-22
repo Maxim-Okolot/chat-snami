@@ -9,7 +9,7 @@ document.write('<scr'+'ipt src="//vmeste.eu/JSLib.js?'+mp.ver+'"></scr'+'ipt>');
 
 /* Модифицированный alert() */
 function alert(text) {
-	$("body").append("<div class=myalert style='width:400px; position:fixed; top:50px; left:0px; right:0px; margin:auto; padding:10px; border:1px solid gray; z-index:1000; background:#f8f8f8;'>"+text+"<br><br><center><input type=button value='Закрыть' onclick='$(\".myalert\").remove();'></center></div>");
+	$("body").append("<div class=myalert style='width:400px; position:fixed; top:50px; left:0px; right:0px; margin:auto; padding:10px; border:1px solid gray; z-index:1000; background:#f8f8f8;'>"+text+"<br><br><span style=\"display:block;text-align:center\"><input type=button value='Закрыть' onclick='$(\".myalert\").remove();'></span></div>");
 }
 
 /* Инициализация информера */
@@ -104,7 +104,7 @@ function mp_editcomment(cid) {
 function mp_delcomment(cid) {
 	$.ajax({url:mp.script, dataType:'json', method:'POST', data:'type='+mp.type+'&delete='+cid,
 		success:function(data) {
-			if(data.ok) $('#cid'+cid).html('<center>Сообщение #'+cid+' удалено. (<a href=# onclick=\"mp_rescomment('+cid+'); return false;\">восстановить</a>)</center><br>');
+			if(data.ok) $('#cid'+cid).html('<span style="display:block;text-align:center">Сообщение #'+cid+' удалено. (<a href=# onclick=\"mp_rescomment('+cid+'); return false;\">восстановить</a>)</span><br>');
 			else mp_err('Ошибка удаления, возможно у вас нет прав.');
 		}
 	});
@@ -235,7 +235,7 @@ mp.etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 mp.etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 mp.etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 mp.etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-mp.etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<center>$1</center>');i++;
+mp.etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style="display:block;text-align:center">$1</span>');i++;
 mp.etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1" border=0 style="position:relative;">',1);i++; //одноразовая замена для лимита
 mp.etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 mp.etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;

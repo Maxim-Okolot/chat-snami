@@ -8,7 +8,7 @@
 
 </head>
 <body class=gb-body>
-<center><b>Гостевая</b><br><br> 
+<span style="display:block;text-align:center"><b>Гостевая</b><br><br> 
 <a href=#sendmess>Добавить сообщение</a><br><br>
 <script>
 /* Печатает строку */
@@ -104,7 +104,7 @@ etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<center>$1</center>');i++;
+etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style="display:block;text-align:center">$1</span>');i++;
 etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1" border=0 style="position:relative;">',1);i++; //одноразовая замена для лимита
 etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;
@@ -238,6 +238,6 @@ document.write(html);
 </form><br>
 
 Загружено за: <script>document.write(loadtime);</script>
-</center>
+</span>
 </body>
 </html>

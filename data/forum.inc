@@ -44,11 +44,12 @@ var newpost='0';
 <div style='width: 100% !important; min-height: 100%; margin:0 auto;'>
 
 <div>
-<center>
+<span style="display:block;text-align:center">
 <header>
 <br>
-<center><img src="https://vmfile.com/upload/833/177832375.png"><br></center> 
-</header> 
+<span style="display:block;text-align:center"><img src="https://vmfile.com/upload/833/177832375.png"><br></span> 
+</header>
+</span> 
  
 <script>
 /* Поля для авторизации */
@@ -177,7 +178,7 @@ etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<center>$1</center>');i++;
+etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style="display:block;text-align:center">$1</span>');i++;
 etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1"onload="imgminimum(this)" border=0 style="position:relative; max-width: 500px; max-height: 500px;">',1);i++; //одноразовая замена для лимита
 etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;
@@ -619,9 +620,9 @@ if(moderator==1) wr("<input type=submit value='Удалить выбранные
 /* КОНЕЦ ЧАСТИ */
 
 /* Отображение формы для создания тем, сообщений и их редактирования */
-if(closedtopic==1 && moderator==0) wr("<center><a name=sendmess></a><b>Эта тема закрыта, вы не можете здесь отправить сообщение!</b></center><br>");
-else if(forum>0 && topic>0 && f_f[fa][8]==2 && moderator==0) wr("<center><a name=sendmess></a><b>Этот раздел только для модераторов!</b></center><br>");
-else if(forum>0 && topic==0 && (f_f[fa][8]==1 || f_f[fa][8]==2) && moderator==0) wr("<center><a name=sendmess></a><b> Создание тем в этом разделе только для модераторов!</b></center><br>");
+if(closedtopic==1 && moderator==0) wr("<span style=\"display:block;text-align:center\"><a name=sendmess></a><b>Эта тема закрыта, вы не можете здесь отправить сообщение!</b></span><br>");
+else if(forum>0 && topic>0 && f_f[fa][8]==2 && moderator==0) wr("<span style=\"display:block;text-align:center\"><a name=sendmess></a><b>Этот раздел только для модераторов!</b></span><br>");
+else if(forum>0 && topic==0 && (f_f[fa][8]==1 || f_f[fa][8]==2) && moderator==0) wr("<span style=\"display:block;text-align:center\"><a name=sendmess></a><b> Создание тем в этом разделе только для модераторов!</b></span><br>");
 else 
 if(forum>0 && mynick && myid) {
 wr("<form name=form action='' method='post'>");

@@ -37,25 +37,25 @@ function gr (Str, arr  ) {
 
 		for (var i = 0; iS < Str.length;) {
 
-			if (Str.charAt (iS) == '<') {
+			if (Str.charAt (iS) === '<') {
 
 				for (var t = 0; iS < Str.length; iS++) {
 
 					Res += Str.charAt (iS)
 
-					if (Str.charAt (iS) == '') t++
+					if (Str.charAt (iS) === '') t++
 
-					else if (Str.charAt (iS) == '') t--
+					else if (Str.charAt (iS) === '') t--
 
-					else if (Str.charAt (iS) == '>' && !t) break
+					else if (Str.charAt (iS) === '>' && !t) break
 
 				}
 
 				iS++
 
-			} else if (i != l) {
+			} else if (i !== l) {
 
-				var S = (Str.charAt (iS) == '&' && /^(&([a-z]{2,}|#\d+|#x[\da-f]{2});)/i.test (Str.substr (iS))) ? RegExp.$1 : Str.charAt (iS)
+				var S = (Str.charAt (iS) === '&' && /^(&([a-z]{2,}|#\d+|#x[\da-f]{2});)/i.test (Str.substr (iS))) ? RegExp.$1 : Str.charAt (iS)
 
 				Res += d ? c (R1 + i * R2 / d, G1 + i * G2 / d, B1 + i * B2 / d, S) : c (R1, G1, B1, S)
 

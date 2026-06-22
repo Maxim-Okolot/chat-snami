@@ -4,6 +4,7 @@
 <title>%title%</title>
 <meta http-equiv='Content-Type' content="text/html; charset=UTF-8">
 <head>
+<script src="../assets/js/snamik.js"></script>
 <script><!--
 %scripts%
 // --></script>

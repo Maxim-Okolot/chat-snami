@@ -6,7 +6,7 @@
 <link rel=STYLESHEET type=text/css href=style.css>
 <link rel="icon" href='/data/vhod/images/favicon.ico' type="image/x-icon">
 </head>
-<body class=mail-body><center>
+<body class=mail-body><span style="display:block;text-align:center">
 <b>Выслать пароль</b><br><br>
 <script>
 if(err==0) err='Заполните все поля!';
@@ -25,5 +25,6 @@ if(err) document.write(err+"<br><br>");
 <input type=text name=code class=text><br>
 <input type=submit value='Выслать' name=send class=ok>
 </form>
+</span>
 </body>
 </html>

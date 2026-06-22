@@ -6,7 +6,7 @@
 <link rel="STYLESHEET" type="text/css" href="style.css">
 </head>
 <body class=feedback-body>
-<center>
+<span style="display:block;text-align:center">
 <b>Форма обратной связи</b><br><br>
 
 <script>
@@ -25,5 +25,6 @@ if(err==3) document.write("<font color=red>Вы неправильно указ�
 <tr><td colspan=2><img src=index.php?inc=code> <input type=text name=code class=text> <input type=submit name=send class=ok value=Отправить></td></tr>
 </table>
 </form>
+</span>
 </body>
 </html>

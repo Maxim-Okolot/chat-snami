@@ -5,8 +5,6 @@
 var SNAMIK_BOT = (function () {
   "use strict";
 
-  console.log(1111)
-
   /* =================== НАБОРЫ ФРАЗ И ДАННЫЕ =================== */
   const RPS = ['камень', 'ножницы', 'бумага'];
 
@@ -155,12 +153,12 @@ var SNAMIK_BOT = (function () {
       }
     } catch (e) {
     }
-    return base + '?snamik_horoscope=1&sign=' + encodeURIComponent(signRu);
+    return `${base}?snamik_horoscope=1&sign=${encodeURIComponent(signRu)}`;
   }
 
   /** Ключ строки лога: при F5 история снова гонится через f() — без дедупа повторяется запрос к API. */
   function snamikHoroscopeLogKey(room, cmd, time, nick, text) {
-    return 'snamik_horo_msg|' + String(room != null ? room : '') + '|' + String(cmd != null ? cmd : '') + '|' + String(time != null ? time : '') + '|' + String(nick) + '|' + String(text).trim();
+    return `snamik_horo_msg|${String(room != null ? room : '')}|${String(cmd != null ? cmd : '')}|${String(time != null ? time : '')}|${String(nick)}|${String(text).trim()}`;
   }
 
   function snamikHoroscopeReplaySeen(key) {
@@ -181,7 +179,7 @@ var SNAMIK_BOT = (function () {
   var snamikHoroscopeInFlight = {};
 
   function fetchDailyHoroscope(signRu, dedupeKey) {
-    var flightKey = 'horo|' + String(signRu);
+    var flightKey = `horo|${String(signRu)}`;
     if (snamikHoroscopeInFlight[flightKey] && (Date.now() - snamikHoroscopeInFlight[flightKey]) < 8000) return;
     snamikHoroscopeInFlight[flightKey] = Date.now();
     var DELAY = 1500;
@@ -211,7 +209,7 @@ var SNAMIK_BOT = (function () {
           if (j && j.ok && j.text) {
             if (dedupeKey) snamikHoroscopeReplayMark(dedupeKey);
             setTimeout(function () {
-              send('[Снамик] ' + j.text);
+              send(`[Снамик] ${j.text}`);
             }, DELAY);
           } else {
             fallback();
@@ -407,7 +405,7 @@ var SNAMIK_BOT = (function () {
     var doc = document;
     var f = doc.createElement('form');
     f.method = 'POST';
-    f.action = 'index.php?inc=write' + (key ? '&' + key : '');
+    f.action = `index.php?inc=write${key ? `&${key}` : ''}`;
     f.target = 'hidden';
     f.style.display = 'none';
 
@@ -435,7 +433,7 @@ var SNAMIK_BOT = (function () {
 
   function snamikWriteUrl(msg) {
     var key = snamikGetYourkey();
-    return 'index.php?inc=write' + (key ? '&' + key : '') + '&text=' + encodeURIComponent(msg) + '&r=' + Math.random();
+    return `index.php?inc=write${key ? `&${key}` : ''}&text=${encodeURIComponent(msg)}&r=${Math.random()}`;
   }
 
   var snamikPendingReplies = {};
@@ -553,7 +551,7 @@ var SNAMIK_BOT = (function () {
       (userMove === 'бумага' && botMove === 'камень')
     ) {
       addScore(nick, 1);
-      outcome = '🎉 Ты победил! | Твой счёт: ' + scores[nick];
+      outcome = `🎉 Ты победил! | Твой счёт: ${scores[nick]}`;
     } else {
       outcome = '😜 Я победил!';
     }
@@ -626,20 +624,20 @@ var SNAMIK_BOT = (function () {
   function buildCommandsHelpHtml(unknown) {
     function chips(cmds) {
       return cmds.map(function (c) {
-        return '<code class="snimik-cmd">' + c + '</code>';
+        return `<code class="snimik-cmd">${c}</code>`;
       }).join('');
     }
     function section(title, cmds, note) {
       var s = '<div class="snimik-bot-cmdlist__section">';
-      s += '<div class="snimik-bot-cmdlist__heading">' + title + '</div>';
-      s += '<div class="snimik-bot-cmdlist__cmds">' + chips(cmds) + '</div>';
-      if (note) s += '<div class="snimik-bot-cmdlist__note">' + note + '</div>';
-      return s + '</div>';
+      s += `<div class="snimik-bot-cmdlist__heading">${title}</div>`;
+      s += `<div class="snimik-bot-cmdlist__cmds">${chips(cmds)}</div>`;
+      if (note) s += `<div class="snimik-bot-cmdlist__note">${note}</div>`;
+      return `${s}</div>`;
     }
     var h = '<div class="snimik-bot-cmdlist">';
     if (unknown) h += '<div class="snimik-bot-cmdlist__alert">Неизвестная команда</div>';
     h += '<div class="snimik-bot-cmdlist__title">Команды Снамика</div>';
-    h += section('Гороскоп', ['/гороскоп'].concat(ZODIAC_SIGNS.map(function (z) { return '/' + z; })));
+    h += section('Гороскоп', ['/гороскоп'].concat(ZODIAC_SIGNS.map(function (z) { return `/${z}`; })));
     h += section('Развлечения', ['/анекдот', '/шутка', '/совет', '/факт']);
     h += section('Игры', ['/камень', '/ножницы', '/бумага', '/кости', '/бросить', '/монетка', '/орёл', '/решка', '/число', '/слово', '/отмена'],
       'После /кости — /бросить, после /монетка — /орёл или /решка');
@@ -647,7 +645,7 @@ var SNAMIK_BOT = (function () {
     h += section('Карточки', ['/карточка', '/альбом', '/коллекторы', '/обмен', '/битва'],
       '/альбом [ник], /обмен ник название, /битва ник');
     h += section('Справка', ['/помощь']);
-    return h + '</div>';
+    return `${h}</div>`;
   }
 
   function formatBotMessage(body) {
@@ -768,7 +766,8 @@ var SNAMIK_BOT = (function () {
           .sort((a, b) => b[1] - a[1])
           .map(([n, p]) => `${n} — ${p}`)
           .join('\n');
-        return 'Таблица очков:\n' + (rows || 'Пока пусто');
+        return `Таблица очков:
+${rows || 'Пока пусто'}`;
       }
 
 
@@ -896,7 +895,7 @@ var SNAMIK_BOT = (function () {
     var raw = parsed.raw;
     var parts = parsed.parts;
     var command = parsed.command;
-    var dedupeKey = myNick + '|' + parsed.fullText;
+    var dedupeKey = `${myNick}|${parsed.fullText}`;
 
     if (snamikWasHandled(dedupeKey)) return;
 
@@ -907,9 +906,11 @@ var SNAMIK_BOT = (function () {
       snamikMarkHandled(dedupeKey);
       if (horoAsk === 'HELP') {
         snamikHoroscopeReplayMark(horoKey);
-        const msg = 'Напиши свой знак, например: /овен, /рак, /рыбы\n\nДоступны: ' + ZODIAC_SIGNS.join(', ');
+        const msg = `Напиши свой знак, например: /овен, /рак, /рыбы
+
+Доступны: ${ZODIAC_SIGNS.join(', ')}`;
         setTimeout(function () {
-          send('[Снамик] ' + msg);
+          send(`[Снамик] ${msg}`);
         }, 1500);
         return;
       }
@@ -923,12 +924,12 @@ var SNAMIK_BOT = (function () {
       snamikMarkHandled(dedupeKey);
       const DELAY = 1500; // «человечная» задержка ответа
       setTimeout(function () {
-        send('[Снамик] ' + reply);
+        send(`[Снамик] ${reply}`);
       }, DELAY);
     } else if (isCmd && command && !isChatSlashCommand(command)) {
       snamikMarkHandled(dedupeKey);
       setTimeout(function () {
-        send('[Снамик] ' + CMDLIST_UNKNOWN_MARKER);
+        send(`[Снамик] ${CMDLIST_UNKNOWN_MARKER}`);
       }, 1500);
     }
   }
@@ -937,7 +938,7 @@ var SNAMIK_BOT = (function () {
     var nick = (typeof mynick !== 'undefined' && mynick) ? snamikNormalizeNick(mynick) : '';
     if (!nick) return;
     var now = new Date();
-    var time = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2) + ':' + ('0' + now.getSeconds()).slice(-2);
+    var time = `${(`0${now.getHours()}`).slice(-2)}:${(`0${now.getMinutes()}`).slice(-2)}:${(`0${now.getSeconds()}`).slice(-2)}`;
     var room = (typeof myroom !== 'undefined') ? myroom : 0;
     listener(room, 0, nick, '', String(text), time);
   }

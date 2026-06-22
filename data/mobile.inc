@@ -124,7 +124,7 @@ else if(document.attachEvent) document.attachEvent('onreadystatechange', loadfra
 
 <iframe name=hidden width=0 height=0 style="display:none;"></iframe>
 <form id=inchat name=fmsg action='index.php?inc=write' method=post  enctype="multipart/form-data" target=hidden onsubmit='return msg_send();' style='text-align:center;display:none;'>
-<center>
+<span style="display:block;text-align:center">
 <div id=leftdiv style='width:200px; padding:5px; border:1px gray solid;text-align:left;'>
 Загрузка...
 </div>
@@ -138,7 +138,7 @@ document.write("<input type=hidden name=nick value='"+parent.mynick+"'>");
 <script>var smileon=0;</script>
 <input type=submit value=':)' title='Отображать смайлы' class=btn onclick="if(smileon) {smileon=0; this.style.fontWeight='normal';} else {smileon=1; this.style.fontWeight='bold';}">
 <div id=users style='width:200px; padding:5px; text-align:left;'></div>
-</center>
+</span>
 </form>
 
 

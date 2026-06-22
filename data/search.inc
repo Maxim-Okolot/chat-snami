@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="/base.css">
 </head>
 <body class=search-body>
-<center>
+<span style="display:block;text-align:center">
 <b>Поиск по никам и анкетам</b><br><br>
 <form action=?inc=search method=post>
 <script>
@@ -35,5 +35,6 @@ if(u.length>0) document.write("<br>");
 document.write("Всего найдено: <b>"+u.length+"</b>");
 }
 </script>
+</span>
 </body>
 </html>
