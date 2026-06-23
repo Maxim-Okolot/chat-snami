@@ -56,9 +56,12 @@
 <body class="chat-body" id="telo">
 <iframe name=hidden width=0 height=0 style="display:none;"></iframe>
 
-<aside class="left-sidebar">
+<aside class="left-sidebar" id="leftSidebar">
+  <button type="button" class="sidebar-toggle" data-action="toggle-left-sidebar" aria-expanded="true" aria-controls="leftSidebar" title="Скрыть меню">
+    <span class="sidebar-toggle__icon" aria-hidden="true"></span>
+  </button>
   <div class="left-sidebar__wrapper">
-    <span class="left-sidebar__date">
+    <span class='left-sidebar__date'>
       <span class="left-sidebar__time" id="time">00:00:00</span>
       <span id="chat-date"></span>
     </span>
@@ -203,8 +206,11 @@
 </main>
 <!-- end content-->
 
-<!-- start left sidebar -->
-<aside class="right-sidebar">
+<!-- start right sidebar -->
+<aside class="right-sidebar" id="rightSidebar">
+  <button type="button" class="sidebar-toggle" data-action="toggle-right-sidebar" aria-expanded="true" aria-controls="rightSidebar" title="Скрыть панель">
+    <span class="sidebar-toggle__icon" aria-hidden="true"></span>
+  </button>
   <div class="right-sidebar__wrapper">
     <img src="../assets/img/logo.png" class="right-sidebar__logo" alt="Логотип чата" title="С нами чат">
 
@@ -235,7 +241,7 @@
         </div>
         <div class="accordion__body">
           <b>Радио Иволга</b><br>
-          <span style="display:block;text-align:center">
+          <span style='display:block;text-align:center'>
             <div id="my_player_ivolga" class="my_player"
               data-player="energy"
               data-skin="blue"
@@ -245,7 +251,7 @@
               data-streamurl="https://myradio24.org/ivolga"></div>
           </span>
 
-          <span style="display:block;text-align:center">
+          <span style='display:block;text-align:center'>
             <a target="_blank" href="https://volnorez.com/ognu-enuseya"><img src="https://forumstatic.ru/files/001c/59/63/67722.gif" alt=""></a>
             <a target="_blank" href="https://volnorez.com/ognu-enuseya">
               <div id="vplayer001dd061">
@@ -256,7 +262,7 @@
           </span>
 
           <b>Радио "Параллельный мир"</b>
-          <span style="display:block;text-align:center">
+          <span style='display:block;text-align:center'>
             <div id="my_player_dream" class="my_player"
               data-player="energy"
               data-skin="blue"
@@ -269,6 +275,7 @@
       </div>
       <!-- радио плеер заканчивается -->
     </div>
+  </div>
 
 </aside>
 <!-- end sidebar -->
@@ -305,7 +312,12 @@
         <output class="footer__addressee" data-action="clear-tonick" name="tonick" size='6' readonly title="Очистить поле"></output>
       </div>
 
-      <div>
+      <div class="footer-form__tools">
+        <button type="button" class="footer-tools-toggle" data-action="toggle-footer-tools" aria-expanded="false" aria-haspopup="true" title="Инструменты чата">
+          Инструменты
+          <span class="footer-tools-toggle__icon" aria-hidden="true"></span>
+        </button>
+        <div class="footer-form__tools-panel">
         <button type="button" class="footer__btn rect-button" data-action="toggle-smiles">Смайлы</button>
         <button type="button" class="footer__btn rect-button" data-action="lovesmile">LoveSmile</button>
         <button type="button" class="footer__btn" data-action="insert-percent" title="Вставить % в сообщение">
@@ -382,6 +394,7 @@
             <clipPath id="clip0_3190_17681"><rect width="24" height="24" fill="white"/></clipPath>
           </svg>
         </button>
+        </div>
       </div>
     </div>
 

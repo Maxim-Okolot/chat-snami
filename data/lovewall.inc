@@ -240,16 +240,16 @@
         return `
         <div class="love-msg-card">
           <div class="d-flex align-items-center mb-1">
-            <span class="love-avatar">${initials}</span>
-            <div class="love-msg"><span class="love-heart">💌</span>${item.msg.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
+            <span class='love-avatar'>${initials}</span>
+            <div class="love-msg"><span class='love-heart'>💌</span>${item.msg.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
           </div>
           <div class="love-meta">
             <span>
-              ${item.to ? `<span class="love-to">Для: ${item.to}</span>` : ""}
+              ${item.to ? `<span class='love-to'>Для: ${item.to}</span>` : ""}
               ${item.to ? " | " : ""}
-              <span class="love-from">${item.anon ? "Анонимно" : ("от " + fromName)}</span>
+              <span class='love-from'>${item.anon ? "Анонимно" : ("от " + fromName)}</span>
             </span>
-            <span class="love-date">${formatDate(item.ts)}</span>
+            <span class='love-date'>${formatDate(item.ts)}</span>
           </div>
         </div>
       `;

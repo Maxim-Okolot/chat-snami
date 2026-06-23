@@ -385,6 +385,111 @@ class ChatFileUpload {
   }
 }
 
+/** Сворачивание левой и правой панелей. */
+class ChatSidebarToggle {
+  static CONFIG = {
+    left: {
+      sidebar: '#leftSidebar',
+      bodyClass: 'chat-body--left-sidebar-collapsed',
+      storageKey: 'chat-ui-left-sidebar',
+      expandTitle: 'Показать меню',
+      collapseTitle: 'Скрыть меню',
+    },
+    right: {
+      sidebar: '#rightSidebar',
+      bodyClass: 'chat-body--right-sidebar-collapsed',
+      storageKey: 'chat-ui-right-sidebar',
+      expandTitle: 'Показать панель',
+      collapseTitle: 'Скрыть панель',
+    },
+  };
+
+  static init() {
+    for (const side of Object.keys(this.CONFIG)) {
+      const cfg = this.CONFIG[side];
+      const sidebar = document.querySelector(cfg.sidebar);
+      if (!sidebar) continue;
+
+      try {
+        if (localStorage.getItem(cfg.storageKey) === '1') {
+          this.setCollapsed(side, true, false);
+        }
+      } catch (_) {}
+    }
+  }
+
+  static toggle(side) {
+    const cfg = this.CONFIG[side];
+    if (!cfg) return;
+
+    const sidebar = document.querySelector(cfg.sidebar);
+    if (!sidebar) return;
+
+    this.setCollapsed(side, !sidebar.classList.contains('is-collapsed'));
+  }
+
+  static setCollapsed(side, collapsed, persist = true) {
+    const cfg = this.CONFIG[side];
+    const sidebar = document.querySelector(cfg.sidebar);
+    const button = document.querySelector(`[data-action="toggle-${side}-sidebar"]`);
+    if (!sidebar || !button) return;
+
+    sidebar.classList.toggle('is-collapsed', collapsed);
+    document.body.classList.toggle(cfg.bodyClass, collapsed);
+    button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    button.title = collapsed ? cfg.expandTitle : cfg.collapseTitle;
+
+    if (persist) {
+      try {
+        localStorage.setItem(cfg.storageKey, collapsed ? '1' : '0');
+      } catch (_) {}
+    }
+  }
+}
+
+/** Выпадающее меню кнопок футера при ширине ≤1500px. */
+class ChatFooterToolsDropdown {
+  static init() {
+    const root = document.querySelector('.footer-form__tools');
+    if (!root) return;
+
+    const mq = window.matchMedia('(max-width: 1500px)');
+    mq.addEventListener('change', () => this.close());
+
+    document.addEventListener('click', (event) => {
+      if (!root.classList.contains('is-open')) return;
+      if (event.target.closest('.footer-form__tools')) return;
+      this.close();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') this.close();
+    });
+  }
+
+  static toggle() {
+    const root = document.querySelector('.footer-form__tools');
+    if (!root) return;
+
+    root.classList.toggle('is-open');
+    this.syncAria(root);
+  }
+
+  static close() {
+    const root = document.querySelector('.footer-form__tools');
+    if (!root) return;
+
+    root.classList.remove('is-open');
+    this.syncAria(root);
+  }
+
+  static syncAria(root) {
+    const button = root.querySelector('[data-action="toggle-footer-tools"]');
+    if (!button) return;
+    button.setAttribute('aria-expanded', root.classList.contains('is-open') ? 'true' : 'false');
+  }
+}
+
 /** Обработчики кнопок футера и меню (data-action). */
 class ChatFooterActions {
   static init() {
@@ -394,6 +499,10 @@ class ChatFooterActions {
 
       const action = trigger.dataset.action;
       const form = document.forms.fmsg;
+
+      if (action !== 'toggle-footer-tools' && trigger.closest('.footer-form__tools-panel')) {
+        ChatFooterToolsDropdown.close();
+      }
 
       switch (action) {
         case 'chat-exit':
@@ -489,6 +598,21 @@ class ChatFooterActions {
           chatScrollPause.toggle();
           break;
 
+        case 'toggle-left-sidebar':
+          e.preventDefault();
+          ChatSidebarToggle.toggle('left');
+          break;
+
+        case 'toggle-right-sidebar':
+          e.preventDefault();
+          ChatSidebarToggle.toggle('right');
+          break;
+
+        case 'toggle-footer-tools':
+          e.preventDefault();
+          ChatFooterToolsDropdown.toggle();
+          break;
+
         default:
           break;
       }
@@ -541,6 +665,8 @@ document.addEventListener('DOMContentLoaded', () => {
   ChatAccordion.init();
   ChatFormHiddenFields.init();
   ChatAdminActions.init();
+  ChatSidebarToggle.init();
+  ChatFooterToolsDropdown.init();
   chatScrollPause.init();
   ChatFileUpload.init();
   ChatFooterActions.init();

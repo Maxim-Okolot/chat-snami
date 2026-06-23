@@ -213,7 +213,7 @@ if (
 
 //################### Навигация ###################//
 $u_nav_menu = "";
-$u_nav_menu.= '<span class="nav_btn">';
+$u_nav_menu.= '<span class='nav_btn'>';
 $u_nav_menu.= $u_nav_menu_c;
 $u_nav_menu.= '</span>';
 if($u1['nick']==$cfg['nick_r']) $vars['u_nav']=''; else $vars['u_nav']=$u_nav_menu;

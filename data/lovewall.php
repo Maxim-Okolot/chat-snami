@@ -177,14 +177,14 @@
       if (!wall) return;
       wall.innerHTML = loveWallData.length ? loveWallData.slice().reverse().map(item => `
         <div class="love-msg-card">
-          <div class="love-msg"><span class="love-heart">💌</span>${item.msg.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
+          <div class="love-msg"><span class='love-heart'>💌</span>${item.msg.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
           <div class="love-meta">
             <span>
-              ${item.to ? `<span class="love-to">Для: ${item.to}</span>` : ""}
+              ${item.to ? `<span class='love-to'>Для: ${item.to}</span>` : ""}
               ${item.to && item.from ? " | " : ""}
-              <span class="love-from">${item.anon ? "Анонимно" : ("от " + item.from)}</span>
+              <span class='love-from'>${item.anon ? "Анонимно" : ("от " + item.from)}</span>
             </span>
-            <span class="love-date">${formatDate(item.ts)}</span>
+            <span class='love-date'>${formatDate(item.ts)}</span>
           </div>
         </div>
       `).join('') : '<div style="color:#b07d7d;text-align:center;">Пока нет признаний. Будь первым!</div>';

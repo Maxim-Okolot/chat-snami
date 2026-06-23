@@ -1182,7 +1182,7 @@
 					pagination: pag.length ? pag.get(0) : null,
 					paginationClickable: pag.length ? pag.attr("data-clickable") !== "false" : false,
 					paginationBulletRender: pag.length ? pag.attr("data-index-bullet") === "true" ? function (swiper, index, className) {
-						return '<span class="' + className + '">' + (index + 1) + '</span>';
+						return '<span class='' + className + ''>' + (index + 1) + '</span>';
 					} : null : null,
 					scrollbar: bar.length ? bar.get(0) : null,
 					scrollbarDraggable: bar.length ? bar.attr("data-draggable") !== "false" : true,
@@ -1429,7 +1429,7 @@
 									.done(function (responceCode) {
 										if (responceCode !== 'CPT000') {
 											if (output.hasClass("snackbars")) {
-												output.html('<p><span class="icon text-middle mdi mdi-check icon-xxs"></span><span>' + captchaMsg[responceCode] + '</span></p>')
+												output.html('<p><span class='icon text-middle mdi mdi-check icon-xxs'></span><span>' + captchaMsg[responceCode] + '</span></p>')
 
 												setTimeout(function () {
 													output.removeClass("active");
@@ -1452,7 +1452,7 @@
 							form.addClass('form-in-process');
 
 							if (output.hasClass("snackbars")) {
-								output.html('<p><span class="icon text-middle fa fa-circle-o-notch fa-spin icon-xxs"></span><span>Sending</span></p>');
+								output.html('<p><span class='icon text-middle fa fa-circle-o-notch fa-spin icon-xxs'></span><span>Sending</span></p>');
 								output.addClass("active");
 							}
 						} else {
@@ -1494,13 +1494,13 @@
 
 						if (result === "MF000") {
 							if (output.hasClass("snackbars")) {
-								output.html('<p><span class="icon text-middle mdi mdi-check icon-xxs"></span><span>' + msg[result] + '</span></p>');
+								output.html('<p><span class='icon text-middle mdi mdi-check icon-xxs'></span><span>' + msg[result] + '</span></p>');
 							} else {
 								output.addClass("active success");
 							}
 						} else {
 							if (output.hasClass("snackbars")) {
-								output.html(' <p class="snackbars-left"><span class="icon icon-xxs mdi mdi-alert-outline text-middle"></span><span>' + msg[result] + '</span></p>');
+								output.html(' <p class="snackbars-left"><span class='icon icon-xxs mdi mdi-alert-outline text-middle'></span><span>' + msg[result] + '</span></p>');
 							} else {
 								output.addClass("active error");
 							}

@@ -1,11 +1,15 @@
 ---
-description: Продакшен использует data/jscripts.dat, а не assets/js/script.js
+description: Продакшен — jscripts.dat (чат) + snamik.js (бот)
 alwaysApply: true
 ---
 
-# JavaScript чата — только jscripts.dat
+# JavaScript чата — jscripts.dat + snamik.js
 
-- **Продакшен:** `data/jscripts.dat` — единственный файл, который подключается на сайте.
-- **`assets/js/script.js`** — локальная копия/черновик, **не используется в продакшене**.
+- **Продакшен:** `data/jscripts.dat` — ядро чата; подключается через `%scripts%` в `data/chat.inc`.
+- **Бот Снамик:** `assets/js/snamik.js` — отдельный файл, подключается **до** `%scripts%` в `data/chat.inc` и `data/frames.inc`.
+- **`assets/js/script.js`** — локальная копия ядра чата; **синхронизировать с `jscripts.dat`** после каждого изменения чата: `node scripts/sync-script-js.js`.
 
-При изменениях логики чата править **`data/jscripts.dat`**. Синхронизацию в `script.js` делать только если пользователь явно просит.
+При изменениях **бота** править **`assets/js/snamik.js`**.  
+При изменениях **чата** править **`data/jscripts.dat`**, затем запускать sync выше.
+
+Монолит для старой схемы (один файл): `node scripts/build-jscripts.js` → `data/jscripts.monolith.dat`.

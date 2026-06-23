@@ -104,7 +104,7 @@ function mp_editcomment(cid) {
 function mp_delcomment(cid) {
 	$.ajax({url:mp.script, dataType:'json', method:'POST', data:'type='+mp.type+'&delete='+cid,
 		success:function(data) {
-			if(data.ok) $('#cid'+cid).html('<span style="display:block;text-align:center">Сообщение #'+cid+' удалено. (<a href=# onclick=\"mp_rescomment('+cid+'); return false;\">восстановить</a>)</span><br>');
+			if(data.ok) $('#cid'+cid).html('<span style='display:block;text-align:center'>Сообщение #'+cid+' удалено. (<a href=# onclick=\"mp_rescomment('+cid+'); return false;\">восстановить</a>)</span><br>');
 			else mp_err('Ошибка удаления, возможно у вас нет прав.');
 		}
 	});
@@ -126,12 +126,12 @@ function mp_addcomment(data,top) {
 	mp.commentsok[data.id]=data;
 	var mod=""; 
 	if(data.editor>0) mod+="<i style='float:left;'>Отредактировано в "+data.edited+" - "+data.editornick+"</i>";
-	if(data.moderator==1) mod+="<a href=# onclick='mp_delcomment("+data.id+"); return false;'><font class=low>Удалить</font></a> | ";
-	if(data.editable) mod+="<a href=# onclick='mp_editcomment("+data.id+"); return false;'><font class=low>Редактировать</font></a> | ";
-	mod+="<a href=# onclick='mp_quote("+data.id+"); return false;'><font class=low>Цитировать</font></a>";
+	if(data.moderator==1) mod+="<a href=# onclick='mp_delcomment("+data.id+"); return false;'><span class='low'>Удалить</span></a> | ";
+	if(data.editable) mod+="<a href=# onclick='mp_editcomment("+data.id+"); return false;'><span class='low'>Редактировать</span></a> | ";
+	mod+="<a href=# onclick='mp_quote("+data.id+"); return false;'><span class='low'>Цитировать</span></a>";
 	var avator=""; if(data.avator) avator="<img src='"+data.avator+"' style='margin-top:5px;margin-bottom:5px;'>";
 	var message=mp_filter(data.text,mp.message_img_max);
-	var html="<table width='100%' align=center style='table-layout:fixed;'><tr><td class=title align=left width=150 title='#"+data.id+"'>"+data.date+"</td><td class=title align=right></td></tr><tr><td width=150 valign=top align=left style=padding:10px;padding-left:4px;><a href=# onclick='mp_put(\""+data.nick+", \"); return false;'><font color='"+data.colornick+"'>"+data.nick+"</font></a>  [<a href=?inc=info&userid="+data.userid+" target=info>?</a>]<br>"+avator+"</td><td valign=top align=left style='padding:10px;word-wrap:break-word;' id='tid"+data.id+"'>"+message+"<tr><td align=left>"+data.ip+"<td align=right>"+mod+"</table><br>";
+	var html="<table width='100%' align=center style='table-layout:fixed;'><tr><td class=title align=left width=150 title='#"+data.id+"'>"+data.date+"</td><td class=title align=right></td></tr><tr><td width=150 valign=top align=left style=padding:10px;padding-left:4px;><a href=# onclick='mp_put(\""+data.nick+", \"); return false;'><span style='color:"+data.colornick+"'>"+data.nick+"</span></a>  [<a href=?inc=info&userid="+data.userid+" target=info>?</a>]<br>"+avator+"</td><td valign=top align=left style='padding:10px;word-wrap:break-word;' id='tid"+data.id+"'>"+message+"<tr><td align=left>"+data.ip+"<td align=right>"+mod+"</table><br>";
 	if($('#cid'+data.id).length) {$('#cid'+data.id).html(html); return;}
 	var div = document.createElement("div"); div.id='cid'+data.id; div.innerHTML=html;
 	var obj=$('#comments')[0];
@@ -226,16 +226,16 @@ mp.etags[i]=new Array(/\[b\](.*?)\[\/b\]/g,'<b>$1</b>');i++;
 mp.etags[i]=new Array(/\[i\](.*?)\[\/i\]/g,'<i>$1</i>');i++;
 mp.etags[i]=new Array(/\[u\](.*?)\[\/u\]/g,'<u>$1</u>');i++;
 mp.etags[i]=new Array(/\[s\](.*?)\[\/s\]/g,'<s>$1</s>');i++;
-//mp.etags[i]=new Array(/\[black\](.*?)\[\/black\]/g,'<font color=black>$1</font>');i++;
-mp.etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<font color="$1">$2</font>',1);i++;
-mp.etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<font size="$1">$2</font>',1);i++;
-mp.etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<font face="$1">$2</font>',1);i++;
+//mp.etags[i]=new Array(/\[black\](.*?)\[\/black\]/g,'<span style='color:black'>$1</span>');i++;
+mp.etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<span style='color:$1'>$2</span>',1);i++;
+mp.etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<span style='font-size:$1'>$2</span>',1);i++;
+mp.etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<span style='font-family:$1'>$2</span>',1);i++;
 mp.etags[i]=new Array(/\[sub\](.*?)\[\/sub\]/g,'<sub>$1</sub>');i++;
 mp.etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 mp.etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 mp.etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 mp.etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-mp.etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style="display:block;text-align:center">$1</span>');i++;
+mp.etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style='display:block;text-align:center'>$1</span>');i++;
 mp.etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1" border=0 style="position:relative;">',1);i++; //одноразовая замена для лимита
 mp.etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 mp.etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;

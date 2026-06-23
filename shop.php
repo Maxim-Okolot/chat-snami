@@ -150,12 +150,12 @@ if($do=="log" && $moderator) {
 		elseif($x[4]=="gr")  {
 			if($x[2]) $desc="проверка градиент текста для <b>$x[2]</b> - $x[5]";
 			elseif(!$x[5]) $desc="удаление услуги градиент текста";
-			else $desc="покупка <b>градиента текста</b> (<font size=4 color=".str_replace(",",">•</font>,<font size=4 color=",$x[5]).">•</font>)";
+			else $desc="покупка <b>градиента текста</b> (<span style='font-size:large;color:".str_replace(",",'>•</span>,<span style=\'font-size:large;color=',$x[5])."'>•</span>)";
 		}
 		elseif($x[4]=="grn")  {
 			if($x[2]) $desc="проверка градиент ника для <b>$x[2]</b> - $x[5]";
 			elseif(!$x[5]) $desc="удаление услуги градиент ника";
-			else $desc="покупка <b>градиента ника</b> (<font size=4 color=".str_replace(",",">•</font>,<font size=4 color=",$x[5]).">•</font>)";
+			else $desc="покупка <b>градиента ника</b> (<span style='font-size:large;color:".str_replace(",",'>•</span>,<span style=\'font-size:large;color=',$x[5])."'>•</span>)";
 		}
 		elseif($x[4]=="tadd")  {
 			if($x[2]) $desc="проверка личное приветствие для <b>$x[2]</b> - $x[5]";
@@ -199,21 +199,21 @@ if($do=="moderate" && $moderator) {
 		$date=date("d.m.Y - H:i", (int)$x[1]);
 		$desc="неопределено";
 		if($x[2]=="gn") $desc="графический ник <img src='".webpath($x[6])."'>";
-		if($x[2]=="gr") $desc="градиент текста (<font size=4 color=$x[6]>•</font>,<font size=4 color=$x[7]>•</font>,<font size=4 color=$x[8]>•</font>)";
-		if($x[2]=="grn") $desc="градиент ника (<font size=4 color=$x[6]>•</font>,<font size=4 color=$x[7]>•</font>,<font size=4 color=$x[8]>•</font>)";
-		if($x[2]=="tadd") $desc="личное приветствие - <font color=blue>$x[6]</font>";
-		if($x[2]=="tdel") $desc="личное прощание - <font color=blue>$x[6]</font>";
+		if($x[2]=="gr") $desc="градиент текста (<span style='color:$x[6];font-size:large'>•</span>,<span style='color:$x[7];font-size:large'>•</span>,<span style='color:$x[8];font-size:large'>•</span>)";
+		if($x[2]=="grn") $desc="градиент ника (<span style='color:$x[6];font-size:large'>•</span>,<span style='color:$x[7];font-size:large'>•</span>,<span style='color:$x[8];font-size:large'>•</span>)";
+		if($x[2]=="tadd") $desc="личное приветствие - <span style='color:blue'>$x[6]</span>";
+		if($x[2]=="tdel") $desc="личное прощание - <span style='color:blue'>$x[6]</span>";
 		if($x[2]=="invis") $desc="невидимость";
 		$modok="<a href=?inc=$inc&do=$do&yes=$x[1]>да</a> / <a href=?inc=$inc&do=$do&no=$x[1]>нет</a>";
 		$nick1=$x[0];
 		if($yes==$x[1]) {
-			$x[5]=0; $x[1]=$s_time; $a[$i]=implode("|",$x);$modok="<font color=green>OK</font>";
+			$x[5]=0; $x[1]=$s_time; $a[$i]=implode("|",$x);$modok="<span style='color:green'>OK</span>";
 			shop_log($nick,$nick1,0,$x[2],"да");
 		}
 		elseif($no==$x[1]) {
 			$u1=readuser($nick1); $u1['points']+=$x[3]; writeuser(array('points'=>$u1['points']),"",$u1['id']);
 			if($x[2]=="gn" && preg_match("/\.jpg$/",$x[6]) && is_file("data/$x[6]")) unlink("data/$x[6]");
-			$a[$i]="";$modok="<font color=red>удалено</font>";
+			$a[$i]="";$modok="<span style='color:red'>удалено</span>";
 			shop_log($nick,$nick1,0,$x[2],"нет");
 		}
 		$output.="<tr><td><a href=?inc=info&nick=$x[0] target=_blank>$x[0]</a></td><td class=shopaddon align=left>$desc</td><td>$date</td><td>$modok</td></tr>";
@@ -263,14 +263,14 @@ if($do=="create" && $moderator) {
 					$item[2]=$creator; $item[3]=$name; $item[4]=$text; $item[5]=$price; $item[6]=$count; $item[8]=$category; $item[11]=$expire; $item[12]="\n"; 
 					$shop[$itemid]=$item;
 					shop_save();
-					$error="<font color=green>Редактирование прошло успешно.</font>";					
+					$error="<span style='color:green'>Редактирование прошло успешно.</span>";					
 				}
 				//create
 				else {
 					$item=explode("|","$maxid|0|$creator|$name|$text|$price|$count|$s_time|$category|||$expire|\n");
 					$shop[$maxid]=$item;
 					shop_save();
-					$error="<font color=green>Товар создан.</font>";
+					$error="<span style='color:green'>Товар создан.</span>";
 				}
 			}
 		}
@@ -279,7 +279,7 @@ if($do=="create" && $moderator) {
 	if($act=="deny") {
 		if(!$item) $error="Товар не найден!";
 		else {
-			if($item[1]) {$item[1]=0; $error="<font color=green>Товар допущен для продажи.</font>"; }
+			if($item[1]) {$item[1]=0; $error="<span style='color:green'>Товар допущен для продажи.</span>"; }
 			else {$item[1]=1; $error="Товар запрещён для продажи."; }
 			$shop[$itemid]=$item;
 			shop_save();
@@ -302,7 +302,7 @@ if($do=="create" && $moderator) {
 				file_put_contents("data/shop/$file", implode("",$a2), LOCK_EX);
 				if(!filesize("data/shop/$file")) unlink("data/shop/$file");
 			}
-			$error="<font color=green>Вы удалили этот товар из базы и у <b>$c</b> покупателей.</font>";
+			$error="<span style='color:green'>Вы удалили этот товар из базы и у <b>$c</b> покупателей.</span>";
 		}
 	}
 	
@@ -356,7 +356,7 @@ if($do=="my") {
 				if(!filesize("data/shop/$myid.sys")) unlink("data/shop/$myid.sys");
 				$items=[]; for($i=0;$i<count($a1);$i++) if($a1[$i]) {$x=explode("|",$a1[$i]);$items[]=$x;}
 				shop_log($nick,$tonick,0,$forid);
-				$error="<font color=green>Вы подарили эту вещь <b>$tonick</b>.</font>";		
+				$error="<span style='color:green'>Вы подарили эту вещь <b>$tonick</b>.</span>";		
 			}
 		}		
 	}
@@ -370,7 +370,7 @@ if($do=="my") {
 			else {
 				$u['points']-=$givepoints; writeuser(array('points'=>$u['points']),"",$myid);
 				$u1['points']+=$givepoints; writeuser(array('points'=>$u1['points']),"",$u1['id']);
-				$error="<font color=green>Пользователю <b>$tonick</b> подарено <b>$givepoints</b> пунктов.</font>";
+				$error="<span style='color:green'>Пользователю <b>$tonick</b> подарено <b>$givepoints</b> пунктов.</span>";
 				shop_log($nick,$tonick,$givepoints,"");
 			}
 		}
@@ -388,7 +388,7 @@ if($do=="my") {
 			file_put_contents("data/shop/$myid.sys",implode("",$a1),LOCK_EX);
 			if(!filesize("data/shop/$myid.sys")) unlink("data/shop/$myid.sys");
 			$items=[]; for($i=0;$i<count($a1);$i++) if($a1[$i]) {$x=explode("|",$a1[$i]); $items[]=$x;}
-			$error="<font color=green>Вы выбросили эту вещь.</font>";
+			$error="<span style='color:green'>Вы выбросили эту вещь.</span>";
 		}
 	}
 	//give item	
@@ -432,7 +432,7 @@ if($do=="buy" && $itemid) {
 		file_put_contents("data/shop/$myid.sys",implode("|",$item),FILE_APPEND|LOCK_EX);
 		$tonick=$item[2]; $u1=readuser($tonick);
 		if($u1) {$u1['points']+=round($item[5]/100*$sellprocent); writeuser(array('points'=>$u1['points']),"",$u1['id']);}
-		$error="<font color=green>Вы купили эту вещь за $item[5] пунктов.</font>";
+		$error="<span style='color:green'>Вы купили эту вещь за $item[5] пунктов.</span>";
 		$u['points']-=$item[5]; writeuser(array('points'=>$u['points']),"",$myid);
 		shop_log($nick,"",$item[5],$item[0]);
 	}
@@ -467,7 +467,7 @@ $output .= "<div class='products-grid'>";
 
 foreach($shop as $key=>$x) {
     $text=$x[4];
-    $text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<font color=red>скрытый текст</font>", $text);
+    $text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<span style='color:red'>скрытый текст</span>", $text);
     $date=date("d.m.y",$x[7]);
     $cc=$x[6]-(int)$x[10];
     $count=$x[6]; if(!$count) $count="неограничено";
@@ -480,7 +480,7 @@ foreach($shop as $key=>$x) {
     }
     elseif($do=="create") {
         if($x[2]!=$nick && !$admin) continue; 
-        if($x[1]) $action="<font color=green>Разрешить</font>"; else $action="Запретить"; 
+        if($x[1]) $action="<span style='color:green'>Разрешить</span>"; else $action="Запретить"; 
         $actions="<a href='?inc=shop&do=create&cat=$cat&itemid=$x[0]&act=edit'>✏️ Редактировать</a> <a href='?inc=shop&do=create&cat=$cat&itemid=$x[0]&act=deny'>$action</a>"; 
         if($admin) $actions.=" <a href='?inc=shop&do=create&cat=$cat&itemid=$x[0]&act=delete' onclick='return confirm(\"При удалении эта вещь будет удалена у всех пользователей! Вы действительно хотите удалить эту вещь?\");'>🗑️ Удалить</a>";
     }
@@ -519,7 +519,7 @@ if($do=="my") {
 	$htmlitems=[];
 	foreach($items as $key=>$x) {
 		$text=$x[4];
-		$text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<font color=red>$1</font>", $text);
+		$text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<span style='color:red'>$1</span>", $text);
 		$date=date("d.m.y",$x[7]);
 		$expire=(int)$x[11]; if($expire) $expire="Срок годности до: <b>".date("d.m.y",$x[11])."</b><br>"; else $expire="";
 		$actions="<a href=# onclick='give(\"$x[0]\",\"$x[7]\");'>Подарить</a> | <a href='?inc=$inc&do=my&sell=$x[0]&from=$x[7]' onclick='return confirm(\"Вы уверенны?\");'>Выкинуть</a>";
@@ -542,7 +542,7 @@ if($do=="extra") {
 
 //OUTPUT HTML
 $points=$u['points'] ?? 0;
-if($error) $error="<font color=red>$error</font><br><br>";
+if($error) $error="<span style='color:red'>$error</span><br><br>";
 echo "<!DOCTYPE html>
 <html>
 <head>
@@ -816,7 +816,7 @@ center > a:hover {
 </style>
 </head>
 <body class=shop-body>
-<span style="display:block;text-align:center"><b>Виртуальный магазин</b><br><br>
+<span style='display:block;text-align:center'><b>Виртуальный магазин</b><br><br>
 <a href=?inc=$inc&do=buy>Магазин</a> | <a href=?inc=$inc&do=my>Мои вещи</a> | <a href=?inc=$inc&do=extra>Функции</a> $modlinks
 <br><br>
 $changenickform

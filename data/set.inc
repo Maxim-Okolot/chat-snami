@@ -278,16 +278,16 @@ hr {
 </head>
 <body class="set-body">
 <div class="centered-box">
-<span style="display:block;text-align:center">
+<span style='display:block;text-align:center'>
 <h1>Настройки</h1>
 <script>
 if(saveok!='') {
-if(saveok==0) print='<font color=red>Сохранение данных невозможно!</font><br>';
-if(saveok>0) print='<font color=336699> Данные успешно сохранены!</font><br>';
-if(saveok>1) print+='<font color=red>Файл незагружен - слишком велик или неправильный формат!</font><br>';
-if(setpass=='0') print+='<font color=ff0000>Пароль не изменён. <br>(неправильно введён или пользователь незарег.)</font><br>';
-if(setpass=='1') print+='<font color=336699>Пароль изменён. Перезайдите в чат!</font><br>';
-if(setsubscribe=='1') print+='<font color=336699>Проверьте почту и подтвердите подписку на рассылку!</font><br>';
+if(saveok==0) print='<span style='color:red'>Сохранение данных невозможно!</span><br>';
+if(saveok>0) print='<span style='color:#336699'> Данные успешно сохранены!</span><br>';
+if(saveok>1) print+='<span style='color:red'>Файл незагружен - слишком велик или неправильный формат!</span><br>';
+if(setpass=='0') print+='<span style='color:#ff0000'>Пароль не изменён. <br>(неправильно введён или пользователь незарег.)</span><br>';
+if(setpass=='1') print+='<span style='color:#336699'>Пароль изменён. Перезайдите в чат!</span><br>';
+if(setsubscribe=='1') print+='<span style='color:#336699'>Проверьте почту и подтвердите подписку на рассылку!</span><br>';
 print=print+'<a href="javascript:window.close();">закрыть</a><br><br>';
 document.write(print);
 }
@@ -392,28 +392,31 @@ document.write(print);
 <tr><td name=colortable>Настройка <br>ника и фразы</td><td>
 <script>
 var print='';
+var CHAT_FONT_SIZE_PX={1:10,2:13,3:16,4:18,5:24,6:32,7:48};
+function chatFsLabel(n){return CHAT_FONT_SIZE_PX[n]+'px';}
+function chatFsStyle(n){return ' style="font-size:'+CHAT_FONT_SIZE_PX[n]+'px"';}
 function setall(){
 if(document.set.fontsize1) 
-size1=" size="+document.set.fontsize1.value; else size1='';
+size1=chatFsStyle(document.set.fontsize1.value); else size1='';
 if(document.set.colornick) 
 color1=" color="+document.set.colornick.value; else color1='';
 if(document.set.fontface1) 
 face1=" face='"+jsfonts[document.set.fontface1.value]+"'"; else face1='';
 if(document.set.fontsize2) 
-size2=" size="+document.set.fontsize2.value; else size2='';
+size2=chatFsStyle(document.set.fontsize2.value); else size2='';
 if(document.set.color)			
 color2=" color="+document.set.color.value; else color2='';
 if(document.set.fontface2) 
 face2=" face='"+jsfonts[document.set.fontface2.value]+"'"; else face2='';
-out1="<a href=# onclick='return false;'><font "+size1+color1+face1+">%nick%</font></a>";
-out2="<font  "+size2+color2+face2+">мой текст в чате</font>";
+out1="<a href=# onclick='return false;'><span>%nick%</span></a>";
+out2="<span>мой текст в чате</span>";
 document.getElementById("setform").innerHTML=out1+' '+out2;
 }
 print='<input onchange="setall();" type=color name=colornick size=6 maxlength=6  class=text  value=#%nickcolor%> ';
 document.write(print);
 if(fontsize_on==1){
 print='<select name=fontsize1 class=text  onchange=setall()>';
-for(i=1;i<9;i++) if('%fontsize1%'==i) print+='<option value='+i+' selected>'+i; else print+='<option value='+i+'>'+i;
+for(i=1;i<8;i++) if('%fontsize1%'==i) print+='<option value='+i+' selected>'+chatFsLabel(i); else print+='<option value='+i+'>'+chatFsLabel(i);
 print+='</select> ';
 document.write(print);
 }
@@ -428,7 +431,7 @@ print='<input onchange="setall();" type=color name=color size=6 maxlength=6  cla
 document.write(print);
 if(fontsize_on==1){
 print='<select name=fontsize2 class=text  onchange=setall()>';
-for(i=2;i<6;i++) if('%fontsize2%'==i) print+='<option value='+i+' selected>'+i; else print+='<option value='+i+'>'+i;
+for(i=2;i<6;i++) if('%fontsize2%'==i) print+='<option value='+i+' selected>'+chatFsLabel(i); else print+='<option value='+i+'>'+chatFsLabel(i);
 print+='</select> ';
 document.write(print);
 }
@@ -484,7 +487,7 @@ setInterval('document.getElementById("my_time").innerHTML=time_now()',1000)
 
 
 </table>
-<span style="display:block;text-align:center"><input type=submit name=submit value='Сохранить настройки' class=ok></span>
+<span style='display:block;text-align:center'><input type=submit name=submit value='Сохранить настройки' class=ok></span>
 </form>
 </div>
 </body>

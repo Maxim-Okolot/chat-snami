@@ -687,7 +687,7 @@
                 <div class="user-request-item status-${request.status || 'pending'}">
                     <div class="request-song">${escapeHtml(request.song)}</div>
                     <div class="request-status">
-                        <span class="status-indicator"></span>
+                        <span class='status-indicator'></span>
                         Статус: ${statusText}
                     </div>
                 </div>

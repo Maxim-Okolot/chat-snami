@@ -3,7 +3,7 @@
 function zag(text)
 {
  var sq="";
- sq+="<TABLE WIDTH=200 BORDER=0 CELLPADDING=0 CELLSPACING=0 ALIGN=CENTER><TR><TD><TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0><TR><TD BACKGROUND=img/rpv.gif HEIGHT=57 WIDTH=30></TD><TD BACKGROUND=img/rcv2.gif HEIGHT=57 WIDTH=140 ALIGN=CENTER><FONT FACE=Arial STYLE='font-size: 11pt' COLOR=#FF0000><B>"+text+"</B></TD><TD BACKGROUND=img/rlv.gif HEIGHT=57 WIDTH=30></TD></TR></TABLE><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=200><TR><TD BACKGROUND=img/rc.gif HEIGHT=10 WIDTH=12></TD><TD WIDTH=174 BACKGROUND=img/fon22.gif>"
+ sq+="<TABLE WIDTH=200 BORDER=0 CELLPADDING=0 CELLSPACING=0 ALIGN=CENTER><TR><TD><TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0><TR><TD BACKGROUND=img/rpv.gif HEIGHT=57 WIDTH=30></TD><TD BACKGROUND=img/rcv2.gif HEIGHT=57 WIDTH=140 ALIGN=CENTER><span style='color:#FF0000;font-family:Arial'><B>"+text+"</B></TD><TD BACKGROUND=img/rlv.gif HEIGHT=57 WIDTH=30></TD></TR></TABLE><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=200><TR><TD BACKGROUND=img/rc.gif HEIGHT=10 WIDTH=12></TD><TD WIDTH=174 BACKGROUND=img/fon22.gif>"
   sq+="<table BORDER=0 CELLPADDING=0 CELLSPACING=0>";
  document.write(sq);
 }
@@ -16,7 +16,7 @@ function ws(tlink,otkrivat,text,ttitle,isnew)
  if (otkrivat==1) otkrivat="TARGET=_blank";
  s+="<TR>\n";
  s+="<TR><td WIDTH=174  style=color:#FFD700;height:0;filter:shadow(color=#000000,direction=135,strength=4) width=145 height=10 valign=top onmouseover=\"this.style.backgroundColor='#000000'\" onmouseout=\"this.style.backgroundColor=''\"  style=\"cursor: hand\">";
- if (isnew==3) s+="<FONT color=#FF0000><b>&nbsp;&nbsp;&#8226;&nbsp;&nbsp;</b></FONT>";
+ if (isnew==3) s+="<span style='color:#FF0000'><b>&nbsp;&nbsp;&#8226;&nbsp;&nbsp;</b></span>";
  if (isnew==2) s+="<span style='font-size: 9px; color: #AFEEEE;'><B>&nbsp;&nbsp;nо&nbsp;&nbsp;</B></span>";
  if (isnew==1) s+="<span style='font-size: 9px; color: red;'><B>&nbsp;new</B></span>";
  if (isnew==0) s+="<b>&nbsp;&nbsp;&#8226;&nbsp;&nbsp;</b>";

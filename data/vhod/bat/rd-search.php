@@ -80,8 +80,8 @@ foreach ($files as $file) {
 
       $pos_start = $pos - $side_chars;
       $str = substr($clean_content, $pos_start, $pos_end);
-      $result = preg_replace('#' . $search_term . '#ui', '<span class="search">\0</span>', $str);
-      //$result = preg_replace('#'.$search_term.'#ui', '<span class="search">'.$search_term.'</span>', $str);
+      $result = preg_replace('#' . $search_term . '#ui', '<span class='search'>\0</span>', $str);
+      //$result = preg_replace('#'.$search_term.'#ui', '<span class='search'>'.$search_term.'</span>', $str);
       $final_result[$file_count]['search_result'][] = $result;
 
     }
@@ -144,7 +144,7 @@ if ($file_count > 0) {
       }
 
       if ($match_count == 0) {
-        echo '<li><div class="search-error">No results found for "<span class="search">' . $search_term . '</span>"<div/></li>';
+        echo '<li><div class="search-error">No results found for "<span class='search'>' . $search_term . '</span>"<div/></li>';
       }
       ?>
       <?php

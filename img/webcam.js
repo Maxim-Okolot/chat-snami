@@ -270,7 +270,7 @@ function loadvideo(obj,host,share,rec,key)
 				var closestream="";
 				if(rec)
 					{
-						streamtitle="<font color=#000000>Моя Камера</font>";
+						streamtitle="<span style='color:#000000'>Моя Камера</span>";
 						closestream="&ch_st_close=0";
 					}	else
 					parent.hidden.location.href = "index.php?inc=write&"+ parent.yourkey+"&text=/privat "+ share +": iseeyourcam";			
@@ -279,6 +279,6 @@ function loadvideo(obj,host,share,rec,key)
 				var flashvars='host='+host+'&m=4&q=80&r=12&sharefile='+camid+'&sharelive='+camid+'&shareplay='+camid;
 				if(!(/MSIE/i).test(navigator.userAgent)) flashvars+='&buf=0.1';
 				if(rec==1) flashvars+='&rec=1';
-				loadmodal("<div id='flash"+obj+"'><a href='http://get.adobe.com/flashplayer/' target='_blank'><font size='1'>Установите Flash Player!</font></a><br></div>","setting?obj="+objid+"&title="+streamtitle+"&t=100&l=400&w=235&h=200&minmax=true&drug=true&res=true"+closestream, function(){swfobject.embedSWF("webcam.swf", "flash"+obj, flashw, flashh, "9", "http://mpchat.com/blank/expressInstall.swf", {}, {allowfullscreen:"true",wmode:"transparent",flashvars:flashvars},{});});
+				loadmodal("<div id='flash"+obj+"'><a href='http://get.adobe.com/flashplayer/' target='_blank'><span style='font-size:xx-small'>Установите Flash Player!</span></a><br></div>","setting?obj="+objid+"&title="+streamtitle+"&t=100&l=400&w=235&h=200&minmax=true&drug=true&res=true"+closestream, function(){swfobject.embedSWF("webcam.swf", "flash"+obj, flashw, flashh, "9", "http://mpchat.com/blank/expressInstall.swf", {}, {allowfullscreen:"true",wmode:"transparent",flashvars:flashvars},{});});
 			}		
 	}

@@ -6,7 +6,7 @@
 <link rel=STYLESHEET type=text/css href=style.css>
 <link rel="icon" href='/data/vhod/images/favicon.ico' type="image/x-icon">
 </head>
-<body class=mail-body><span style="display:block;text-align:center">
+<body class=mail-body><span style='display:block;text-align:center'>
 <b>Выслать пароль</b><br><br>
 <script>
 if(err==0) err='Заполните все поля!';
@@ -14,8 +14,8 @@ if(err==1) err='Неверный код, попробуите ещё раз!';
 if(err==2) err='Логин в базе не найден!';
 if(err==3) err='Логин несовпадает с введённым почтовым адресом!';
 if(err==4) err='Ошибка изменения пароля, обратитесь к администратору!';
-if(ok==1) err='<font color=green>Пароль выслан на указанный E-mail адрес.</font>';
-if(ok==2) err='<font color=green>Изменение пароля удачно подтверждено, Вы можетей войти в чат.</font>';
+if(ok==1) err='<span style='color:green'>Пароль выслан на указанный E-mail адрес.</span>';
+if(ok==2) err='<span style='color:green'>Изменение пароля удачно подтверждено, Вы можетей войти в чат.</span>';
 if(err) document.write(err+"<br><br>");
 </script>
 <form action='' method=post>

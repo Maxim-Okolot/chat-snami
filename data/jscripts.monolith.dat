@@ -996,7 +996,7 @@ class ChatConfig {
   }
 
   _initDisplay() {
-    this.topic = '<br><span style="display:block;text-align:center"><img src=\'\'></span>';
+    this.topic = '<br><span style='display:block;text-align:center'><img src=\'\'></span>';
     this.img_no = 0;
     this.roomlog = 0;
     this.privatok = 0;
@@ -1632,10 +1632,10 @@ class NickMessageFormatter {
       (gn.indexOf('4080531237') !== -1 || gn.indexOf('3984787100') !== -1));
 
     if (gn && gn.indexOf('<') !== -1 && !isDefaultNickPlate) {
-      return ` <span class="snimik-bot-label snimik-bot-label--graphic">${gn}</span> `;
+      return ` <span class='snimik-bot-label snimik-bot-label--graphic'>${gn}</span> `;
     }
 
-    return ` <span class="snimik-bot-label"><span class="snimik-bot-label__fallback" face='${facenick}'><b>${sBot}</b></span></span> `;
+    return ` <span class='snimik-bot-label'><span class="snimik-bot-label__fallback" face='${facenick}'><b>${sBot}</b></span></span> `;
   }
 
   /** Градиентный текст (если включён use_gr). */
@@ -2290,7 +2290,7 @@ class MessageRouter {
         16, 2, 17, 13, 18, 10, 4, 14, 20, 3, 10, 11, 16, 9, 6, 4, 18, 20, 1, 7, 3, 13, 12, 14, 5, 19, 15, 2, 8, 17];
     const b = time.replace(/0(\d)/g, "$1").match(/\d+/g);
     a = a.slice(b[1]).concat(a.slice(0, b[1]));
-    return ` На кубике выпало: <font size="6" face="Kapelka" color="#55aa00"><img src=https://imgs.su/upload/782/412600249.gif>${a[b[2]]}</font> `
+    return ` На кубике выпало: <span style='color:#55aa00;font-size:xx-large;font-family:Kapelka'><img src=https://imgs.su/upload/782/412600249.gif>${a[b[2]]}</span> `
   };
 
   text = text.replace('*кубик*', alpha);
@@ -2339,7 +2339,7 @@ class MessageRouter {
     }
     if (text.substr(0, 5) === "/ping" && nick === mynick && loaded === 1) {
       let ping = (new Date().getTime() - gettime) / 1000;
-      text = `<font color=red><i>ping: ${ping} sec</i></font> `;
+      text = `<span style='color:red'><i>ping: ${ping} sec</i></span> `;
     }
     if (text.substr(0, 6) === "/clear" && clearer[nick]) {
       if (loaded === 1) document.getElementById("leftdiv").innerHTML = "";
@@ -2369,13 +2369,13 @@ class MessageRouter {
       window.setTimeout('setmyroom(5)', 2000);// 3 - это индекс комнаты для депортации
       setcookie(`${chatlogin.replace('-', '_')}_deportation`, '1', term);
     }
-    text = `<span style="font-style: italic; color: red"> запирает в Темнице&nbsp;${tonick} на ${term} минут</span>`;
+    text = `<span style='font-style: italic; color: red'> запирает в Темнице&nbsp;${tonick} на ${term} минут</span>`;
   }
   if (text.indexOf('/amnesty') === 0 && censor[nick]) {
     if (loaded === 1 && mynick === tonick) {
       setcookie(`${chatlogin.replace('-', '_')}_deportation`, '0', 1);
     }
-    text = `<span style="font-style: italic; color: red"> амнистирует&nbsp;${tonick}. Можно вернуться в общую комнату.</span>`;
+    text = `<span style='font-style: italic; color: red'> амнистирует&nbsp;${tonick}. Можно вернуться в общую комнату.</span>`;
   }
 
   /* Задержка времени бота на 2 секунды + 1 секунда за каждые написанные им 10 символов */
@@ -2441,7 +2441,7 @@ class MessageRouter {
         set_text = ` <span class="${snamikMsgClass}" size=${size} color=${color} face='${face}'>${setgr(cmd, nick, snamikRest)}</span> `;
       } else {
         set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
-        set_text = ` <font size=${size} color=${color} face='${face}'>${set_text}</font> `;
+        set_text = ` <span style='color:${color};font-size:${size};font-family:${face}'>${set_text}</span> `;
       }
       a1 = '/vsem ';
       if (text.substring(0, a1.length) === a1) {
@@ -2455,7 +2455,7 @@ class MessageRouter {
       if (text.substring(0, a2.length) === a2) {
         text = text.substr(a2.length, text.length - a2.length);
         text = text.substr(tonick.length);
-        wr(`<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(72, 6, 7, 0.7);margin: 5px 0px'>${set_time}</font>${set_nick}<img src=https://i.postimg.cc/SKZpgcJL/image.png> </font></a><font color=480607 face=Arial Black font size=4px><b>${text}</b></font></p>`);
+        wr(`<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(72, 6, 7, 0.7);margin: 5px 0px'>${set_time}</span>${set_nick}<img src=https://i.postimg.cc/SKZpgcJL/image.png> </span></a><span style='color:#480607;font-size:4px;font-family:Arial'><b>${text}</b></span></p>`);
         if (loaded) sound.play(0);
         return 1;
       }
@@ -2463,7 +2463,7 @@ class MessageRouter {
       if (text.substring(0, a3.length) === a3) {
         text = text.substr(a3.length, text.length - a3.length);
         text = text.substr(tonick.length);
-        wr(`<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(25, 25, 112, 0.7);margin: 5px 0px'>${set_time}</font>${set_nick}<img src=https://i.postimg.cc/bvw7Sd3Z/image.png> </font></a><font color=191970 face=Arial Black font size=4px><b>${text}</b></font></p>`);
+        wr(`<p style='background-color:rgba(255, 192, 203, 0.5); -webkit-border-radius:5px;border:3px double rgba(25, 25, 112, 0.7);margin: 5px 0px'>${set_time}</span>${set_nick}<img src=https://i.postimg.cc/bvw7Sd3Z/image.png> </span></a><span style='color:#191970;font-size:4px;font-family:Arial'><b>${text}</b></span></p>`);
         if (loaded) sound.play(0);
         return 1;
       }
@@ -2501,7 +2501,7 @@ class MessageRouter {
         set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'priv');
       }
 
-      set_text = `<font size=${size} color=${color} face='${face}'> ${set_text}</font>`;
+      set_text = `<span style='color:${color};font-size:${size};font-family:${face}'> ${set_text}</span>`;
 
       // Формируем сообщение
       let towrContent = symbol + set_nick + set_text + set_time;
@@ -2539,7 +2539,7 @@ class MessageRouter {
     /* Вывод выделенного сообщения '/me' или '/msg' */
     case 3:
       sound.play(cmd);
-      wr(`${set_time}<b>Сообщение от <font size=2 color=${colornick}>${set_nick}</font></b> <i>${set_text}</i><br>`);
+      wr(`${set_time}<b>Сообщение от <span style='color:${colornick};font-size:small'>${set_nick}</span></b> <i>${set_text}</i><br>`);
 
     /* [ cmd===4 Вывод сообщения о вызове ] и сам вызов окном с музыкой '/call nick' */
     case 4:
@@ -2556,10 +2556,10 @@ class MessageRouter {
             }
           if (!invisible[nick]) wr(`${set_time}<img src='https://s1.iconbird.com/ico/0912/fugue/w16h161349011841alarmclockblue.png' border='0'> ${set_nick} <i> Запустил будильник для ${tonick}.</i><br>`);
         } else if (set_nick === mynick && tonick !== mynick && loaded === 1) {
-          let call_alert_txt = `<font>Пользователю с ником "${tonick}" уже был запущен будильник </font>`;
-          if (times_call_who[tonick] === mynick) call_alert_txt += "<font> вами!</font>";
-          else call_alert_txt += `<font>.</font><br><font>Запустил будильник пользователь с ником "${times_call_who[tonick]}".</font>`;
-          call_alert_txt += "<br><div style='margin-top:20px;'><font>Повторный вызов возможен через: </font>";
+          let call_alert_txt = `<span>Пользователю с ником "${tonick}" уже был запущен будильник </span>`;
+          if (times_call_who[tonick] === mynick) call_alert_txt += "<span> вами!</span>";
+          else call_alert_txt += `<span>.</span><br><span>Запустил будильник пользователь с ником "${times_call_who[tonick]}".</span>`;
+          call_alert_txt += "<br><div style='margin-top:20px;'><span>Повторный вызов возможен через: </span>";
           ChatAlert(`${call_alert_txt}<form name='count' style='display: inline-block;'><input type='text' size='20' name='count2' class='count2' readonly></form></div>`);
           countdown(times_call_delay - timeCall() + times_call[tonick], tonick);
         }
@@ -2591,7 +2591,7 @@ class MessageRouter {
       if (loaded === 1 && mynick === tonick) {
         kill_timer(kill_timeout);
       }
-      wr(`<font onclick='sendto(" см. ${time} ");'>${time}</font><i><a href='' onclick="parent.tonick('${nick}: '); return false;"><font color=${colornick}>АДМИНИСТРАЦИЯ</font></a> ${deltxt[kill]} ${tonick}.</i> ${timeout}${text}<br>`);
+      wr(`<span onclick="sendto(" см. ${time} ");">${time}</span><i><a href='' onclick="parent.tonick('${nick}: '); return false;"><span style='color:${colornick}'>АДМИНИСТРАЦИЯ</span></a> ${deltxt[kill]} ${tonick}.</i> ${timeout}${text}<br>`);
 
       break;
 
@@ -2599,12 +2599,12 @@ class MessageRouter {
     case 6:
       if (chatStr(inchat) === '0' && sameRoom(room, myroom)) {
         sound.play(cmd);
-        set_nick = `<a href='' onclick="tonick('${nick}: '); return false;"><font color=${colornick}><b><font color=ff0000 face=Verdana font size=10px>${set_nick}</font></a>`;
-        tadd = "<img src=https://i.postimg.cc/zfGtkbzb/onlin-1.gif><b><font color=000080 face=Verdana font size=4px>Добро пожаловать в чат С нами! </font> %nick%  ";
+        set_nick = `<a href='' onclick="tonick('${nick}: '); return false;"><span style='color:${colornick}'><b><span style='color:#ff0000;font-size:10px;font-family:Verdana'>${set_nick}</span></a>`;
+        tadd = "<img src=https://i.postimg.cc/zfGtkbzb/onlin-1.gif><b><span style='color:#000080;font-size:4px;font-family:Verdana'>Добро пожаловать в чат С нами! </span> %nick%  ";
         if ((tadda[nick] !== null && tadda[nick] !== undefined) && tadda[nick]) tadd = tadda[nick].replace(nick, "%nick%");
         if (tadd.search("%nick%") === -1) tadd = `%nick% ${tadd}`;
         tadd = tadd.replace("%nick%", set_nick);
-        wr(`${set_time}<b><font color=000080 face=Verdana font size=4px>${tadd}</font><br>`);
+        wr(`${set_time}<b><span style='color:#000080;font-size:4px;font-family:Verdana'>${tadd}</span><br>`);
       }
       add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
 
@@ -2614,12 +2614,12 @@ class MessageRouter {
     case 7:
       if (chatStr(inchat) === '1' && sameRoom(room, myroom)) {
         sound.play(cmd);
-        set_nick = `<b><font color=#ff0000>${set_nick}</b>`;
-        tdel = "<b><font color=000080 face=Verdana font size=4px>Нас покидает %nick%  </font>";
+        set_nick = `<b><span style='color:#ff0000'>${set_nick}</b>`;
+        tdel = "<b><span style='color:#000080;font-size:4px;font-family:Verdana'>Нас покидает %nick%  </span>";
         if ((tdela[nick] !== null && tdela[nick] !== undefined) && tdela[nick]) tdel = tdela[nick].replace(nick, "%nick%");
         if (tdel.search("%nick%") === -1) tdel = `%nick% ${tdel}`;
         tdel = tdel.replace("%nick%", set_nick);
-        wr(`${set_time}<b><font color=000080 face=Verdana font size=4px>${tdel}</font><br>`);
+        wr(`${set_time}<b><span style='color:#000080;font-size:4px;font-family:Verdana'>${tdel}</span><br>`);
       }
       deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid);
       break;
@@ -2630,7 +2630,7 @@ class MessageRouter {
       status = text;
       for (let i = 0; i < us.length; i++) if ((us[i] !== null && us[i] !== undefined) && us[i][0] === nick) {
         us[i][5] = status;
-        if (icqtxt[status]) wr(`${set_time}<font size=2 color=${colornick}><b>${set_nick}</b></font> <i>${icqtxt[status]}</i><br>`);
+        if (icqtxt[status]) wr(`${set_time}<span style='color:${colornick};font-size:small'><b>${set_nick}</b></span> <i>${icqtxt[status]}</i><br>`);
         let obj = document.getElementById(`!${nick}`);
         if (obj) format(i, obj);
       }
@@ -2646,7 +2646,7 @@ class MessageRouter {
         if (mynick === nick) text1 = `вы только что отгадали слово "${text}" и получаете 30 пунктов`;
         else text1 = `только что отгадал(а) слово "${text}"`;
       }
-      wr(`${set_time}<font size=4 color=${colornick}><b>${set_nick}</b></font> <i>${text1}</i><br>`);
+      wr(`${set_time}<span style='color:${colornick};font-size:large'><b>${set_nick}</b></span> <i>${text1}</i><br>`);
 
       break;
 
@@ -2684,7 +2684,7 @@ class MessageRouter {
       }
       towr = "";
       if (nick === mynick && loaded === 1) towr = `${set_time}<i>Вы перешли в комнату -> <b>${rooms[setroom][0]}</b>.</i><br>`;
-      else if (sameRoom(myroom, setroom)) towr = `${set_time}<i><a href='' onclick="tonick('${nick}: '); return false;"><font color=${colornick}>${nick}</font></a> приходит к нам из комнаты -> <b>${rooms[oldroom][0]}</b>.</i><br>`;
+      else if (sameRoom(myroom, setroom)) towr = `${set_time}<i><a href='' onclick="tonick('${nick}: '); return false;"><span style='color:${colornick}'>${nick}</span></a> приходит к нам из комнаты -> <b>${rooms[oldroom][0]}</b>.</i><br>`;
       else if (sameRoom(myroom, oldroom)) towr = `${set_time}<i>${nick} уходит в комнату -> <b>${rooms[setroom][0]}</b>.</i><br>`;
       if (nick === mynick) myhistory += towr;
       wr(towr);
@@ -2693,11 +2693,11 @@ class MessageRouter {
 
     /* Функция вывода уведомлений */
     case 11:
-      if (text === "post" && tonick === mynick) wr(`${set_time}Мажордом (шопотом): <i>Вам от <a href=?inc=info&nick=${nick} target=_blank><font color=${colornick}>${set_nick}</font></a> новое письмо-с, извольте прочесть: <a href=?inc=post&${yourkey} target=_blank>"${var9}"</a></i><br>`);
-      if (text === "reg") wr(`${set_time}Мажордом (торжественно): <i>У нас новый пользователь <a href=?inc=info&nick=${nick} target=_blank><font color=${colornick}>${set_nick}</font></a>.</i><br>`);
-      if (text === "clan") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank><font color=${colornick}>${set_nick}</font></a> вступил(а) в клан "${var9}".</i><br>`);
-      if (text === "gallery") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank><font color=${colornick}>${set_nick}</font></a> добавил(а) новую <a href=?inc=gallery&gallery=${nick}&foto=${var9} target=_blank>фотографию</a> в галерею.</i><br>`);
-      if (text === "gb") wr(`${set_time}Мажордом (громогласно): <i>Новое сообщение от <a href=?inc=info&nick=${nick} target=_blank><font color=${colornick}>${set_nick}</font></a> в <a href=?inc=gb target=_blank>гостевой</a>.</i><br>`);
+      if (text === "post" && tonick === mynick) wr(`${set_time}Мажордом (шопотом): <i>Вам от <a href=?inc=info&nick=${nick} target=_blank><span style='color:${colornick}'>${set_nick}</span></a> новое письмо-с, извольте прочесть: <a href=?inc=post&${yourkey} target=_blank>"${var9}"</a></i><br>`);
+      if (text === "reg") wr(`${set_time}Мажордом (торжественно): <i>У нас новый пользователь <a href=?inc=info&nick=${nick} target=_blank><span style='color:${colornick}'>${set_nick}</span></a>.</i><br>`);
+      if (text === "clan") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank><span style='color:${colornick}'>${set_nick}</span></a> вступил(а) в клан "${var9}".</i><br>`);
+      if (text === "gallery") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank><span style='color:${colornick}'>${set_nick}</span></a> добавил(а) новую <a href=?inc=gallery&gallery=${nick}&foto=${var9} target=_blank>фотографию</a> в галерею.</i><br>`);
+      if (text === "gb") wr(`${set_time}Мажордом (громогласно): <i>Новое сообщение от <a href=?inc=info&nick=${nick} target=_blank><span style='color:${colornick}'>${set_nick}</span></a> в <a href=?inc=gb target=_blank>гостевой</a>.</i><br>`);
 
       if (text === "forum")
         wr(
@@ -3096,7 +3096,7 @@ class QuizGame {
 
     if (ask) {
       gd.innerHTML =
-        `<div id="gameword" style="margin-bottom:8px"></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><a href="?" onclick="alert('Введите ответ с % в поле ввода чата');return false" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:let(--accent);color:#fff;border-radius:8px;font-weight:700;font-size:16px;text-decoration:none">?</a><span style="font-size:16px;font-weight:500;line-height:1.4">${ask}</span></div>`;
+        `<div id="gameword" style="margin-bottom:8px"></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><a href="?" onclick="alert('Введите ответ с % в поле ввода чата');return false" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:let(--accent);color:#fff;border-radius:8px;font-weight:700;font-size:16px;text-decoration:none">?</a><span style='font-size:16px;font-weight:500;line-height:1.4'>${ask}</span></div>`;
     }
 
     let obj = document.getElementById('gameword');
@@ -3226,12 +3226,12 @@ class ChatFrameLoader {
 
   /** Предупреждение: не удалось подключиться к WebSocket-движку чата. */
   showEngineConnectionWarning() {
-    wr('<font color=red>Не удалось подключиться к движку чата.<br>Попробуйте использовать новый современный браузер <a href=https://www.google.com/chrome target=_blank>Google Chrome</a>.</font>');
+    wr('<span style='color:red'>Не удалось подключиться к движку чата.<br>Попробуйте использовать новый современный браузер <a href=https://www.google.com/chrome target=_blank>Google Chrome</a>.</span>');
   }
 
   /** Предупреждение: страница грузится слишком долго, можно продолжить вручную. */
   showPageLoadWarning() {
-    wr('<font color=red>Чат не был загружен в установленное время, вероятно некоторые элементы страницы грузятся очень долго, <a href=# onclick=\'loadframes(); return false;\'>нажмите для продолжения</a> ...</font>');
+    wr('<span style='color:red'>Чат не был загружен в установленное время, вероятно некоторые элементы страницы грузятся очень долго, <a href=# onclick=\'loadframes(); return false;\'>нажмите для продолжения</a> ...</span>');
   }
 
   /**

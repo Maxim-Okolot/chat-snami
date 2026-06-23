@@ -5,10 +5,10 @@
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body class=error-body>
-<span style="display:block;text-align:center">
-<font color=red class=error-msg>
+<span style='display:block;text-align:center'>
+<span class="error-msg" style="color:red">
 %error%
-</font>
+</span>
 %add%
 </span>
 </body>

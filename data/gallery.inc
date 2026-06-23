@@ -93,7 +93,7 @@ font-size: 18px !important;
 	}
 </style>
 
-<span style="display:block;text-align:center">
+<span style='display:block;text-align:center'>
 <br>
 <script>
 
@@ -102,17 +102,17 @@ font-size: 18px !important;
 function wr(text) {document.write(text);}
 
 /* Обработчик ошибок загрузки фото */
-if(error=='0') error="<font color=green>Сообщение удачно отправленно!</font>";
-if(error==1) error="<font color=red>Ошибка удаления, попробуйте ещё раз!</font>";
-if(error==2) error="<font color=red>Ошибка, только для зарегистрированных, укажите правильный пароль!</font>";
-if(error==3) error="<font color=red>Ошибка, этот ник зарегистрирован, пароль указан неверно!</font>";
-if(error==4) error="<font color=red>Ошибка длинны или синкаксиса ника!</font>";
-if(error==5) error="<font color=red>Введите сообщение!</font>";
-if(error==6) error="<font color=red>Вы заблокированны администратором!</font>";
-if(error==7) error="<font color=red>Вы недавно уже отправили сообщение!</font>";
-if(error==8) error="<font color=red>Невозможно загрузить фотографию, слишком большая или неправильный формат!</font>";
-if(error==9) error="<font color=red>Вы неможете загружать так много фотографий - удалите ненужные!</font>";
-if(error==10) error="<font color=green>Фотография удачно загруженна!</font>";
+if(error=='0') error="<span style='color:green'>Сообщение удачно отправленно!</span>";
+if(error==1) error="<span style='color:red'>Ошибка удаления, попробуйте ещё раз!</span>";
+if(error==2) error="<span style='color:red'>Ошибка, только для зарегистрированных, укажите правильный пароль!</span>";
+if(error==3) error="<span style='color:red'>Ошибка, этот ник зарегистрирован, пароль указан неверно!</span>";
+if(error==4) error="<span style='color:red'>Ошибка длинны или синкаксиса ника!</span>";
+if(error==5) error="<span style='color:red'>Введите сообщение!</span>";
+if(error==6) error="<span style='color:red'>Вы заблокированны администратором!</span>";
+if(error==7) error="<span style='color:red'>Вы недавно уже отправили сообщение!</span>";
+if(error==8) error="<span style='color:red'>Невозможно загрузить фотографию, слишком большая или неправильный формат!</span>";
+if(error==9) error="<span style='color:red'>Вы неможете загружать так много фотографий - удалите ненужные!</span>";
+if(error==10) error="<span style='color:green'>Фотография удачно загруженна!</span>";
 if(error) wr(error+"<br><br>");
 
 /* Генерирует укороченные ссылки */
@@ -181,15 +181,15 @@ etags[i]=new Array(/\[b\](.*?)\[\/b\]/g,'<b>$1</b>');i++;
 etags[i]=new Array(/\[i\](.*?)\[\/i\]/g,'<i>$1</i>');i++;
 etags[i]=new Array(/\[u\](.*?)\[\/u\]/g,'<u>$1</u>');i++;
 etags[i]=new Array(/\[s\](.*?)\[\/s\]/g,'<s>$1</s>');i++;
-etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<font color="$1">$2</font>',1);i++;
-etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<font size="$1">$2</font>',1);i++;
-etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<font face="$1">$2</font>',1);i++;
+etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<span style='color:$1'>$2</span>',1);i++;
+etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<span style='font-size:$1'>$2</span>',1);i++;
+etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<span style='font-family:$1'>$2</span>',1);i++;
 etags[i]=new Array(/\[sub\](.*?)\[\/sub\]/g,'<sub>$1</sub>');i++;
 etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style="display:block;text-align:center">$1</span>');i++;
+etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style='display:block;text-align:center'>$1</span>');i++;
 etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1" border=0 style="position:relative;">',1);i++; //одноразовая замена для лимита
 etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;
@@ -285,9 +285,9 @@ info+="<br>"+x[1]+"<br>";
 var zvezda = "";
 if(x[4]>0) {ball=Math.round(x[5]/x[4]*10)/10;for(var i=0; i<ball; i++){zvezda+="<img width=20 src=https://soulty.ru/img/status/orange_status.gif >"};info+=""+zvezda+" <div style='display:flex; justify-content: center;'><div class='like_count' style='margin-right: 15px;'><img src=https://soulty.ru/img/likeAnimation.gif width=25px /> <span <a style='color: #979797; font-weight: normal; font-family: Kurale; font-size: 18px;'>  "+x[4]+"</span></div>";};
 if(link && x[6])
- info+="<div class='like_count' style='width: 50px;'><font style='cursor:pointer;' title='Последний: "+x[7]+"'><a style='color: #979797; font-weight: normal; font-size: 18px !important;' href='"+link+"'> <img src=https://soulty.ru/img/comments.png width=25px /> "+x[6]+"</a></font></div></div><br>";
+ info+="<div class='like_count' style='width: 50px;'><span><a style='color: #979797; font-weight: normal; font-size: 18px !important;' href='"+link+"'> <img src=https://soulty.ru/img/comments.png width=25px /> "+x[6]+"</a></span></div></div><br>";
 else if(x[6])
-	info+="<div class='like_count' style='width: 50px'><font style='cursor:pointer; color: #979797; font-weight: normal; font-size: 18px !important;' title='Последний: "+x[7]+"'><img src=https://soulty.ru/img/comments.png width=25px /> "+x[6]+"</font></div></div><br>";
+	info+="<div class='like_count' style='width: 50px'><span><img src=https://soulty.ru/img/comments.png width=25px /> "+x[6]+"</span></div></div><br>";
 return info;
 }
 
@@ -316,7 +316,7 @@ if(gallery) wr("<b>"+galleryname+"</b><br><br>");
 
 if(!afoto) {
 /* Вывод мини-фотографий выбранной галереи или последние добавления */
-if(!g_f.length) wr("<font color=red>Фотографии не найденны!</font><br><br>");
+if(!g_f.length) wr("<span style='color:red'>Фотографии не найденны!</span><br><br>");
 else {
 var sites=Math.ceil(gal_ac/gal_ps);
 var links=mp_genlinks("?inc=gallery&gallery="+gallery+"&site=",sites,site);
@@ -359,13 +359,13 @@ var all_posts="";
 for(var i=0; i<g_p.length;i++) {
 mod="";
 if(moderator==1) mod+="<div style='display: flex; justify-content: space-between;'><div class='like_count' style='background: #fff; width:35px;margin-right: 10px;'><div style='float:left;'><img src=https://soulty.ru/img/status/orange_status.gif width=20px/></div><div>"+g_p[i][8]+"</div></div>";
-if(moderator==1) mod+="<div><a href='?inc=gallery&gallery="+gallery+"&foto="+afoto[0]+"&site="+site+"&delpost="+g_p[i][9]+"' onclick='return confirm(\"Вы действительно хотите удалить это сообщение?\");'><font class=low><img src='https://soulty.ru/img/button_del.jpg' width=40px/></font></a> | ";
-mod+="<a href=# onclick='quote("+i+"); return false;'><font class=low>Цитировать</font></a></div></div>";
+if(moderator==1) mod+="<div><a href='?inc=gallery&gallery="+gallery+"&foto="+afoto[0]+"&site="+site+"&delpost="+g_p[i][9]+"' onclick='return confirm(\"Вы действительно хотите удалить это сообщение?\");'><span class='low'><img src='https://soulty.ru/img/button_del.jpg' width=40px/></span></a> | ";
+mod+="<a href=# onclick='quote("+i+"); return false;'><span class='low'>Цитировать</span></a></div></div>";
 var noAva = (g_p[i][12] == 1) ? '/img/forum/ava_f.png' : '/img/forum/ava_m.png';
 var avator = g_p[i][5] ? g_p[i][5] : noAva;
 avator = '<img src="' + avator + '" alt="" style="margin-top:5px; margin-bottom:5px; border-radius: 50px; width:100px; height:100px;"><br>';
 message=filter(g_p[i][2],message_img_max);
-posts[i]="<table  class='table table-striped' align=center style='table-layout:fixed; width: 40%;'><tr><td class=title width=150>"+g_p[i][3]+"<td class=title align=right> #"+g_p[i][0]+"</tr><tr><td width=150 valign=top style='padding:10px;padding-left:4px; text-align:center;'><a href=# onclick='put(\""+g_p[i][1]+", \"); return false;'><font color='"+g_p[i][4]+"'>"+g_p[i][1]+"</font></a>  [<a href=?inc=info&nick="+g_p[i][1]+" target=info>?</a>]<br>"+avator+"</td><td valign=top style='padding:10px;word-wrap:break-word;'>"+message+"<tr><td>"+g_p[i][6]+"<td align=right>"+mod+"</table><br>";
+posts[i]="<table  class='table table-striped' align=center style='table-layout:fixed; width: 40%;'><tr><td class=title width=150>"+g_p[i][3]+"<td class=title align=right> #"+g_p[i][0]+"</tr><tr><td width=150 valign=top style='padding:10px;padding-left:4px; text-align:center;'><a href=# onclick='put(\""+g_p[i][1]+", \"); return false;'><span style='color:"+g_p[i][4]+"'>"+g_p[i][1]+"</span></a>  [<a href=?inc=info&nick="+g_p[i][1]+" target=info>?</a>]<br>"+avator+"</td><td valign=top style='padding:10px;word-wrap:break-word;'>"+message+"<tr><td>"+g_p[i][6]+"<td align=right>"+mod+"</table><br>";
 all_posts+=posts[i];
 }
 var links=genlinks("?inc=gallery&gallery="+gallery+"&foto="+afoto[0]+"&site=",sites,site,1);

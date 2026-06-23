@@ -202,7 +202,7 @@ for(var num in u) {
   for(var i=0;i<only.length;i++) {
     var field=only.charAt(i);
     if(field=='1')
-      wr+='<td><a href="?inc=info&userid='+user[0]+'" target="_blank"><font color="'+user['color']+'">'+user[field]+'</font></a></td>';
+      wr+='<td><a href="?inc=info&userid='+user[0]+'" target="_blank"><span style='color:'+user['color']+''>'+user[field]+'</span></a></td>';
     else if(field=='2') {
       var hours=Math.floor(user[2]/60), mins=user[2]%60;
       wr+='<td align=right>'+hours+' час. '+mins+' мин.</td>';

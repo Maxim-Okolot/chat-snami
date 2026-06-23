@@ -15,7 +15,7 @@ function gr (Str, arr  ) {
 
 	function c ( R, G, B, Str ) {
 
-		return "<font color=#" + Hex (R) + Hex (G) + Hex (B) + ">" + Str + "</font>"
+		return "<span style='color:#" + Hex (R) + Hex (G) + Hex (B) + "'>" + Str + "</span>"
 
 	}
 
