@@ -245,10 +245,6 @@ class ChatScrollPause {
     this.frame = document.getElementById('leftdiv');
     if (!this.frame) return;
 
-    if (this.button) {
-      this.button.addEventListener('click', () => this.toggle());
-    }
-
     this._observer = new MutationObserver(() => {
       if (this.paused && this.frame) {
         this.frame.scrollTop = this.savedScrollTop;
@@ -276,7 +272,8 @@ class ChatScrollPause {
 
     if (this.button) {
       this.button.classList.toggle('scroll-paused', this.paused);
-      this.button.title = this.paused ? '▶️ Возобновить прокрутку' : '⏸️ Остановить прокрутку';
+      this.button.setAttribute('aria-pressed', this.paused ? 'true' : 'false');
+      this.button.title = this.paused ? 'Возобновить прокрутку' : 'Остановить прокрутку';
     }
 
     this.frame.classList.toggle('chat-paused', this.paused);

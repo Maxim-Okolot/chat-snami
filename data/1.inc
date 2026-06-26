@@ -1422,7 +1422,7 @@
     <script src="https://myradio24.com/player/player.js?v3.31" data-radio="lenin" data-interval=15 data-vmid=27639 data-lang="ru"></script>
 
 
-<span style='display:block;text-align:center'><script type="text/javascript">
+<center><script type="text/javascript">
    var begin =  "2025";//год создания чата
   var date = new Date();
   var new_year =  date.getFullYear();
@@ -1431,7 +1431,6 @@
   var designer = "Андрей (Мистик) & Эмиль (ГНЕВ™)" ;// дизайнер
   document.write("  © "+begin+"-"+new_year+" \"<b>"+chat+"</b>\"<b>"+avtor+"</b>  <b>"+designer)
   </script>
-</span>
 
 
 </body>

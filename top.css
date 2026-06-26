@@ -89,7 +89,7 @@ input[type=text]:hover, input[type=password]:hover, select:hover {border-color:#
 input[type=text]:focus, input[type=password]:focus, select:focus {background: #005555;}
 
 /* иконка выбора файла для загрузки */
-.file {vertical-align:middle; display:inline-block; overflow:hidden; width:16px; height:16px; background-image:url(img/141.png);}
+.file {vertical-align:middle; display:inline-block; overflow:hidden; width:16px; height:16px; background-image:url('/assets/img/141.png);}
 .file input {cursor:pointer; width:16px; height:16px;	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0); -moz-opacity: 0; -khtml-opacity: 0; opacity: 0;}
 
 
@@ -268,7 +268,7 @@ select {
   height: 26px;
   border-radius: 5px;
   -webkit-appearance: none;
-  background-image: url('img/1389466887-627.jpg');
+  background-image: url('/assets/img/1389466887-627.jpg');
   background-position: right center;
   background-repeat: no-repeat;
   line-height: 1em;
@@ -834,7 +834,7 @@ left:50%;
 display:none;
 overflow:hidden;
 border:1px solid #1C1C1C;
-background: rgb(24,25,28) url(img/1402203990-746.jpg) 0 0 repeat-x;
+background: rgb(24,25,28) url('/assets/img/1402203990-746.jpg) 0 0 repeat-x;
 box-shadow: 0 0 10px rgba(0,0,0,0.5);
 -moz-border-radius:15px;
 -webkit-border-radius:15px;
@@ -854,7 +854,7 @@ text-indent:-9999px;
 position:absolute;
 top:10px;
 right:10px;
-background:url(img/0ad01e851c094125a3e797914bc801b6.png) no-repeat;
+background:url('/assets/img/0ad01e851c094125a3e797914bc801b6.png) no-repeat;
 }
 /* ------------------------------- */
 /**********popup with tabs**********/
@@ -1555,7 +1555,7 @@ border:0px solid;
 box-shadow: 0 0 10px rgba(0,0,0,0.5);
 padding-right:50px;
 background: rgb(23,25,28);
-background-image: url(img/16.png);
+background-image: url('/assets/img/16.png);
 background-repeat:no-repeat;
 background-position:right bottom;
 background-size: 380px auto;

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Анкета %nick%</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href='/data/vhod/images/favicon.ico' type="image/x-icon">
+  <link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
   <link rel="stylesheet" href="../assets/css/profile.css">
 
   <script src="/profile-rating.js"></script>
@@ -22,20 +22,20 @@
 
     <div class="stats-group">
       <div class="stat-item">
-        <span class='stat-value'>%gamewins%</span>
-        <span class='stat-label'>Очков викторины</span>
+        <span class="stat-value">%gamewins%</span>
+        <span class="stat-label">Очков викторины</span>
       </div>
       <div class="stat-item">
-        <span class='stat-value'>%msg%</span>
-        <span class='stat-label'>Сообщений</span>
+        <span class="stat-value">%msg%</span>
+        <span class="stat-label">Сообщений</span>
       </div>
       <div class="stat-item">
-        <span class='stat-value'>%views%</span>
-        <span class='stat-label'>Просмотров профиля</span>
+        <span class="stat-value">%views%</span>
+        <span class="stat-label">Просмотров профиля</span>
       </div>
       <div class="stat-item">
-        <span class='stat-value'>%points%</span>
-        <span class='stat-label'>Пунктов</span>
+        <span class="stat-value">%points%</span>
+        <span class="stat-label">Пунктов</span>
       </div>
       <div class="stat-item">
         <span class="stat-value" id="likes">0</span>
@@ -52,9 +52,9 @@
       <div class="status-badge">
         <script>
           var child = new Array;
-          child['FunnyBunnu']='<span style='color:#2a7ae2;'><b>Админ</b></span>';
-          child['Каспер']='<span style='color:#2a7ae2;'><b>Техник</b></span>';
-          child['Igor_Moscow']='<span style='color:#2a7ae2;'><b>Dj</b></span>';
+          child['FunnyBunnu']='<span style="color:#2a7ae2;"><b>Админ</b></span>';
+          child['Каспер']='<span style="color:#2a7ae2;"><b>Техник</b></span>';
+          child['Igor_Moscow']='<span style="color:#2a7ae2;"><b>Dj</b></span>';
           if(child['%nick%']!=null) document.write(child['%nick%']);
           else document.write("<span style='color:#888;'>Житель</span>");
           if('%nick%'=='Магнэто') document.write('<style>.info-body {background-image: url(http://zoohall.com.ua/uploads/posts/2010-09/1284281751_abstact-background-mix-8.jpg);}</style>')
@@ -63,26 +63,26 @@
 
         <script>
           window.friendAvatars = {
-            "FunnyBunny": "https://snami.mpchat.com/img/no_avatar_par.png",
+            "FunnyBunny": "https://snami.mpchat.com/assets/img/no_avatar_par.png",
             "Каспер": "/data/foto/1751810217.jpg",
             "SweetBanny": "https://snami.mpchat.com/data/foto/1761526736.jpg",
             "PassionFlower": "/data/foto/1748424287.jpg",
-            "Лесной_зверь": "/img/no_avatar.png",
-            "Сергей-36": "/img/no_avatar.png",
-            "Лена-О": "/img/no_avatar.png",
-            "Домовенок": "/img/no_avatar.png",
-            "Арчи": "/img/no_avatar.png",
-            "Света-О": "/img/no_avatar.png",
+            "Лесной_зверь": "/assets/img/no_avatar.png",
+            "Сергей-36": "/assets/img/no_avatar.png",
+            "Лена-О": "/assets/img/no_avatar.png",
+            "Домовенок": "/assets/img/no_avatar.png",
+            "Арчи": "/assets/img/no_avatar.png",
+            "Света-О": "/assets/img/no_avatar.png",
             "Mint_Sparkle": "/data/foto/1750356240.jpg",
-            "Фортуна": "/img/no_avatar.png",
+            "Фортуна": "/assets/img/no_avatar.png",
             "MeloDia": "/data/foto/1750773206.jpg",
-            "дракон": "/img/no_avatar.png",
-            "Незабываемая": "/img/no_avatar.png",
-            "Dylan": "/img/no_avatar.png",
-            "Zeynep": "/img/no_avatar.png",
-            "фАнТаЗиЯ": "/img/no_avatar.png",
-            "Иволга": "/img/no_avatar.png",
-            "Caramel": "/img/no_avatar.png"
+            "дракон": "/assets/img/no_avatar.png",
+            "Незабываемая": "/assets/img/no_avatar.png",
+            "Dylan": "/assets/img/no_avatar.png",
+            "Zeynep": "/assets/img/no_avatar.png",
+            "фАнТаЗиЯ": "/assets/img/no_avatar.png",
+            "Иволга": "/assets/img/no_avatar.png",
+            "Caramel": "/assets/img/no_avatar.png"
           };
         </script>
       </div>
@@ -90,20 +90,20 @@
 
     <div class="info-list">
       <div class="info-row">
-        <span class='key'>Имя</span>
-        <span class='value'>%name%</span>
+        <span class="key">Имя</span>
+        <span class="value">%name%</span>
       </div>
       <div class="info-row">
-        <span class='key'>Дата рождения</span>
-        <span class='value'>%birthday%</span>
+        <span class="key">Дата рождения</span>
+        <span class="value">%birthday%</span>
       </div>
       <div class="info-row">
-        <span class='key'>Пол</span>
+        <span class="key">Пол</span>
         <span class="value" id="gender"></span>
       </div>
       <div class="info-row">
-        <span class='key'>Знак зодиака</span>
-        <span class='value'>
+        <span class="key">Знак зодиака</span>
+        <span class="value">
           <script>
             den='%birthday%';
             xden=den.substr(3,2)+den.substr(0,2);
@@ -124,22 +124,22 @@
         </span>
       </div>
       <div class="info-row">
-        <span class='key'>Любовь</span>
-        <span class='value'>
+        <span class="key">Любовь</span>
+        <span class="value">
           <script>var love='%love%'; if(love=='') love='нет';document.write(love);</script>
         </span>
       </div>
       <div class="info-row">
-        <span class='key'>Семья</span>
-        <span class='value'><a href="?inc=love&act=family&tonick=%nick%" onclick="window.open(this.href,'_blank','width=500,height=500'); return false;">Посмотреть семью</a></span>
+        <span class="key">Семья</span>
+        <span class="value"><a href="?inc=love&act=family&tonick=%nick%" onclick="window.open(this.href,'_blank','width=500,height=500'); return false;">Посмотреть семью</a></span>
       </div>
       <div class="info-row">
-        <span class='key'>Дата регистрации</span>
-        <span class='value'>%regdate%</span>
+        <span class="key">Дата регистрации</span>
+        <span class="value">%regdate%</span>
       </div>
       <div class="info-row">
-        <span class='key'>Дней в чате</span>
-        <span class='value'>
+        <span class="key">Дней в чате</span>
+        <span class="value">
           <script language=JavaScript>
             den='%regdate%';
             var ret =/(\d\d).(\d\d).(\d\d)/;
@@ -153,16 +153,16 @@
         </span>
       </div>
       <div class="info-row">
-        <span class='key'>Последний визит</span>
-        <span class='value'>%lastvisit%</span>
+        <span class="key">Последний визит</span>
+        <span class="value">%lastvisit%</span>
       </div>
       <div class="info-row">
-        <span class='key'>Пробыл(a)</span>
-        <span class='value'>%time_h% час. %time_m% мин</span>
+        <span class="key">Пробыл(a)</span>
+        <span class="value">%time_h% час. %time_m% мин</span>
       </div>
       <div class="info-row">
-        <span class='key'>Состоит в группах</span>
-        <span class='value'>
+        <span class="key">Состоит в группах</span>
+        <span class="value">
           <script>
             var wr='';
             if(!clans.length) wr='нет';
@@ -319,7 +319,7 @@
       }
 
       let img = document.createElement('img');
-      img.src = `./img/default-avatar/${avatarSrc}`;
+      img.src = `/assets/img/default-avatar/${avatarSrc}`;
       img.alt = 'Фото профиля';
 
       document.querySelector('#avatar').append(img);
@@ -448,8 +448,8 @@
           var img = document.createElement('img');
           img.className = 'like-user-avatar';
           img.alt = '';
-          img.src = (user.voter_avatar && String(user.voter_avatar).trim()) ? user.voter_avatar : '/img/no_avatar.png';
-          img.onerror = function () { this.src = '/img/no_avatar.png'; };
+          img.src = (user.voter_avatar && String(user.voter_avatar).trim()) ? user.voter_avatar : '/assets/img/no_avatar.png';
+          img.onerror = function () { this.src = '/assets/img/no_avatar.png'; };
           var info = document.createElement('div');
           info.className = 'like-user-info';
           var nickEl = document.createElement('div');
@@ -559,7 +559,7 @@
 
         var avatar = (PROFILE_VIEWER.avatar && String(PROFILE_VIEWER.avatar).trim())
           ? PROFILE_VIEWER.avatar
-          : '/img/no_avatar.png';
+          : '/assets/img/no_avatar.png';
 
         fetch(PROFILE_SET_LIKE_URL, {
           method: 'POST',

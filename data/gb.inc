@@ -2,28 +2,28 @@
 <html>
 <head>
 <META http-equiv=Content-Type content='text/html; charset=UTF-8'>
-<link rel="icon" href='/data/vhod/images/favicon.ico' type="image/x-icon">
+<link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
 <link rel="stylesheet" href="https://snami.mpchat.com/gb.css" type="text/css" media="all" />
 <link id="style" rel="stylesheet" type="text/css" href="/2.css">
 
 </head>
 <body class=gb-body>
-<span style='display:block;text-align:center'><b>Гостевая</b><br><br> 
+<center><b>Гостевая</b><br><br> 
 <a href=#sendmess>Добавить сообщение</a><br><br>
 <script>
 /* Печатает строку */
 function wr(text) {document.write(text);}
 
 /* Обработчик ошибок */
-if(error=='0') error="<span style='color:green'>Сообщение удачно отправленно!</span>";
-if(error==1) error="<span style='color:red'>Ошибка удаления, попробуйте ещё раз!</span>";
-if(error==2) error="<span style='color:red'>Ошибка, гостевая только для зарегистрированных, укажите пароль!</span>";
-if(error==3) error="<span style='color:red'>Ошибка, этот ник зарегистрирован, пароль указан неверно!</span>";
-if(error==4) error="<span style='color:red'>Ошибка длинны или синкаксиса ника!</span>";
-if(error==5) error="<span style='color:red'>Ошибка длинны сообщения!</span>";
-if(error==6) error="<span style='color:red'>Вы заблокированны администратором!</span>";
-if(error==7) error="<span style='color:red'>Вы недавно уже отправили сообщение!</span>";
-if(error==8) error="<span style='color:red'>Неверно введён код, попробуйте ещё раз!</span>";
+if(error=='0') error="<font color=green>Сообщение удачно отправленно!</font>";
+if(error==1) error="<font color=red>Ошибка удаления, попробуйте ещё раз!</font>";
+if(error==2) error="<font color=red>Ошибка, гостевая только для зарегистрированных, укажите пароль!</font>";
+if(error==3) error="<font color=red>Ошибка, этот ник зарегистрирован, пароль указан неверно!</font>";
+if(error==4) error="<font color=red>Ошибка длинны или синкаксиса ника!</font>";
+if(error==5) error="<font color=red>Ошибка длинны сообщения!</font>";
+if(error==6) error="<font color=red>Вы заблокированны администратором!</font>";
+if(error==7) error="<font color=red>Вы недавно уже отправили сообщение!</font>";
+if(error==8) error="<font color=red>Неверно введён код, попробуйте ещё раз!</font>";
 if(error) wr(error+"<br><br>");
 
 /* Генерирует укороченные ссылки */
@@ -95,16 +95,16 @@ etags[i]=new Array(/\[b\](.*?)\[\/b\]/g,'<b>$1</b>');i++;
 etags[i]=new Array(/\[i\](.*?)\[\/i\]/g,'<i>$1</i>');i++;
 etags[i]=new Array(/\[u\](.*?)\[\/u\]/g,'<u>$1</u>');i++;
 etags[i]=new Array(/\[s\](.*?)\[\/s\]/g,'<s>$1</s>');i++;
-//etags[i]=new Array(/\[black\](.*?)\[\/black\]/g,'<span style='color:black'>$1</span>');i++;
-etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<span style='color:$1'>$2</span>',1);i++;
-etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<span style='font-size:$1'>$2</span>',1);i++;
-etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<span style='font-family:$1'>$2</span>',1);i++;
+//etags[i]=new Array(/\[black\](.*?)\[\/black\]/g,'<font color=black>$1</font>');i++;
+etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<font color="$1">$2</font>',1);i++;
+etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<font size="$1">$2</font>',1);i++;
+etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<font face="$1">$2</font>',1);i++;
 etags[i]=new Array(/\[sub\](.*?)\[\/sub\]/g,'<sub>$1</sub>');i++;
 etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style='display:block;text-align:center'>$1</span>');i++;
+etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<center>$1</center>');i++;
 etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1" border=0 style="position:relative;">',1);i++; //одноразовая замена для лимита
 etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;
@@ -197,11 +197,11 @@ var posts=new Array();
 var all_posts="";
 for(var i=0; i<g_p.length;i++) {
 mod="";
-if(moderator==1) mod+="<input type=checkbox name='delpost["+g_p[i][9]+"]'><a href='?inc=gb&site="+site+"&delpost="+g_p[i][9]+"' onclick='return confirm(\"Вы действительно хотите удалить это сообщение?\");'><span class='low'>Удалить</span></a> | ";
-mod+="<a href=# onclick='quote("+i+"); return false;'><span class='low'>Цитировать</span></a>";
+if(moderator==1) mod+="<input type=checkbox name='delpost["+g_p[i][9]+"]'><a href='?inc=gb&site="+site+"&delpost="+g_p[i][9]+"' onclick='return confirm(\"Вы действительно хотите удалить это сообщение?\");'><font class=low>Удалить</font></a> | ";
+mod+="<a href=# onclick='quote("+i+"); return false;'><font class=low>Цитировать</font></a>";
 avator="";if(g_p[i][5]) avator="<img src='"+g_p[i][5]+"' style='margin-top:5px;margin-bottom:5px;'>";
 message=filter(g_p[i][2],message_img_max);
-posts[i]="<table  width=500 align=center style='table-layout:fixed;'><tr><td class=title align=left width=150>"+g_p[i][3]+"<td class=title align=right> #"+g_p[i][0]+"</tr><tr><td width=150 valign=top align=left style=padding:10px;padding-left:4px;><a href=# onclick='put(\""+g_p[i][1]+", \"); return false;'><span style='color:"+g_p[i][4]+"'>"+g_p[i][1]+"</span></a>  [<a href=?inc=info&userid="+g_p[i][8]+" target=info>?</a>]<br>"+avator+"</td><td valign=top align=left style='padding:10px;word-wrap:break-word;'>"+message+"<tr><td align=left>"+g_p[i][6]+"<td align=right>"+mod+"</table><br>";
+posts[i]="<table  width=500 align=center style='table-layout:fixed;'><tr><td class=title align=left width=150>"+g_p[i][3]+"<td class=title align=right> #"+g_p[i][0]+"</tr><tr><td width=150 valign=top align=left style=padding:10px;padding-left:4px;><a href=# onclick='put(\""+g_p[i][1]+", \"); return false;'><font color='"+g_p[i][4]+"'>"+g_p[i][1]+"</font></a>  [<a href=?inc=info&userid="+g_p[i][8]+" target=info>?</a>]<br>"+avator+"</td><td valign=top align=left style='padding:10px;word-wrap:break-word;'>"+message+"<tr><td align=left>"+g_p[i][6]+"<td align=right>"+mod+"</table><br>";
 all_posts+=posts[i];
 }
 var links=genlinks("?inc=gb&site=",sites,site,1);
@@ -238,6 +238,6 @@ document.write(html);
 </form><br>
 
 Загружено за: <script>document.write(loadtime);</script>
-</span>
+</center>
 </body>
 </html>

@@ -44,7 +44,7 @@ function onload() {
 <!-- CHAT FRAME -->
 <div id=chatdiv style='position:absolute; height:40px; left:5px; right:5px; bottom:5px; padding:10px; border:1px gray solid;'>
 <form name=fmsg action=index.php?inc=write&nick=%nick%&id=%id% method=post target=hidden onsubmit="msg_send(text0.value);"> 
-<b><span style='color:%color%'>%nick%:</span></b> 
+<b><font color=%color%>%nick%:</font></b> 
 <input name=text0 class=text style='width:70%;'> <input type=submit value=' >> ' class=ok style='width:40px;'><br>
 <input type=hidden name=text> <input type=checkbox name=trans> - Транслит
 </form>

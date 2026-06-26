@@ -246,7 +246,7 @@ if ($k_post == 0) {
 
     while ($row = mysqli_fetch_assoc($res)) {
         $user = readuser("", $row['user']);
-        $avatar = ($user['icon'] == '' || $user['icon'] == '-' ? '/img/nophoto.jpg' : $user['icon']);
+        $avatar = ($user['icon'] == '' || $user['icon'] == '-' ? '/assets/img/nophoto.jpg' : $user['icon']);
         $nick = $user['nick'];
         $friend_html = '<div class="wrap-friends"><img src="'.$avatar.'" class="avatar"/><a href="index.php?inc=info&userid='.$row['user'].'" target="_blank">'.$nick.'</a></div>';
 

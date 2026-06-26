@@ -325,12 +325,15 @@ class SoundService {
     this.checkboxSelector = options.checkboxSelector || '#checkSound';
     this._checkbox = null;
 
-    this.sounds = {
-      0: '../assets/audio/personal-message.mp3',
-      1: '../assets/audio/private-message.mp3',
-      6: '../assets/audio/chat-login.mp3',
-      7: '../assets/audio/exit.mp3',
+    this._audioFiles = {
+      0: 'personal-message.mp3',
+      1: 'privat-message.mp3',
+      6: 'chat-login.mp3',
+      7: 'exit.mp3',
     };
+    this._pool = {};
+    this._audioUnlocked = false;
+    this._unlockBound = false;
   }
 
   /** Совместимость со старыми проверками sound.status */
@@ -341,22 +344,103 @@ class SoundService {
   /** Инициализация: чекбокс, чтение localStorage, обработчик change. */
   init() {
     this._checkbox = document.querySelector(this.checkboxSelector);
-    if (!this._checkbox) return;
-
     this.loadStatus();
-    this.bindEvents();
+    if (this._checkbox) this.bindEvents();
+    this.bindAudioUnlock();
+  }
+
+  /** Разблокировка autoplay после первого взаимодействия с чатом. */
+  bindAudioUnlock() {
+    if (this._unlockBound) return;
+    this._unlockBound = true;
+
+    const unlock = () => {
+      if (this._audioUnlocked) return;
+      this._audioUnlocked = true;
+      this._warmUpAudio(1);
+    };
+
+    ['click', 'keydown', 'touchstart'].forEach((eventName) => {
+      document.addEventListener(eventName, unlock, { once: true, capture: true });
+    });
+
+    const bindInputUnlock = () => {
+      const input = document.querySelector('input[name="text0"]');
+      if (input) input.addEventListener('focus', unlock, { once: true });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindInputUnlock, { once: true });
+    } else {
+      bindInputUnlock();
+    }
+  }
+
+  /** Предзагрузка и разблокировка аудио для типа сообщения. */
+  _warmUpAudio(type) {
+    this._preparePool(type);
+    const audio = this._pool[type];
+    if (!audio) return;
+
+    const prevVolume = audio.volume;
+    audio.volume = 0.001;
+    const promise = audio.play();
+    if (!promise || typeof promise.then !== 'function') {
+      audio.volume = prevVolume || 1;
+      return;
+    }
+
+    promise.then(() => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = 1;
+    }).catch(() => {
+      audio.volume = prevVolume || 1;
+    });
+  }
+
+  _preparePool(type) {
+    if (this._pool[type]) return;
+
+    const candidates = this._audioCandidates(type);
+    if (!candidates.length) return;
+
+    const audio = new Audio(candidates[0]);
+    audio.preload = 'auto';
+    audio.addEventListener('error', () => {
+      delete this._pool[type];
+    }, { once: true });
+    this._pool[type] = audio;
+  }
+
+  /** URL аудиофайла — сначала относительный путь, как у картинок в chat.inc. */
+  _audioCandidates(type) {
+    let file = this._audioFiles[type];
+    if (type === 2) file = this._audioFiles[1];
+
+    if (!file) return [];
+
+    const bases = ['../assets/audio/', '/assets/audio/', 'assets/audio/'];
+    const urls = [];
+
+    for (const base of bases) {
+      const url = `${base}${file}`;
+      if (urls.indexOf(url) === -1) urls.push(url);
+    }
+
+    return urls;
   }
 
   /** Загружает сохранённую настройку звука из localStorage. */
   loadStatus() {
     const saved = localStorage.getItem(this.storageKey);
-    if (saved === null) {
-      this._checkbox.checked = this._status === 1;
-      return;
+    if (saved !== null) {
+      this._status = Number(saved) === 1 ? 1 : 0;
+    } else if (this._checkbox) {
+      this._status = this._checkbox.checked ? 1 : 0;
     }
 
-    this._status = Number(saved) === 1 ? 1 : 0;
-    this._checkbox.checked = this._status === 1;
+    if (this._checkbox) this._checkbox.checked = this._status === 1;
   }
 
   /** Сохраняет настройку при переключении чекбокса. */
@@ -373,33 +457,68 @@ class SoundService {
 
   /**
    * Воспроизводит звук по типу команды.
-   * @param {number} cmd — 0: входящее, 1: приват, 6: вход, 7: выход
+   * @param {number} cmd — 0: входящее, 1: приват, 2: приват-окно, 6: вход, 7: выход
    */
   play(cmd) {
     if (!this.isEnabled()) return false;
 
-    const soundSrc = this.sounds[cmd];
-    if (!soundSrc) return false;
+    const type = Number(cmd) === 2 ? 1 : Number(cmd);
+    const candidates = this._audioCandidates(type);
+    if (!candidates.length) return false;
 
-    const promise = new Audio(soundSrc).play();
-    if (promise !== undefined) {
-      promise.then(function () {
-        console.log('Playback started!');
-      }).catch(function (error) {
-        console.log(error);
-      });
+    if (this._audioUnlocked) this._preparePool(type);
+
+    const pooled = this._pool[type];
+    if (pooled) {
+      pooled.currentTime = 0;
+      pooled.volume = 1;
+      const promise = pooled.play();
+      if (promise && typeof promise.catch === 'function') {
+        promise.catch(() => {
+          delete this._pool[type];
+          this._playFromCandidates(candidates, 0);
+        });
+      }
+      return true;
     }
 
+    this._playFromCandidates(candidates, 0);
     return true;
+  }
+
+  _playFromCandidates(candidates, index) {
+    if (index >= candidates.length) return;
+
+    const audio = new Audio(candidates[index]);
+    audio.preload = 'auto';
+
+    const tryNext = () => {
+      this._playFromCandidates(candidates, index + 1);
+    };
+
+    audio.addEventListener('error', tryNext, { once: true });
+
+    const promise = audio.play();
+    if (!promise || typeof promise.catch !== 'function') return;
+
+    promise.catch(tryNext);
+  }
+
+  playPrivate() {
+    return this.play(1);
   }
 }
 
 /** Глобальный экземпляр — используется как sound.play() по всему чату. */
 const sound = new SoundService();
 
-document.addEventListener('DOMContentLoaded', function () {
-  sound.init();
-});
+(function initSoundService() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => sound.init());
+  } else {
+    sound.init();
+  }
+})();
 
 
 /**
@@ -689,13 +808,19 @@ class NickMessageFormatter {
     return text;
   }
 
+  /** onclick для клика по нику: pub — [ник], priv — /privat. */
+  buildNickClickAction(nick, tonickMode) {
+    if (tonickMode === 'none') return 'return false;';
+    const safe = String(nick).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    if (tonickMode === 'priv') return `ptonick('${safe}: '); return false;`;
+    return `insertNickTag('${safe}'); return false;`;
+  }
+
   /** Ссылка на ник в ленте (графник или font-обёртка). */
   wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, tonickMode) {
     let gn = setGraphNick(cmd, nick);
     let graphic = (gn && gn.indexOf('<') !== -1);
-    let oc = (tonickMode === 'priv')
-      ? (`ptonick('${nick}: '); return false;`)
-      : (tonickMode === 'none' ? 'return false;' : (`tonick('${nick}: '); return false;`));
+    let oc = this.buildNickClickAction(nick, tonickMode);
     let open = ` <a href='' onclick="${oc}">`;
 
     if (graphic) return `${open}${gn}</a>`;
@@ -706,13 +831,22 @@ class NickMessageFormatter {
   wrapInlineTonick(cmd, tonick, size, color, face, tonickMode) {
     let gn = setGraphNick(cmd, tonick);
     let graphic = (gn && gn.indexOf('<') !== -1);
-    let oc = (tonickMode === 'priv')
-      ? (`parent.ptonick('${tonick}: '); return false;`)
-      : (`parent.tonick('${tonick}: '); return false;`);
+    let oc = this.buildNickClickAction(tonick, tonickMode);
     let open = `<a href='' onclick="${oc}">`;
 
     if (graphic) return `${open}${gn}</a>`;
     return `${open}<span class="chat-msg__nick" style="color:${color};font-size:${chatFontSizePx(size)};font-family:${face}">${gn}</span></a>`;
+  }
+
+  /** Заменяет [ник] в тексте на кликабельный графник (можно несколько раз в одном сообщении). */
+  expandNickTokens(text, cmd, size, color, face, tonickMode) {
+    if (!text || text.indexOf('[') === -1) return text;
+    const mode = tonickMode || ((cmd === 1 || cmd === 2) ? 'priv' : 'pub');
+    return text.replace(/\[([^\[\]\r\n]+?)\]/g, (match, nickName) => {
+      const nick = String(nickName).trim();
+      if (!nick) return match;
+      return this.wrapInlineTonick(cmd, nick, size, color, face, mode);
+    });
   }
 
   /** Подпись бота «Снамик» в ленте. */
@@ -736,16 +870,30 @@ class NickMessageFormatter {
     return text;
   }
 
-  /** Проверяет, адресовано ли сообщение текущему пользователю. */
-  isAddressedToMe(nick, tonick, text) {
-    if (nick === mynick) return false;
-    if (tonick === mynick) return true;
-    return text.split(` ${mynick}:`).length > 1;
+  /** Есть ли в тексте обращение к нику: [ник] или « ник:». */
+  messageMentionsNick(sourceText, targetNick) {
+    if (!sourceText || !targetNick) return false;
+    const esc = String(targetNick).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (new RegExp(`\\[${esc}\\]`).test(sourceText)) return true;
+    return sourceText.split(` ${targetNick}:`).length > 1;
   }
 
-  /** Обёртка «Вам:» для сообщений, адресованных текущему пользователю. */
+  /** Проверяет, адресовано ли сообщение текущему пользователю. */
+  isAddressedToMe(nick, tonick, text, rawText) {
+    if (nick === mynick) return false;
+    if (tonick === mynick) return true;
+    const source = rawText != null ? rawText : text;
+    return this.messageMentionsNick(source, mynick);
+  }
+
+  /** Обёртка «Сообщение для Вас» для адресованных сообщений. */
   wrapForMe(content) {
-    return `<div class="message-for-me"><div class="message-for-me__header">Вам: </div>${content}</div>`;
+    return `<div class="message-for-me"><div class="message-for-me__header"><span class="message-for-me__icon" aria-hidden="true">✉</span><span class="message-for-me__label">Сообщение для Вас</span></div><div class="message-for-me__body">${content}</div></div>`;
+  }
+
+  /** Обёртка «Сообщение для всех» для команды /vsem. */
+  wrapForEveryone(set_time, set_nick, text) {
+    return `<div class="message-for-everyone"><div class="message-for-everyone__header"><span class="message-for-everyone__icon" aria-hidden="true">📢</span><span class="message-for-everyone__label">Сообщение для всех</span></div><div class="message-for-everyone__body">${set_time}${set_nick}${text}</div></div>`;
   }
 
   /** Текст сообщения с цветом/размером/шрифтом пользователя. */
@@ -773,7 +921,7 @@ class NickMessageFormatter {
   }
 
   wrapAdminNickLink(nick, colornick) {
-    return `<a href='' class="chat-msg__admin-nick-link" onclick="parent.tonick('${nick}: '); return false;">${this.wrapColoredNick('АДМИНИСТРАЦИЯ', colornick)}</a>`;
+    return `<a href='' class="chat-msg__admin-nick-link" onclick="insertNickTag('${nick}'); return false;">${this.wrapColoredNick('АДМИНИСТРАЦИЯ', colornick)}</a>`;
   }
 
   wrapAdminModeration(nick, colornick, action, target, duration, reason, kill) {
@@ -818,7 +966,7 @@ class NickMessageFormatter {
       ? chatConfig.statusMeta[idx]
       : { label: 'обновил статус', icon: '●', gif: chatConfig.statusGifUrl(idx) };
     const gifSrc = meta.gif || chatConfig.statusGifUrl(idx);
-    const nickLink = `<a href='' class="chat-msg__status-nick-link" onclick="tonick('${nick}: '); return false;">${this.wrapColoredNick(set_nick, colornick, 'sm')}</a>`;
+    const nickLink = `<a href='' class="chat-msg__status-nick-link" onclick="insertNickTag('${nick}'); return false;">${this.wrapColoredNick(set_nick, colornick, 'sm')}</a>`;
     const mediaBlock = gifSrc
       ? `<div class="chat-msg__status-media"><img src="${gifSrc}" alt="" width="44" height="44"></div>`
       : `<div class="chat-msg__status-media chat-msg__status-media--icon"><span class="chat-msg__status-icon" aria-hidden="true">${meta.icon}</span></div>`;
@@ -846,11 +994,11 @@ class NickMessageFormatter {
   }
 
   wrapDevBroadcast(set_time, set_nick, text) {
-    return `<div class="chat-msg__dev">${set_time}${set_nick}<img src="https://i.postimg.cc/SKZpgcJL/image.png" alt=""><span class="chat-msg__dev-text">${text}</span></div>`;
+    return `<div class="message-for-dev"><div class="message-for-dev__header"><span class="message-for-dev__icon" aria-hidden="true">🌸</span><span class="message-for-dev__label">Сообщение для девушек</span></div><div class="message-for-dev__body">${set_time}${set_nick}${text}</div></div>`;
   }
 
   wrapParnBroadcast(set_time, set_nick, text) {
-    return `<div class="chat-msg__parn">${set_time}${set_nick}<img src="https://i.postimg.cc/bvw7Sd3Z/image.png" alt=""><span class="chat-msg__parn-text">${text}</span></div>`;
+    return `<div class="message-for-parn"><div class="message-for-parn__header"><span class="message-for-parn__icon" aria-hidden="true">👔</span><span class="message-for-parn__label">Сообщение для парней</span></div><div class="message-for-parn__body">${set_time}${set_nick}${text}</div></div>`;
   }
 
   wrapForumNotice(nick, set_nick, topicTitle, topicId, forumId) {
@@ -915,6 +1063,7 @@ if (typeof delayed === 'undefined') window.delayed = 0;
 if (typeof room_r === 'undefined') window.room_r = 0;
 if (typeof status_r === 'undefined') window.status_r = 0;
 if (typeof inchat_r === 'undefined') window.inchat_r = '1';
+if (typeof mymw === 'undefined') window.mymw = '';
 
 
 /**
@@ -978,12 +1127,52 @@ function up() {
   chatScrollManager.scrollUp();
 }
 
-function isMessageAddressedToMe(nick, tonick, text) {
-  return nickMessageFormatter.isAddressedToMe(nick, tonick, text);
+function isMessageAddressedToMe(nick, tonick, text, rawText) {
+  return nickMessageFormatter.isAddressedToMe(nick, tonick, text, rawText);
 }
 
 function wrapMessageForMe(content) {
   return nickMessageFormatter.wrapForMe(content);
+}
+
+function nickEquals(a, b) {
+  const left = chatStr(a).trim().toLowerCase();
+  const right = chatStr(b).trim().toLowerCase();
+  return left !== '' && left === right;
+}
+
+/** Входящее приватное сообщение для текущего пользователя. */
+function shouldNotifyPrivateSound(nick, tonick) {
+  if (typeof mynick === 'undefined' || !mynick) return false;
+  if (nickEquals(nick, mynick)) return false;
+  return nickEquals(tonick, mynick);
+}
+
+function notifyIncomingPrivateSound(nick, tonick) {
+  if (!shouldNotifyPrivateSound(nick, tonick)) return;
+  sound.playPrivate();
+}
+
+/** Пол текущего пользователя: 0 — мужской, 1 — женский. */
+function getMyMw() {
+  const cached = chatStr(mymw);
+  if (cached === '0' || cached === '1') return cached;
+  if (typeof us === 'undefined' || typeof mynick === 'undefined' || !mynick) return '';
+  for (let i = 0; i < us.length; i++) {
+    if (us[i] && us[i][0] === mynick) {
+      const mw = chatStr(us[i][3]);
+      if (mw === '0' || mw === '1') return mw;
+    }
+  }
+  return '';
+}
+
+/** Звук для /dev и /parn — только целевой аудитории. */
+function shouldPlayGenderBroadcastSound(kind) {
+  const mw = getMyMw();
+  if (kind === 'dev') return mw === '1';
+  if (kind === 'parn') return mw === '0';
+  return false;
 }
 
 /**
@@ -1298,7 +1487,7 @@ class NickListManager {
     set_privat = `<a href='' onclick="ptonick('${nick}: ');return false" class='nick-list__privat-link'>${set_privat}</a>`;
 
     const nickColor = color ? (String(color).charAt(0) === '#' ? color : `#${color}`) : '';
-    set_nick = `<a href=''${nickColor ? ` style='color:${nickColor}'` : ''} onclick="tonick('${nick}: ');return false">${set_nick}</a>`;
+    set_nick = `<a href=''${nickColor ? ` style='color:${nickColor}'` : ''} onclick="insertNickTag('${nick}');return false">${set_nick}</a>`;
     const set_mw = `<a href="index.php?inc=info&nick=${us[i][0]}" target="_blank" class='nick-list__mw'>${mw}</a>`;
 
     row.className = 'nick-list__row';
@@ -1369,556 +1558,565 @@ var tadd, tdel;
  */
 class MessageRouter {
   handle(room, cmd, nick, tonick, text, time, colornick, color, var9, var10, var11, var12, var13, var14) {
-  cmd = chatNum(cmd);
-  room = chatNum(room);
-  if (typeof SNAMIK_BOT !== 'undefined' && SNAMIK_BOT && SNAMIK_BOT.hookIncoming) {
+    cmd = chatNum(cmd);
+    room = chatNum(room);
+    if (typeof SNAMIK_BOT !== 'undefined' && SNAMIK_BOT && SNAMIK_BOT.hookIncoming) {
+      try {
+        if (SNAMIK_BOT.hookIncoming.apply(null, arguments)) return;
+      } catch (e) {
+      }
+    }
+    if (ign_ok(nick) && cmd !== 6 && cmd !== 7) return;
     try {
-      if (SNAMIK_BOT.hookIncoming.apply(null, arguments)) return;
+      if (text.split('src=tmp').length > 1 && parent.users.document.getElementById('kartinka').checked) {
+        text = text.replace(/.br..img.src.(tmp.(.+\.jpg)).border.0..br./igm, "<a href=$1 target=_blank><img src=http://mpchat.com/blank/img/ftp/img.gif border=0> $2</a>")
+      } else {
+        text = text.replace(/.br..img.src.(tmp.(.+\.jpg)).border.0..br./igm, "<img onload=parent.imgminimum(this) src=$1 border=0>")
+      }
     } catch (e) {
+      text = text.replace(/.br..img.src.(tmp.(.+\.jpg)).border.0..br./igm, "<img onload=imgminimum(this) src=$1 border=0>");
     }
-  }
-  if (ign_ok(nick) && cmd !== 6 && cmd !== 7) return;
-  try {
-    if (text.split('src=tmp').length > 1 && parent.users.document.getElementById('kartinka').checked) {
-      text = text.replace(/.br..img.src.(tmp.(.+\.jpg)).border.0..br./igm, "<a href=$1 target=_blank><img src=http://mpchat.com/blank/img/ftp/img.gif border=0> $2</a>")
-    } else {
-      text = text.replace(/.br..img.src.(tmp.(.+\.jpg)).border.0..br./igm, "<img onload=parent.imgminimum(this) src=$1 border=0>")
-    }
-  } catch (e) {
-    text = text.replace(/.br..img.src.(tmp.(.+\.jpg)).border.0..br./igm, "<img onload=imgminimum(this) src=$1 border=0>");
-  }
 
 
-  if (nick === nick_r && !sameRoom(room, room_r)) return;
-  if (tonick === mynick && loaded === 1) str_plus(1);
+    if (nick === nick_r && !sameRoom(room, room_r)) return;
+    if (tonick === mynick && loaded === 1) str_plus(1);
 
-  let adminNoticeHtml = null;
+    let adminNoticeHtml = null;
 
-  // автоматическое уменьшение размера загружаемых изображений в чат через кнопку обзор
-  text = text.replace(/.br..img.src.(tmp.(.+\.(gif|jpg|jpeg|bmp|png|tif|tiff))).border.0..br./igm, "<img onload=imgminimum(this) src=$1 border=0>");
+    // автоматическое уменьшение размера загружаемых изображений в чат через кнопку обзор
+    text = text.replace(/.br..img.src.(tmp.(.+\.(gif|jpg|jpeg|bmp|png|tif|tiff))).border.0..br./igm, "<img onload=imgminimum(this) src=$1 border=0>");
 // начало обработки тега media
-  if (img_no === 0) {
-    text = text.replace(/\[media\]((?:http|https):\/\/(.*?)\.(gif|jpg|jpeg|bmp|png|tif|tiff|webp))\[\/media\]/mig, '<a href="$1" target="_blank" ><img onload=parent.imgminimum(this) src=$1 title="открыть в новом окне"  style="max-height:100px;" border=0></a> ')
-  } else {
-    text = text.replace(/\[media\]((?:http|https):\/\/(.*?)\.(gif|jpg|jpeg|bmp|png|tif|tiff|webp))\[\/media\]/mig, '<a href=./index.php?inc=go&url=$1 target=_blank><img src=http://mpchat.com/blank/img/ftp/img.gif border=0 alt=""> $2.$3</a>')
-  }
-
-  if (img_no === 1) {
-    text = text.replace(/\[media\](http:\/\/(.*?))\[\/media\]/mig, '<a href=./index.php?inc=go&url=$1 target=_blank>$1</a>')
-  }
-
-  text = text.replace(/\[media\](http:\/\/zoom\.it\/(.*?))\[\/media\]/mig, '<script src="$1.js?width=auto&height=200px"></script><a href="$1" target="_blank" title="ссылка откроется в новом окне">link</a>');
-
-  text = text.replace(/\[media\](http:\/\/www\.divshare\.com\/download\/(.*?))\[\/media\]/mig, `<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="335" height="28" id="divplaylist"><param name="movie" value="http://www.divshare.com/flash/playlist?myId=$2" /><param name="allowScriptAccess" value="always" /><embed src="http://www.divshare.com/flash/playlist?myId=$2" width="335" height="28" allowScriptAccess="always" name="divplaylist" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed></object>`);
-
-  text = text.replace(/\[media\](http:\/\/prostopleer\.com\/tracks\/(.*?))\[\/media\]/mig, '<object width="411" height="28"><param name="movie" value="http://embed.prostopleer.com/track?id=$2"></param><embed src="http://embed.prostopleer.com/track?id=$2" type="application/x-shockwave-flash" width="411" height="28"></embed></object>');
-
-  text = text.replace(/\[media\](http:\/\/pleer\.com\/tracks\/(.*?))\[\/media\]/mig, '<object width="411" height="28"><param name="wmode" value="transparent"><param name="movie" value="http://embed.prostopleer.com/track?id=$2"></param><embed src="http://embed.prostopleer.com/track?id=$2" wmode="transparent"  type="application/x-shockwave-flash" width="411" height="28"></embed></object>');
-
-  text = text.replace(/\[media\](http:\/\/muzebra\.com\/l\/(.*?)\/)\[\/media\]/mig, '<object width="395" height="42"><param name="movie" value="http://embed.muzebra.com/player?id=$2"></param><embed src="http://embed.muzebra.com/player?id=$2" type="application/x-shockwave-flash" width="395" height="42"></embed><param name="wmode" value="transparent"/><param name="scale" value="noscale" /></object>');
-
-  text = text.replace(/\[media\]http:\/\/music\.yandex\.ru\/#!\/track\/(.*?)\/album\/(.*?)\[\/media\]/mig, '<object width="350" height="28"><param name="muz" value="http://music.yandex.ru/embed/$1/track.swf"/><param value="noscale" name="scale"/><param value="bg-color=%23D8D8D8&amp;text-color=%23555555&amp;hover-text-color=%23000000" name="flashvars"/><embed type="application/x-shockwave-flash" width="350" height="28" scale="noscale" flashvars="bg-color=%23D8D8D8&amp;text-color=%23555555&amp;hover-text-color=%23000000" src="http://music.yandex.ru/embed/$1/track.swf"/></object>');
-
-  text = text.replace(/\[media\]((?:http|https):\/\/.*mp3)\[\/media\]/mig, '<audio src="$1" controls></audio>');
-
-  /* Присвоение переменных */
-  if (cmd === 5) {
-    kill = var9;
-    timeout = var10;
-  } else if (cmd === 6 || cmd === 7) {
-    inchat = text;
-    mw = var9;
-    st = var10;
-    icon = var11;
-    status = var12;
-    love = var13;
-    clan = var14;
-    if (colornick === '') colornick = fontnick[0]; else colornick = `#${colornick}`;
-    if (color === '') color = fonttext[0]; else color = `#${color}`;
-    /* скрыть ник невидимки */
-    if (invisible[nick]) return;
-  } else {
-    sizenick = var9;
-    size = var10;
-    facenick = var11;
-    face = var12;
-    if (colornick === '') colornick = fontnick[0]; else colornick = `#${colornick}`;
-    if (sizenick === '') sizenick = fontnick[1];
-    if (facenick === '') facenick = fontnick[2];
-    if (color === '') color = fonttext[0]; else color = `#${color}`;
-    if (size === '') size = fonttext[1];
-    if (face === '') face = fonttext[2];
-    sizenick = chatFontSizePx(sizenick);
-    size = chatFontSizePx(size);
-  }
-
-  /* BB-коды, например для загруженного файла [file] или [media] из интеренета */
-  let etags = new Array();
-  let i = 0;
-  /* Если выкл. медиа, то меняем все [media] и [file] на обычные ссылки */
-  if (window['nomedia']) {
-    etags[i] = new Array(/\[(media|file)\]((http|tmp|data)[^ "]+)\[\/(media|file)\]/mig, '<a href="$2" target="_blank" >$2</a>');
-    i++;
-  }
-  /* Преобразование [file] загруженных файлов */
-  etags[i] = new Array(/\[file\]((tmp|data)[^ "]+\.(jpeg|jpg|gif|png|bmp|ico|tif|tiff|webp))\[\/file\]/i, '<a href="$1" target="_blank" ><img src="$1" style="max-width:200px;" ></a>', 1);
-  i++;
-  etags[i] = new Array(/\[file\]((tmp|data)[^ "]+\.(mp3|m4a|ogg|weba))\[\/file\]/i, '<audio src="$1" controls></audio>');
-  i++;
-  etags[i] = new Array(/\[file\]((tmp|data)[^ "]+\.(mp4|webm|mov))\[\/file\]/i, '<video src="$1" controls style="max-height:150px;"></video>');
-  i++;
-  /* Преобразование [media] ссылок из интернета  */
-  etags[i] = new Array(/\[media\](https?:\/\/[^ "]+\.(jpeg|jpg|gif|png|bmp|ico|tif|tiff|webp))\[\/media\]/i, '<a href="$1" target="_blank" ><img src="$1" style="max-width:300px;" ></a>');
-  i++;
-  etags[i] = new Array(/\[media\](https?:\/\/[^ "]+\.(mp3|m4a|ogg|weba))\[\/media\]/i, '<audio src="$1" controls></audio>');
-  i++;
-  etags[i] = new Array(/\[media\](https?:\/\/[^ "]+\.(mp4|webm|mov))\[\/media\]/i, '<video src="$1" controls style="max-height:300px; !important"></video>');
-  i++;
-  etags[i] = new Array(/\[media\]https:\/\/(www\.)?(youtube\.com\/watch\?v=|youtube\.com\/shorts\/|youtu\.be\/)([a-z0-9\?=_-]+)\[\/media\]/i, '<span class="chat-msg__break"></span><iframe src="https://www.youtube.com/embed/$3" width=458 height=258 frameborder=0 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
-  i++;
-  /* Выполним все замены */
-  for (let k = 0; k < etags.length; k++) text = text.replace(etags[k][0], etags[k][1]);
-
-  /* Автоответчик */
-  if (loaded === 1 && tonick === mynick && nick !== mynick) {
-    let autotext = document.fmsg.text0.value;
-    let obj = document.getElementsByName('autotext');
-    if (obj) obj = obj[0];
-    if (autotext && obj && obj.checked) {
-      window.hidden.location.href = `index.php?inc=write&text=/privat ${nick}: Автоответчик -> ${autotext}&r=${Math.random()}`;
+    if (img_no === 0) {
+      text = text.replace(/\[media\]((?:http|https):\/\/(.*?)\.(gif|jpg|jpeg|bmp|png|tif|tiff|webp))\[\/media\]/mig, '<a href="$1" target="_blank" ><img onload=parent.imgminimum(this) src=$1 title="открыть в новом окне"  style="max-height:100px;" border=0></a> ')
+    } else {
+      text = text.replace(/\[media\]((?:http|https):\/\/(.*?)\.(gif|jpg|jpeg|bmp|png|tif|tiff|webp))\[\/media\]/mig, '<a href=./index.php?inc=go&url=$1 target=_blank><img src=http://mpchat.com/blank/img/ftp/img.gif border=0 alt=""> $2.$3</a>')
     }
-  }
 
-  function alpha() {
-    let a = [9, 6, 8, 3, 14, 4, 5, 2, 19, 7, 18, 17, 13, 11, 12, 16, 20, 15, 10, 1, 19, 8, 6, 15, 1, 12, 7, 9, 5, 11,
+    if (img_no === 1) {
+      text = text.replace(/\[media\](http:\/\/(.*?))\[\/media\]/mig, '<a href=./index.php?inc=go&url=$1 target=_blank>$1</a>')
+    }
+
+    text = text.replace(/\[media\](http:\/\/zoom\.it\/(.*?))\[\/media\]/mig, '<script src="$1.js?width=auto&height=200px"></script><a href="$1" target="_blank" title="ссылка откроется в новом окне">link</a>');
+
+    text = text.replace(/\[media\](http:\/\/www\.divshare\.com\/download\/(.*?))\[\/media\]/mig, `<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="335" height="28" id="divplaylist"><param name="movie" value="http://www.divshare.com/flash/playlist?myId=$2" /><param name="allowScriptAccess" value="always" /><embed src="http://www.divshare.com/flash/playlist?myId=$2" width="335" height="28" allowScriptAccess="always" name="divplaylist" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed></object>`);
+
+    text = text.replace(/\[media\](http:\/\/prostopleer\.com\/tracks\/(.*?))\[\/media\]/mig, '<object width="411" height="28"><param name="movie" value="http://embed.prostopleer.com/track?id=$2"></param><embed src="http://embed.prostopleer.com/track?id=$2" type="application/x-shockwave-flash" width="411" height="28"></embed></object>');
+
+    text = text.replace(/\[media\](http:\/\/pleer\.com\/tracks\/(.*?))\[\/media\]/mig, '<object width="411" height="28"><param name="wmode" value="transparent"><param name="movie" value="http://embed.prostopleer.com/track?id=$2"></param><embed src="http://embed.prostopleer.com/track?id=$2" wmode="transparent"  type="application/x-shockwave-flash" width="411" height="28"></embed></object>');
+
+    text = text.replace(/\[media\](http:\/\/muzebra\.com\/l\/(.*?)\/)\[\/media\]/mig, '<object width="395" height="42"><param name="movie" value="http://embed.muzebra.com/player?id=$2"></param><embed src="http://embed.muzebra.com/player?id=$2" type="application/x-shockwave-flash" width="395" height="42"></embed><param name="wmode" value="transparent"/><param name="scale" value="noscale" /></object>');
+
+    text = text.replace(/\[media\]http:\/\/music\.yandex\.ru\/#!\/track\/(.*?)\/album\/(.*?)\[\/media\]/mig, '<object width="350" height="28"><param name="muz" value="http://music.yandex.ru/embed/$1/track.swf"/><param value="noscale" name="scale"/><param value="bg-color=%23D8D8D8&amp;text-color=%23555555&amp;hover-text-color=%23000000" name="flashvars"/><embed type="application/x-shockwave-flash" width="350" height="28" scale="noscale" flashvars="bg-color=%23D8D8D8&amp;text-color=%23555555&amp;hover-text-color=%23000000" src="http://music.yandex.ru/embed/$1/track.swf"/></object>');
+
+    text = text.replace(/\[media\]((?:http|https):\/\/.*mp3)\[\/media\]/mig, '<audio src="$1" controls></audio>');
+
+    /* Присвоение переменных */
+    if (cmd === 5) {
+      kill = var9;
+      timeout = var10;
+    } else if (cmd === 6 || cmd === 7) {
+      inchat = text;
+      mw = var9;
+      st = var10;
+      icon = var11;
+      status = var12;
+      love = var13;
+      clan = var14;
+      if (colornick === '') colornick = fontnick[0]; else colornick = `#${colornick}`;
+      if (color === '') color = fonttext[0]; else color = `#${color}`;
+      /* скрыть ник невидимки */
+      if (invisible[nick]) return;
+    } else {
+      sizenick = var9;
+      size = var10;
+      facenick = var11;
+      face = var12;
+      if (colornick === '') colornick = fontnick[0]; else colornick = `#${colornick}`;
+      if (sizenick === '') sizenick = fontnick[1];
+      if (facenick === '') facenick = fontnick[2];
+      if (color === '') color = fonttext[0]; else color = `#${color}`;
+      if (size === '') size = fonttext[1];
+      if (face === '') face = fonttext[2];
+      sizenick = chatFontSizePx(sizenick);
+      size = chatFontSizePx(size);
+    }
+
+    /* BB-коды, например для загруженного файла [file] или [media] из интеренета */
+    let etags = new Array();
+    let i = 0;
+    /* Если выкл. медиа, то меняем все [media] и [file] на обычные ссылки */
+    if (window['nomedia']) {
+      etags[i] = new Array(/\[(media|file)\]((http|tmp|data)[^ "]+)\[\/(media|file)\]/mig, '<a href="$2" target="_blank" >$2</a>');
+      i++;
+    }
+    /* Преобразование [file] загруженных файлов */
+    etags[i] = new Array(/\[file\]((tmp|data)[^ "]+\.(jpeg|jpg|gif|png|bmp|ico|tif|tiff|webp))\[\/file\]/i, '<a href="$1" target="_blank" ><img src="$1" style="max-width:200px;" ></a>', 1);
+    i++;
+    etags[i] = new Array(/\[file\]((tmp|data)[^ "]+\.(mp3|m4a|ogg|weba))\[\/file\]/i, '<audio src="$1" controls></audio>');
+    i++;
+    etags[i] = new Array(/\[file\]((tmp|data)[^ "]+\.(mp4|webm|mov))\[\/file\]/i, '<video src="$1" controls style="max-height:150px;"></video>');
+    i++;
+    /* Преобразование [media] ссылок из интернета  */
+    etags[i] = new Array(/\[media\](https?:\/\/[^ "]+\.(jpeg|jpg|gif|png|bmp|ico|tif|tiff|webp))\[\/media\]/i, '<a href="$1" target="_blank" ><img src="$1" style="max-width:300px;" ></a>');
+    i++;
+    etags[i] = new Array(/\[media\](https?:\/\/[^ "]+\.(mp3|m4a|ogg|weba))\[\/media\]/i, '<audio src="$1" controls></audio>');
+    i++;
+    etags[i] = new Array(/\[media\](https?:\/\/[^ "]+\.(mp4|webm|mov))\[\/media\]/i, '<video src="$1" controls style="max-height:300px; !important"></video>');
+    i++;
+    etags[i] = new Array(/\[media\]https:\/\/(www\.)?(youtube\.com\/watch\?v=|youtube\.com\/shorts\/|youtu\.be\/)([a-z0-9\?=_-]+)\[\/media\]/i, '<span class="chat-msg__break"></span><iframe src="https://www.youtube.com/embed/$3" width=458 height=258 frameborder=0 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+    i++;
+    /* Выполним все замены */
+    for (let k = 0; k < etags.length; k++) text = text.replace(etags[k][0], etags[k][1]);
+
+    /* Автоответчик */
+    if (loaded === 1 && tonick === mynick && nick !== mynick) {
+      let autotext = document.fmsg.text0.value;
+      let obj = document.getElementsByName('autotext');
+      if (obj) obj = obj[0];
+      if (autotext && obj && obj.checked) {
+        window.hidden.location.href = `index.php?inc=write&text=/privat ${nick}: Автоответчик -> ${autotext}&r=${Math.random()}`;
+      }
+    }
+
+    function alpha() {
+      let a = [9, 6, 8, 3, 14, 4, 5, 2, 19, 7, 18, 17, 13, 11, 12, 16, 20, 15, 10, 1, 19, 8, 6, 15, 1, 12, 7, 9, 5, 11,
         16, 2, 17, 13, 18, 10, 4, 14, 20, 3, 10, 11, 16, 9, 6, 4, 18, 20, 1, 7, 3, 13, 12, 14, 5, 19, 15, 2, 8, 17];
-    const b = time.replace(/0(\d)/g, "$1").match(/\d+/g);
-    a = a.slice(b[1]).concat(a.slice(0, b[1]));
-    return ` На кубике выпало: ${nickMessageFormatter.wrapDice(`<img src=https://imgs.su/upload/782/412600249.gif>${a[b[2]]}`)} `
-  };
+      const b = time.replace(/0(\d)/g, "$1").match(/\d+/g);
+      a = a.slice(b[1]).concat(a.slice(0, b[1]));
+      return ` На кубике выпало: ${nickMessageFormatter.wrapDice(`<img src=https://imgs.su/upload/782/412600249.gif>${a[b[2]]}`)} `
+    };
 
-  text = text.replace('*кубик*', alpha);
+    text = text.replace('*кубик*', alpha);
 
-  /* Проверка пользовательских команд для простого сообщения */
-  if (cmd === 0) {
-    if (text.substr(0, 7) === "/remove" && remover[nick]) {
-      let timeremovez;
-      text = text.replace("/remove", "");
-      timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)|\S+/g);
-      if ((timeremovez !== null && timeremovez !== undefined)) {
+    /* Проверка пользовательских команд для простого сообщения */
+    if (cmd === 0) {
+      if (text.substr(0, 7) === "/remove" && remover[nick]) {
+        let timeremovez;
+        text = text.replace("/remove", "");
+        timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)|\S+/g);
+        if ((timeremovez !== null && timeremovez !== undefined)) {
+          let obj = document.getElementById("leftdiv");
+          let div = obj.getElementsByTagName('div');
+          for (let i = 0; i < timeremovez.length; i++) {
+            for (let k = 0; k < div.length; k++) {
+              if (div[k].innerHTML.indexOf(timeremovez[i]) >= 0 && (remover[nick] || div[k].innerHTML.indexOf(`>${nick}:<`) >= 0)) {
+                obj.removeChild(div[k]);
+                k--;
+              }
+            }
+          }
+        }
+
+        if (nick !== mynick || (timeremovez === null || timeremovez === undefined)) return;
+        adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('remove', 'Удаление сообщений', `Удалено из лога: ${timeremovez}`);
+        text = '';
+      }
+      if (text.substr(0, 7) === "/remove") {
+        let timeremovez;
+        let deleted = 0;
+        text = text.replace("/remove", "");
+        timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)|[^\s\(\)]{3,50}/g);
+        if ((timeremovez === null || timeremovez === undefined)) return;
         let obj = document.getElementById("leftdiv");
         let div = obj.getElementsByTagName('div');
         for (let i = 0; i < timeremovez.length; i++) {
           for (let k = 0; k < div.length; k++) {
-            if (div[k].innerHTML.indexOf(timeremovez[i]) >= 0 && (remover[nick] || div[k].innerHTML.indexOf(`>${nick}:<`) >= 0)) {
+            if (div[k].innerHTML.indexOf(timeremovez[i]) >= 0 && (remover[nick])) {
               obj.removeChild(div[k]);
               k--;
+              deleted++;
             }
           }
         }
+        if (nick !== mynick || !deleted) return;
+        adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('remove', 'Удаление сообщений', `Удалено из лога: ${timeremovez}`);
+        text = '';
       }
-
-      if (nick !== mynick || (timeremovez === null || timeremovez === undefined)) return;
-      adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('remove', 'Удаление сообщений', `Удалено из лога: ${timeremovez}`);
-      text = '';
+      if (text.substr(0, 5) === "/ping" && nick === mynick && loaded === 1) {
+        let ping = (new Date().getTime() - gettime) / 1000;
+        adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('ping', 'Ping', `Задержка соединения: <strong>${ping} сек</strong>`);
+        text = '';
+      }
+      if (text.substr(0, 6) === "/clear" && clearer[nick]) {
+        if (loaded === 1) document.getElementById("leftdiv").innerHTML = "";
+        adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('clear', 'Очистка чата', 'Фрейм сообщений очищен');
+        text = '';
+      }
+      if (text.substr(0, 7) === "/reload" && reloader[nick]) {
+        if (loaded === 1) location.reload();
+        adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('reload', 'Перезагрузка', 'Чат перезагружается…');
+        text = '';
+      }
+      if (text.substr(0, 6) === "/alert" && alerter[nick]) {
+        text = text.substr(text.indexOf(": ") + 2);
+        if (loaded === 1 && mynick === tonick) alert(text);
+        if (nick !== mynick) return;
+        adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('alert', 'Алерт', `Пользователю <strong>${tonick}</strong> отправлен alert`);
+        text = '';
+      }
+      if (text.substr(0, 7) === "/ignore" && ignorer[nick]) {
+        if (tonick && mynick !== tonick && loaded === 1) ign_sel(tonick);
+        if (nick !== mynick || !tonick) return;
+        if (ign_ok(tonick)) adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('ignore', 'Полный игнор', `На ник <strong>${tonick}</strong> установлен полный игнор`);
+        else adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('ignore', 'Полный игнор', `С ника <strong>${tonick}</strong> снят полный игнор`);
+        text = '';
+      }
     }
-    if (text.substr(0, 7) === "/remove") {
-      let timeremovez;
-      let deleted = 0;
-      text = text.replace("/remove", "");
-      timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)|[^\s\(\)]{3,50}/g);
-      if ((timeremovez === null || timeremovez === undefined)) return;
-      let obj = document.getElementById("leftdiv");
-      let div = obj.getElementsByTagName('div');
-      for (let i = 0; i < timeremovez.length; i++) {
-        for (let k = 0; k < div.length; k++) {
-          if (div[k].innerHTML.indexOf(timeremovez[i]) >= 0 && (remover[nick])) {
-            obj.removeChild(div[k]);
-            k--;
-            deleted++;
-          }
-        }
-      }
-      if (nick !== mynick || !deleted) return;
-      adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('remove', 'Удаление сообщений', `Удалено из лога: ${timeremovez}`);
-      text = '';
-    }
-    if (text.substr(0, 5) === "/ping" && nick === mynick && loaded === 1) {
-      let ping = (new Date().getTime() - gettime) / 1000;
-      adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('ping', 'Ping', `Задержка соединения: <strong>${ping} сек</strong>`);
-      text = '';
-    }
-    if (text.substr(0, 6) === "/clear" && clearer[nick]) {
-      if (loaded === 1) document.getElementById("leftdiv").innerHTML = "";
-      adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('clear', 'Очистка чата', 'Фрейм сообщений очищен');
-      text = '';
-    }
-    if (text.substr(0, 7) === "/reload" && reloader[nick]) {
-      if (loaded === 1) location.reload();
-      adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('reload', 'Перезагрузка', 'Чат перезагружается…');
-      text = '';
-    }
-    if (text.substr(0, 6) === "/alert" && alerter[nick]) {
-      text = text.substr(text.indexOf(": ") + 2);
-      if (loaded === 1 && mynick === tonick) alert(text);
-      if (nick !== mynick) return;
-      adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('alert', 'Алерт', `Пользователю <strong>${tonick}</strong> отправлен alert`);
-      text = '';
-    }
-    if (text.substr(0, 7) === "/ignore" && ignorer[nick]) {
-      if (tonick && mynick !== tonick && loaded === 1) ign_sel(tonick);
-      if (nick !== mynick || !tonick) return;
-      if (ign_ok(tonick)) adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('ignore', 'Полный игнор', `На ник <strong>${tonick}</strong> установлен полный игнор`);
-      else adminNoticeHtml = nickMessageFormatter.wrapAdminNotice('ignore', 'Полный игнор', `С ника <strong>${tonick}</strong> снят полный игнор`);
-      text = '';
-    }
-  }
 
-  /* Вывод пользователя в другую комнату */
-  if (text.indexOf('/deportation') === 0 && censor[nick]) {
-    let term = 30; // время ссылки в минутах
-    if (loaded === 1 && mynick === tonick) {
-      window.setTimeout('setmyroom(5)', 2000);// 3 - это индекс комнаты для депортации
-      setcookie(`${chatlogin.replace('-', '_')}_deportation`, '1', term);
-    }
-    adminNoticeHtml = nickMessageFormatter.wrapAdminPublicAction(nick, colornick, 'deportation', 'запирает в Темнице', tonick, `на ${term} минут`);
-    text = '';
-  }
-  if (text.indexOf('/amnesty') === 0 && censor[nick]) {
-    if (loaded === 1 && mynick === tonick) {
-      setcookie(`${chatlogin.replace('-', '_')}_deportation`, '0', 1);
-    }
-    adminNoticeHtml = nickMessageFormatter.wrapAdminPublicAction(nick, colornick, 'amnesty', 'амнистирует', tonick, 'можно вернуться в общую комнату');
-    text = '';
-  }
-
-  /* Задержка времени бота на 2 секунды + 1 секунда за каждые написанные им 10 символов */
-  if (nick === nick_r) {
-    let delay_r = 2 + Math.round(text.length / 10);
-    let d = new Date();
-    d.setTime(Date.parse(`Jan 1, 1970, ${time}`) + delay_r * 1000);
-    time = d.toTimeString().substr(0, 8);
-  }
-
-  /* Добавление мерцания (ссылка «см. ЧЧ:ММ:СС» → data-id на строке лога) */
-  timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)/g);
-
-  if ((timeremovez !== null && timeremovez !== undefined)) {
-    for (let i = 0; i < timeremovez.length; i++) {
-      let msgId = timeremovez[i].replace(/см\.\s|\:/g, '');
-      text = text.replace(
-        timeremovez[i],
-        `<span class="reply-ref" onclick="blinking('${msgId}'); return false;">${timeremovez[i]}</span>`
-      );
-      if (loaded === 1 && mynick === tonick) blinking(msgId);
-    }
-  }
-
-  /* Добавление граф ников, градиента и формат времени */
-  set_nick = setGraphNick(cmd, nick);
-
-  if (tonick && text.substring(0, 1) !== "/") {
-    if (cmd === 1 || cmd === 2) {
-      text = text.replace(`${tonick}:`, wrapInlineTonick(cmd, tonick, size, color, face, 'priv'));
-    } else {
-      text = text.replace(`${tonick}:`, wrapInlineTonick(cmd, tonick, size, color, face, 'pub'));
-    }
-  }// граф для собеседника и его нажимаемый ник
-
-  if (cmd === 0 || cmd === 1 || cmd === 2) {
-    text = stripLeadingNickFromText(text, nick, tonick);
-  }
-
-  set_text = setgr(cmd, nick, text);
-  set_time = `<span class='time-message' onclick='parent.sendto(" см. ${time} ");'>${time}</span> `;
-
-  switch (cmd) {
-    /* Вывод простого сообщения */
-    case 0:
-      if (adminNoticeHtml) {
-        wr(`${set_time}${adminNoticeHtml}`);
-        break;
-      }
-      symbol = symbols[0];
-
-      if (nick === mynick) symbol = symbols[1];
-
-      if (tonick === mynick || text.split(` ${mynick}:`).length > 1) {
-        symbol = symbols[2];
-        if (nick !== nick_r) sound.play(cmd);
-      }
-
-      if (typeof SNAMIK_BOT !== 'undefined' && SNAMIK_BOT && SNAMIK_BOT.isPublicBotMessage && SNAMIK_BOT.isPublicBotMessage(text)) {
-        let snamikRest = SNAMIK_BOT.formatPublicMessage(text);
-        if ((snamikRest === null || snamikRest === undefined)) snamikRest = text.substring('[Снамик] '.length);
-        let snamikMsgClass = snamikRest.indexOf('snimik-bot-cmdlist') >= 0
-          ? 'snimik-bot-msg snimik-bot-msg--rich'
-          : 'snimik-bot-msg';
-        set_nick = snamikBotLabelHtml(cmd, sizenick, facenick) +
-          wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
-        set_text = nickMessageFormatter.wrapMsgText(setgr(cmd, nick, snamikRest), color, size, face, snamikMsgClass);
-      } else {
-        set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
-        set_text = nickMessageFormatter.wrapMsgText(set_text, color, size, face);
-      }
-      a1 = '/vsem ';
-      if (text.substring(0, a1.length) === a1) {
-        text = text.substr(a1.length, text.length - a1.length);
-        text = text.substr(tonick.length);
-        wr(`<div class='message-everyone'><div>Всем:</div> ${set_time} ${set_nick} ${text}</div>`);
-        if (loaded) sound.play(0);
-        return 1;
-      }
-      a2 = '/dev ';
-      if (text.substring(0, a2.length) === a2) {
-        text = text.substr(a2.length, text.length - a2.length);
-        text = text.substr(tonick.length);
-        wr(nickMessageFormatter.wrapDevBroadcast(set_time, set_nick, text));
-        if (loaded) sound.play(0);
-        return 1;
-      }
-      a3 = '/parn ';
-      if (text.substring(0, a3.length) === a3) {
-        text = text.substr(a3.length, text.length - a3.length);
-        text = text.substr(tonick.length);
-        wr(nickMessageFormatter.wrapParnBroadcast(set_time, set_nick, text));
-        if (loaded) sound.play(0);
-        return 1;
-      }
-      let msgBody = symbol + set_time + set_nick + set_text;
-      if (isMessageAddressedToMe(nick, tonick, text)) {
-        towr = wrapMessageForMe(msgBody);
-      } else {
-        towr = `${msgBody}`;
-      }
-      if (nick === mynick || tonick === mynick) myhistory += towr;
-      if (nick === nick_r && loaded === 1) {
-        window.setTimeout(`wr('${towr.split("'").join("\\'")}');if('${tonick}'==='${mynick}') sound.play(0);`, delay_r * 1000);
-      } else wr(towr);
-
-      break;
-
-    /* Вывод приватных сообщений */
-    case 1:
-    case 2:
-      symbol = symbols[0];
-      if (nick === mynick) symbol = symbols[3];
-      if (tonick === mynick) {
-        symbol = symbols[4];
-        sound.play(cmd);
-      }
-
-      symbol2 = "";
-      if (nick === mynick) symbol2 = symbols[5];
-      if (tonick === mynick) symbol2 = symbols[6];
-
-      if (cmd === 2) {
-        symbol2 = "";
-        set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'none');
-      } else {
-        set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'priv');
-      }
-
-      set_text = nickMessageFormatter.wrapMsgText(` ${set_text}`, color, size, face);
-
-      // Формируем сообщение
-      let towrContent = symbol + set_nick + set_text + set_time;
-
-      // Создаем приватное сообщение с классом
-      let privMsgHtml = `<div class="private-message"><div class="private-header">Приватно от ${nick}:</div>${towrContent}</div>`;
-
-      // Вставляем сообщение в нужный контейнер
-      if (nick === mynick || tonick === mynick) myhistory += towrContent;
-
-      if (cmd === 1 && privatok === 1) {
-        let obj = document.getElementById("privatdiv");
-        let newDiv = document.createElement('div');
-        newDiv.innerHTML = privMsgHtml;
-        obj.appendChild(newDiv);
-        obj.scrollTop = obj.scrollHeight;
-      } else if (cmd === 1) {
-        wr(privMsgHtml);
-      } else if (cmd === 2) {
-        if (nick === mynick) pnick = tonick; else pnick = nick;
-
-        if ((pu[pnick] === null || pu[pnick] === undefined) || pu[pnick].closed) {
-          if (pt[pnick] === undefined) pt[pnick] = "";
-          pt[pnick] += towrContent;
-          let text = '';
-
-          if (nick !== mynick) text = "приглашаю начать общение в отдельном ";
-          wr(`${set_time}${symbol}${set_nick}${text} <a href='#' onclick='let pnick1="${pnick}"; pu[pnick1]=window.open("index.php?inc=privat&pnick="+pnick1,"","scrollbars=no,width=500,height=400,resizable=yes"); return false;'>приват окне</a>`);
-        } else {
-          pu[pnick].wr(towrContent);
-        }
-      }
-      break;
-
-    /* Вывод выделенного сообщения '/me' или '/msg' */
-    case 3:
-      sound.play(cmd);
-      wr(`${set_time}<span class="chat-msg__bold">Сообщение от ${nickMessageFormatter.wrapColoredNick(set_nick, colornick, 'sm')}</span> <i>${set_text}</i>`);
-
-    /* [ cmd===4 Вывод сообщения о вызове ] и сам вызов окном с музыкой '/call nick' */
-    case 4:
-      if (loaded === 1) {
-        if (!times_call[tonick]) times_call[tonick] = 0;
-        if (timeCall() - times_call[tonick] > times_call_delay) {
-          times_call[tonick] = timeCall();
-          times_call_who[tonick] = set_nick;
-          if (tonick === mynick && loaded === 1)
-            if (snd_call_on === 1) {
-              getSound('/by-FeNIX/call');
-              setTimeout('let tocall=document.getElementById("sounddiv"); tocall.innerHTML="";', 50000);
-              ChatAlert(`Вас пытаются разбудить пользователь ${nick}!`);
-            }
-          if (!invisible[nick]) wr(`${set_time}<img src='https://s1.iconbird.com/ico/0912/fugue/w16h161349011841alarmclockblue.png' border='0'> ${set_nick} <i> Запустил будильник для ${tonick}.</i>`);
-        } else if (set_nick === mynick && tonick !== mynick && loaded === 1) {
-          let call_alert_txt = `<span>Пользователю с ником "${tonick}" уже был запущен будильник </span>`;
-          if (times_call_who[tonick] === mynick) call_alert_txt += "<span> вами!</span>";
-          else call_alert_txt += `<span>.</span><span class="chat-msg__break"></span><span>Запустил будильник пользователь с ником "${times_call_who[tonick]}".</span>`;
-          call_alert_txt += "<span class='chat-msg__break'></span><div class='chat-msg__call-form'><span>Повторный вызов возможен через: </span>";
-          ChatAlert(`${call_alert_txt}<form name='count'><input type='text' size='20' name='count2' class='count2' readonly></form></div>`);
-          countdown(times_call_delay - timeCall() + times_call[tonick], tonick);
-        }
-      }
-      break;
-
-    /* Вывод сообщения об удалении '/kill nick' и сам процесс */
-    case 5:
-      sound.play(cmd);
-      if (tonick === mynick && loaded === 1 && kill !== 6 && kill !== 7) {
-        if ((kill === 1) || (kill === 2) || (kill === 3)) {
-          act = "kill";
-          setcookie(`${parent.chatlogin.replace("-", "_")}_mpban`, tonick, timeout);
-        }
-        if (kill === 4) act = "window";
-        if (kill === 5) act = "prav";
-        parent.location.href = `exit.html?${parent.yourkey}&act=${act}&timeout=${timeout}&grund=${text}`;
-      }
-      let kill_timeout = 0;
-      if (text.length > 0) text = ` Причина: ${text}. `;
-      if (timeout > 0) {
-        kill_timeout = timeout * 60;
-        if (timeout < 61) timeout = `На ${timeout} минут.`;
-        if (timeout === 1440) timeout = "На день!";
-        if (timeout === 10080) timeout = "На неделю!";
-        if (timeout === 43200) timeout = "На месяц!";
-        if (timeout > 1000000) timeout = "Навсегда!";
-      }
+    /* Вывод пользователя в другую комнату */
+    if (text.indexOf('/deportation') === 0 && censor[nick]) {
+      let term = 30; // время ссылки в минутах
       if (loaded === 1 && mynick === tonick) {
-        kill_timer(kill_timeout);
+        window.setTimeout('setmyroom(5)', 2000);// 3 - это индекс комнаты для депортации
+        setcookie(`${chatlogin.replace('-', '_')}_deportation`, '1', term);
       }
-      wr(`${set_time}${nickMessageFormatter.wrapAdminModeration(nick, colornick, deltxt[kill], tonick, timeout, text, kill)}`);
-
-      break;
-
-    /* Вывод входа юзера в чат и добавление в нклист через add() */
-    case 6:
-      if (chatStr(inchat) === '0' && sameRoom(room, myroom)) {
-        sound.play(cmd);
-        set_nick = `<a href='' class="chat-msg__welcome-nick-link" onclick="tonick('${nick}: '); return false;"><span class="chat-msg__nick" style="color:${colornick}">${set_nick}</span></a>`;
-        tadd = nickMessageFormatter.wrapJoinWelcome('Добро пожаловать в чат С нами!', '%nick%');
-        if ((tadda[nick] !== null && tadda[nick] !== undefined) && tadda[nick]) tadd = tadda[nick].replace(nick, "%nick%");
-        if (tadd.search("%nick%") === -1) tadd = `%nick% ${tadd}`;
-        tadd = tadd.replace("%nick%", set_nick);
-        wr(`${set_time}${tadd}`);
+      adminNoticeHtml = nickMessageFormatter.wrapAdminPublicAction(nick, colornick, 'deportation', 'запирает в Темнице', tonick, `на ${term} минут`);
+      text = '';
+    }
+    if (text.indexOf('/amnesty') === 0 && censor[nick]) {
+      if (loaded === 1 && mynick === tonick) {
+        setcookie(`${chatlogin.replace('-', '_')}_deportation`, '0', 1);
       }
-      add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
+      adminNoticeHtml = nickMessageFormatter.wrapAdminPublicAction(nick, colornick, 'amnesty', 'амнистирует', tonick, 'можно вернуться в общую комнату');
+      text = '';
+    }
 
-      break;
+    /* Задержка времени бота на 2 секунды + 1 секунда за каждые написанные им 10 символов */
+    if (nick === nick_r) {
+      let delay_r = 2 + Math.round(text.length / 10);
+      let d = new Date();
+      d.setTime(Date.parse(`Jan 1, 1970, ${time}`) + delay_r * 1000);
+      time = d.toTimeString().substr(0, 8);
+    }
 
-    /* Вывод выхода юзера из чата и удаление из никлиста через deleteUser() */
-    case 7:
-      if (chatStr(inchat) === '1' && sameRoom(room, myroom)) {
-        sound.play(cmd);
-        set_nick = `<a href='' class="chat-msg__leave-nick-link" onclick="tonick('${nick}: '); return false;"><span class="chat-msg__nick" style="color:${colornick}">${set_nick}</span></a>`;
-        tdel = nickMessageFormatter.wrapLeaveWelcome('Нас покидает', '%nick%');
-        if ((tdela[nick] !== null && tdela[nick] !== undefined) && tdela[nick]) tdel = tdela[nick].replace(nick, "%nick%");
-        if (tdel.search("%nick%") === -1) tdel = `%nick% ${tdel}`;
-        tdel = tdel.replace("%nick%", set_nick);
-        wr(`${set_time}${tdel}`);
+    /* Добавление мерцания (ссылка «см. ЧЧ:ММ:СС» → data-id на строке лога) */
+    timeremovez = text.match(/см\.\s(\d\d.\d\d.\d\d)/g);
+
+    if ((timeremovez !== null && timeremovez !== undefined)) {
+      for (let i = 0; i < timeremovez.length; i++) {
+        let msgId = timeremovez[i].replace(/см\.\s|\:/g, '');
+        text = text.replace(
+          timeremovez[i],
+          `<span class="reply-ref" onclick="blinking('${msgId}'); return false;">${timeremovez[i]}</span>`
+        );
+        if (loaded === 1 && mynick === tonick) blinking(msgId);
       }
-      deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid);
-      break;
+    }
 
-    /* Сообщение о смене статуса участника и его изменение */
-    case 8:
-      sound.play(cmd);
-      status = text;
-      for (let i = 0; i < us.length; i++) if ((us[i] !== null && us[i] !== undefined) && us[i][0] === nick) {
-        us[i][5] = status;
-        if (icqtxt[status] || (chatConfig.statusMeta && chatConfig.statusMeta[status])) wr(`${set_time}${nickMessageFormatter.wrapStatusChange(nick, set_nick, colornick, status)}`);
-        let obj = document.getElementById(`!${nick}`);
-        if (obj) format(i, obj);
+    /* Добавление граф ников, градиента и формат времени */
+    set_nick = setGraphNick(cmd, nick);
+
+    if (tonick && text.substring(0, 1) !== "/") {
+      if (cmd === 1 || cmd === 2) {
+        text = text.replace(`${tonick}:`, wrapInlineTonick(cmd, tonick, size, color, face, 'priv'));
+      } else {
+        text = text.replace(`${tonick}:`, wrapInlineTonick(cmd, tonick, size, color, face, 'pub'));
       }
+    }// граф для собеседника и его нажимаемый ник
 
-      break;
+    if (cmd === 0 || cmd === 1 || cmd === 2) {
+      text = stripLeadingNickFromText(text, nick, tonick);
+    }
 
+    const textForMentionCheck = text;
 
-    /* Функция обработки сообщений викторины */
-    case 9:
-      if (text === "end") text1 = "это слово уже угаданно или время вышло";
-      else if (text === "") text1 = "вы не угадали это слово";
-      else {
-        if (mynick === nick) text1 = `вы только что отгадали слово "${text}" и получаете 30 пунктов`;
-        else text1 = `только что отгадал(а) слово "${text}"`;
-      }
-      wr(`${set_time}${nickMessageFormatter.wrapColoredNick(`<span class="chat-msg__bold">${set_nick}</span>`, colornick, 'lg')} <i>${text1}</i>`);
+    text = nickMessageFormatter.expandNickTokens(text, cmd, size, color, face);
 
-      break;
+    set_text = setgr(cmd, nick, text);
+    set_time = `<span class='time-message' onclick='parent.sendto(" см. ${time} ");'>${time}</span> `;
 
-    case 10:
-      oldroom = room;
-      setroom = chatNum(text);
-      if (loaded === 1) {
-        for (let i = 0; i < us.length; i++) if ((us[i] !== null && us[i] !== undefined) && us[i][0] === nick) {
-          us[i][6] = setroom;
-          update(oldroom, -1);
-          update(setroom, 1);
+    switch (cmd) {
+      /* Вывод простого сообщения */
+      case 0:
+        if (adminNoticeHtml) {
+          wr(`${set_time}${adminNoticeHtml}`);
+          break;
         }
-        if (nick === mynick) {
-          myroom = setroom;
-          if (roomlog === 1) {
-            document.getElementById("leftdiv").innerHTML = "Подождите, осуществляется переход в другую комнату ...";
-            window.setTimeout("loadframes();", 2000);
-            return;
-          }
-          ucc = new Array();
-          document.getElementById("leftdiv").innerHTML = "";
-          document.getElementById('users').innerHTML = userlist;
-          window.setTimeout("for(let i=0;i<us.length;i++) if((us[i] !== null && us[i] !== undefined)) add(us[i][0],us[i][1],us[i][2],us[i][3],us[i][4],us[i][5],'','',us[i][6],us[i][7],us[i][8],us[i][9]);", 500);
+        symbol = symbols[0];
+
+        if (nick === mynick) symbol = symbols[1];
+
+        if (tonick === mynick || nickMessageFormatter.messageMentionsNick(textForMentionCheck, mynick)) {
+          symbol = symbols[2];
+          if (nick !== nick_r) sound.play(cmd);
+        }
+
+        if (typeof SNAMIK_BOT !== 'undefined' && SNAMIK_BOT && SNAMIK_BOT.isPublicBotMessage && SNAMIK_BOT.isPublicBotMessage(text)) {
+          let snamikRest = SNAMIK_BOT.formatPublicMessage(text);
+          if ((snamikRest === null || snamikRest === undefined)) snamikRest = text.substring('[Снамик] '.length);
+          let snamikMsgClass = snamikRest.indexOf('snimik-bot-cmdlist') >= 0
+            ? 'snimik-bot-msg snimik-bot-msg--rich'
+            : 'snimik-bot-msg';
+          set_nick = snamikBotLabelHtml(cmd, sizenick, facenick) +
+            wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
+          set_text = nickMessageFormatter.wrapMsgText(setgr(cmd, nick, snamikRest), color, size, face, snamikMsgClass);
         } else {
+          set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'tonick');
+          set_text = nickMessageFormatter.wrapMsgText(set_text, color, size, face);
+        }
+        a1 = '/vsem ';
+        if (text.substring(0, a1.length) === a1) {
+          text = text.substr(a1.length, text.length - a1.length);
+          text = text.substr(tonick.length);
+          wr(nickMessageFormatter.wrapForEveryone(set_time, set_nick, text));
+          if (loaded) sound.play(0);
+          return 1;
+        }
+        a2 = '/dev ';
+        if (text.substring(0, a2.length) === a2) {
+          text = text.substr(a2.length, text.length - a2.length);
+          text = text.substr(tonick.length);
+          wr(nickMessageFormatter.wrapDevBroadcast(set_time, set_nick, text));
+          if (loaded && shouldPlayGenderBroadcastSound('dev')) sound.play(0);
+          return 1;
+        }
+        a3 = '/parn ';
+        if (text.substring(0, a3.length) === a3) {
+          text = text.substr(a3.length, text.length - a3.length);
+          text = text.substr(tonick.length);
+          wr(nickMessageFormatter.wrapParnBroadcast(set_time, set_nick, text));
+          if (loaded && shouldPlayGenderBroadcastSound('parn')) sound.play(0);
+          return 1;
+        }
+        let msgBody = symbol + set_time + set_nick + set_text;
+        if (isMessageAddressedToMe(nick, tonick, text, textForMentionCheck)) {
+          towr = wrapMessageForMe(msgBody);
+        } else {
+          towr = `${msgBody}`;
+        }
+        if (nick === mynick || tonick === mynick) myhistory += towr;
+        if (nick === nick_r && loaded === 1) {
+          window.setTimeout(`wr('${towr.split("'").join("\\'")}');if('${tonick}'==='${mynick}') sound.play(0);`, delay_r * 1000);
+        } else wr(towr);
+
+        break;
+
+      /* Вывод приватных сообщений */
+      case 1:
+      case 2:
+        symbol = symbols[0];
+        if (nick === mynick) symbol = symbols[3];
+        if (tonick === mynick) {
+          symbol = symbols[4];
+        }
+        notifyIncomingPrivateSound(nick, tonick);
+
+        symbol2 = "";
+        if (nick === mynick) symbol2 = symbols[5];
+        if (tonick === mynick) symbol2 = symbols[6];
+
+        if (cmd === 2) {
+          symbol2 = "";
+          set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'none');
+        } else {
+          set_nick = wrapNickForMsg(cmd, nick, colornick, sizenick, facenick, 'priv');
+        }
+
+        set_text = nickMessageFormatter.wrapMsgText(` ${set_text}`, color, size, face);
+
+        // Формируем сообщение
+        let towrContent = symbol + set_nick + set_text + set_time;
+
+        // Создаем приватное сообщение с классом
+        let privMsgHtml = `<div class="private-message"><div class="private-header">Приватно от ${nick}:</div>${towrContent}</div>`;
+
+        // Вставляем сообщение в нужный контейнер
+        if (nick === mynick || tonick === mynick) myhistory += towrContent;
+
+        if (cmd === 1 && privatok === 1) {
+          let obj = document.getElementById("privatdiv");
+          if (obj) {
+            let newDiv = document.createElement('div');
+            newDiv.innerHTML = privMsgHtml;
+            obj.appendChild(newDiv);
+            obj.scrollTop = obj.scrollHeight;
+          } else {
+            wr(privMsgHtml);
+          }
+        } else if (cmd === 1) {
+          wr(privMsgHtml);
+        } else if (cmd === 2) {
+          if (nick === mynick) pnick = tonick; else pnick = nick;
+
+          if ((pu[pnick] === null || pu[pnick] === undefined) || pu[pnick].closed) {
+            if (pt[pnick] === undefined) pt[pnick] = "";
+            pt[pnick] += towrContent;
+            let text = '';
+
+            if (nick !== mynick) text = "приглашаю начать общение в отдельном ";
+            wr(`${set_time}${symbol}${set_nick}${text} <a href='#' onclick='let pnick1="${pnick}"; pu[pnick1]=window.open("index.php?inc=privat&pnick="+pnick1,"","scrollbars=no,width=500,height=400,resizable=yes"); return false;'>приват окне</a>`);
+          } else {
+            pu[pnick].wr(towrContent);
+          }
+        }
+        break;
+
+      /* Вывод выделенного сообщения '/me' или '/msg' */
+      case 3:
+        sound.play(cmd);
+        wr(`${set_time}<span class="chat-msg__bold">Сообщение от ${nickMessageFormatter.wrapColoredNick(set_nick, colornick, 'sm')}</span> <i>${set_text}</i>`);
+
+      /* [ cmd===4 Вывод сообщения о вызове ] и сам вызов окном с музыкой '/call nick' */
+      case 4:
+        if (loaded === 1) {
+          if (!times_call[tonick]) times_call[tonick] = 0;
+          if (timeCall() - times_call[tonick] > times_call_delay) {
+            times_call[tonick] = timeCall();
+            times_call_who[tonick] = set_nick;
+            if (tonick === mynick && loaded === 1)
+              if (snd_call_on === 1) {
+                getSound('/by-FeNIX/call');
+                setTimeout('let tocall=document.getElementById("sounddiv"); tocall.innerHTML="";', 50000);
+                ChatAlert(`Вас пытаются разбудить пользователь ${nick}!`);
+              }
+            if (!invisible[nick]) wr(`${set_time}<img src='https://s1.iconbird.com/ico/0912/fugue/w16h161349011841alarmclockblue.png' border='0'> ${set_nick} <i> Запустил будильник для ${tonick}.</i>`);
+          } else if (set_nick === mynick && tonick !== mynick && loaded === 1) {
+            let call_alert_txt = `<span>Пользователю с ником "${tonick}" уже был запущен будильник </span>`;
+            if (times_call_who[tonick] === mynick) call_alert_txt += "<span> вами!</span>";
+            else call_alert_txt += `<span>.</span><span class="chat-msg__break"></span><span>Запустил будильник пользователь с ником "${times_call_who[tonick]}".</span>`;
+            call_alert_txt += "<span class='chat-msg__break'></span><div class='chat-msg__call-form'><span>Повторный вызов возможен через: </span>";
+            ChatAlert(`${call_alert_txt}<form name='count'><input type='text' size='20' name='count2' class='count2' readonly></form></div>`);
+            countdown(times_call_delay - timeCall() + times_call[tonick], tonick);
+          }
+        }
+        break;
+
+      /* Вывод сообщения об удалении '/kill nick' и сам процесс */
+      case 5:
+        sound.play(cmd);
+        if (tonick === mynick && loaded === 1 && kill !== 6 && kill !== 7) {
+          if ((kill === 1) || (kill === 2) || (kill === 3)) {
+            act = "kill";
+            setcookie(`${parent.chatlogin.replace("-", "_")}_mpban`, tonick, timeout);
+          }
+          if (kill === 4) act = "window";
+          if (kill === 5) act = "prav";
+          parent.location.href = `exit.html?${parent.yourkey}&act=${act}&timeout=${timeout}&grund=${text}`;
+        }
+        let kill_timeout = 0;
+        if (text.length > 0) text = ` Причина: ${text}. `;
+        if (timeout > 0) {
+          kill_timeout = timeout * 60;
+          if (timeout < 61) timeout = `На ${timeout} минут.`;
+          if (timeout === 1440) timeout = "На день!";
+          if (timeout === 10080) timeout = "На неделю!";
+          if (timeout === 43200) timeout = "На месяц!";
+          if (timeout > 1000000) timeout = "Навсегда!";
+        }
+        if (loaded === 1 && mynick === tonick) {
+          kill_timer(kill_timeout);
+        }
+        wr(`${set_time}${nickMessageFormatter.wrapAdminModeration(nick, colornick, deltxt[kill], tonick, timeout, text, kill)}`);
+
+        break;
+
+      /* Вывод входа юзера в чат и добавление в нклист через add() */
+      case 6:
+        if (chatStr(inchat) === '0' && sameRoom(room, myroom)) {
+          sound.play(cmd);
+          set_nick = `<a href='' class="chat-msg__welcome-nick-link" onclick="insertNickTag('${nick}'); return false;"><span class="chat-msg__nick" style="color:${colornick}">${set_nick}</span></a>`;
+          tadd = nickMessageFormatter.wrapJoinWelcome('Добро пожаловать в чат С нами!', '%nick%');
+          if ((tadda[nick] !== null && tadda[nick] !== undefined) && tadda[nick]) tadd = tadda[nick].replace(nick, "%nick%");
+          if (tadd.search("%nick%") === -1) tadd = `%nick% ${tadd}`;
+          tadd = tadd.replace("%nick%", set_nick);
+          wr(`${set_time}${tadd}`);
+        }
+        add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
+        if (nick === mynick) mymw = mw;
+
+        break;
+
+      /* Вывод выхода юзера из чата и удаление из никлиста через deleteUser() */
+      case 7:
+        if (chatStr(inchat) === '1' && sameRoom(room, myroom)) {
+          sound.play(cmd);
+          set_nick = `<a href='' class="chat-msg__leave-nick-link" onclick="insertNickTag('${nick}'); return false;"><span class="chat-msg__nick" style="color:${colornick}">${set_nick}</span></a>`;
+          tdel = nickMessageFormatter.wrapLeaveWelcome('Нас покидает', '%nick%');
+          if ((tdela[nick] !== null && tdela[nick] !== undefined) && tdela[nick]) tdel = tdela[nick].replace(nick, "%nick%");
+          if (tdel.search("%nick%") === -1) tdel = `%nick% ${tdel}`;
+          tdel = tdel.replace("%nick%", set_nick);
+          wr(`${set_time}${tdel}`);
+        }
+        deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid);
+        break;
+
+      /* Сообщение о смене статуса участника и его изменение */
+      case 8:
+        sound.play(cmd);
+        status = text;
+        for (let i = 0; i < us.length; i++) if ((us[i] !== null && us[i] !== undefined) && us[i][0] === nick) {
+          us[i][5] = status;
+          if (icqtxt[status] || (chatConfig.statusMeta && chatConfig.statusMeta[status])) wr(`${set_time}${nickMessageFormatter.wrapStatusChange(nick, set_nick, colornick, status)}`);
+          let obj = document.getElementById(`!${nick}`);
+          if (obj) format(i, obj);
+        }
+
+        break;
+
+
+      /* Функция обработки сообщений викторины */
+      case 9:
+        if (text === "end") text1 = "это слово уже угаданно или время вышло";
+        else if (text === "") text1 = "вы не угадали это слово";
+        else {
+          if (mynick === nick) text1 = `вы только что отгадали слово "${text}" и получаете 30 пунктов`;
+          else text1 = `только что отгадал(а) слово "${text}"`;
+        }
+        wr(`${set_time}${nickMessageFormatter.wrapColoredNick(`<span class="chat-msg__bold">${set_nick}</span>`, colornick, 'lg')} <i>${text1}</i>`);
+
+        break;
+
+      case 10:
+        oldroom = room;
+        setroom = chatNum(text);
+        if (loaded === 1) {
           for (let i = 0; i < us.length; i++) if ((us[i] !== null && us[i] !== undefined) && us[i][0] === nick) {
-            if (sameRoom(myroom, setroom)) {
-              add(us[i][0], us[i][1], us[i][2], us[i][3], us[i][4], us[i][5], '', '', us[i][6], us[i][7], us[i][8], us[i][9]);
-            } else if (sameRoom(myroom, oldroom)) {
-              let obj = document.getElementById(`!${nick}`);
-              if (obj) nicklistRemove(obj);
-              seprules(-1, us[i][2], us[i][3]);
+            us[i][6] = setroom;
+            update(oldroom, -1);
+            update(setroom, 1);
+          }
+          if (nick === mynick) {
+            myroom = setroom;
+            if (roomlog === 1) {
+              document.getElementById("leftdiv").innerHTML = "Подождите, осуществляется переход в другую комнату ...";
+              window.setTimeout("loadframes();", 2000);
+              return;
+            }
+            ucc = new Array();
+            document.getElementById("leftdiv").innerHTML = "";
+            document.getElementById('users').innerHTML = userlist;
+            window.setTimeout("for(let i=0;i<us.length;i++) if((us[i] !== null && us[i] !== undefined)) add(us[i][0],us[i][1],us[i][2],us[i][3],us[i][4],us[i][5],'','',us[i][6],us[i][7],us[i][8],us[i][9]);", 500);
+          } else {
+            for (let i = 0; i < us.length; i++) if ((us[i] !== null && us[i] !== undefined) && us[i][0] === nick) {
+              if (sameRoom(myroom, setroom)) {
+                add(us[i][0], us[i][1], us[i][2], us[i][3], us[i][4], us[i][5], '', '', us[i][6], us[i][7], us[i][8], us[i][9]);
+              } else if (sameRoom(myroom, oldroom)) {
+                let obj = document.getElementById(`!${nick}`);
+                if (obj) nicklistRemove(obj);
+                seprules(-1, us[i][2], us[i][3]);
+              }
             }
           }
         }
-      }
-      towr = "";
-      if (nick === mynick && loaded === 1) towr = `${set_time}<i>Вы перешли в комнату -> <span class="chat-msg__bold">${rooms[setroom][0]}</span>.</i>`;
-      else if (sameRoom(myroom, setroom)) towr = `${set_time}<i><a href='' onclick="tonick('${nick}: '); return false;">${nickMessageFormatter.wrapColoredNick(nick, colornick)}</a> приходит к нам из комнаты -> <span class="chat-msg__bold">${rooms[oldroom][0]}</span>.</i>`;
-      else if (sameRoom(myroom, oldroom)) towr = `${set_time}<i>${nick} уходит в комнату -> <span class="chat-msg__bold">${rooms[setroom][0]}</span>.</i>`;
-      if (nick === mynick) myhistory += towr;
-      wr(towr);
+        towr = "";
+        if (nick === mynick && loaded === 1) towr = `${set_time}<i>Вы перешли в комнату -> <span class="chat-msg__bold">${rooms[setroom][0]}</span>.</i>`;
+        else if (sameRoom(myroom, setroom)) towr = `${set_time}<i><a href='' onclick="insertNickTag('${nick}'); return false;">${nickMessageFormatter.wrapColoredNick(nick, colornick)}</a> приходит к нам из комнаты -> <span class="chat-msg__bold">${rooms[oldroom][0]}</span>.</i>`;
+        else if (sameRoom(myroom, oldroom)) towr = `${set_time}<i>${nick} уходит в комнату -> <span class="chat-msg__bold">${rooms[setroom][0]}</span>.</i>`;
+        if (nick === mynick) myhistory += towr;
+        wr(towr);
 
-      break;
+        break;
 
-    /* Функция вывода уведомлений */
-    case 11:
-      if (text === "post" && tonick === mynick) wr(`${set_time}Мажордом (шопотом): <i>Вам от <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> новое письмо-с, извольте прочесть: <a href=?inc=post&${yourkey} target=_blank>"${var9}"</a></i>`);
-      if (text === "reg") wr(`${set_time}Мажордом (торжественно): <i>У нас новый пользователь <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a>.</i>`);
-      if (text === "clan") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> вступил(а) в клан "${var9}".</i>`);
-      if (text === "gallery") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> добавил(а) новую <a href=?inc=gallery&gallery=${nick}&foto=${var9} target=_blank>фотографию</a> в галерею.</i>`);
-      if (text === "gb") wr(`${set_time}Мажордом (громогласно): <i>Новое сообщение от <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> в <a href=?inc=gb target=_blank>гостевой</a>.</i>`);
+      /* Функция вывода уведомлений */
+      case 11:
+        if (text === "post" && tonick === mynick) wr(`${set_time}Мажордом (шопотом): <i>Вам от <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> новое письмо-с, извольте прочесть: <a href=?inc=post&${yourkey} target=_blank>"${var9}"</a></i>`);
+        if (text === "reg") wr(`${set_time}Мажордом (торжественно): <i>У нас новый пользователь <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a>.</i>`);
+        if (text === "clan") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> вступил(а) в клан "${var9}".</i>`);
+        if (text === "gallery") wr(`${set_time}Мажордом (громогласно): <i>Пользователь <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> добавил(а) новую <a href=?inc=gallery&gallery=${nick}&foto=${var9} target=_blank>фотографию</a> в галерею.</i>`);
+        if (text === "gb") wr(`${set_time}Мажордом (громогласно): <i>Новое сообщение от <a href=?inc=info&nick=${nick} target=_blank>${nickMessageFormatter.wrapColoredNick(set_nick, colornick)}</a> в <a href=?inc=gb target=_blank>гостевой</a>.</i>`);
 
-      if (text === "forum") wr(nickMessageFormatter.wrapForumNotice(nick, set_nick, var9, var10, var11));
-  }
+        if (text === "forum") wr(nickMessageFormatter.wrapForumNotice(nick, set_nick, var9, var10, var11));
+    }
 
   }
 
@@ -1979,6 +2177,25 @@ class ChatInputController {
     document.fmsg.text0.value = document.fmsg.text0.value + nick;
   }
 
+  /** Обычное сообщение: сброс «приватно» и поля «кому». */
+  resetPublicMessageMode() {
+    const form = document.fmsg;
+    if (!form) return;
+    if (form.cmd) form.cmd.value = '';
+    if (form.tonick) form.tonick.value = '';
+  }
+
+  /** Вставляет [ник] в поле сообщения (без ограничения количества). */
+  insertNickTag(nick) {
+    nick = String(nick).replace(/:\s*$/, '').trim();
+    if (!nick) return;
+    this.resetPublicMessageMode();
+    const field = document.fmsg.text0;
+    if (!field) return;
+    field.focus();
+    field.value += `[${nick}]`;
+  }
+
   setTonick(nick) {
     if ((document.fmsg.cmd !== null && document.fmsg.cmd !== undefined)) document.fmsg.cmd.value = '';
     if ((document.fmsg.tonick === null || document.fmsg.tonick === undefined)) this.appendToInput(nick);
@@ -1989,10 +2206,19 @@ class ChatInputController {
   }
 
   setPrivateTonick(nick) {
-    if ((document.fmsg.cmd === null || document.fmsg.cmd === undefined)) this.appendToInput(`/privat ${nick}`);
-    else {
-      this.setTonick(nick);
-      document.fmsg.cmd.value = '/privat ';
+    const clean = String(nick).replace(/:\s*$/, '').trim();
+    if (!clean) return;
+    const tonickValue = `${clean}: `;
+    if ((document.fmsg.cmd === null || document.fmsg.cmd === undefined)) {
+      this.appendToInput(`/privat ${tonickValue}`);
+      return;
+    }
+    document.fmsg.cmd.value = '/privat ';
+    if ((document.fmsg.tonick === null || document.fmsg.tonick === undefined)) {
+      this.appendToInput(tonickValue);
+    } else {
+      document.fmsg.tonick.value = tonickValue;
+      document.fmsg.text0.focus();
     }
   }
 
@@ -2046,6 +2272,11 @@ class ChatInputController {
     return amess[pos];
   }
 
+  /** /privat [ник] текст → /privat ник: текст для сервера. */
+  normalizePrivatOutgoing(msg) {
+    return msg.replace(/^(\/privat2?\s+)\[([^\[\]\r\n]+?)\](\s*)/, (_, cmd, nick) => `${cmd}${String(nick).trim()}: `);
+  }
+
   /** Обрабатывает и отправляет сообщение из формы. */
   send() {
     str_plus(0);
@@ -2091,7 +2322,6 @@ class ChatInputController {
     }
 
     msg_text = this.filterRepeatedChars(msg_text);
-    msg = msg_cmd + msg_nick + msg_text;
 
     if (document.getElementById('bt') && document.getElementById('bt').checked && !/^\s*%[А-яЁё]+/.test(msg_text)) {
       msg_text = ` (b) ${msg_text} (/b)`;
@@ -2108,6 +2338,8 @@ class ChatInputController {
     if (document.getElementById('at') && document.getElementById('at').checked && !/^\s*%[А-яЁё]+/.test(msg_text)) {
       msg_text = ` (size) ${msg_text} (size)`;
     }
+
+    msg = this.normalizePrivatOutgoing(msg_cmd + msg_nick + msg_text);
 
     form.text0.value = '';
     form.text0.focus();
@@ -2153,7 +2385,11 @@ function sendto(nick) {
 }
 
 function tonick(nick) {
-  chatInputController.setTonick(nick);
+  chatInputController.insertNickTag(nick);
+}
+
+function insertNickTag(nick) {
+  chatInputController.insertNickTag(nick);
 }
 
 function ptonick(nick) {

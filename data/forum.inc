@@ -4,7 +4,7 @@
 <title>Форум чата "С нами"</title>
 <meta charset="utf-8">
 <link id="style" rel="stylesheet" type="text/css" href="/1.css">
-<link rel="icon" href='/data/vhod/images/favicon.ico' type="image/x-icon">
+<link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
 <script src="//mpchat.com/api.js"></script>
 <script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
 
@@ -44,12 +44,11 @@ var newpost='0';
 <div style='width: 100% !important; min-height: 100%; margin:0 auto;'>
 
 <div>
-<span style='display:block;text-align:center'>
+<center>
 <header>
 <br>
-<span style='display:block;text-align:center'><img src="https://vmfile.com/upload/833/177832375.png"><br></span> 
-</header>
-</span> 
+<center><img src="https://vmfile.com/upload/833/177832375.png"><br></center> 
+</header> 
  
 <script>
 /* Поля для авторизации */
@@ -169,16 +168,16 @@ etags[i]=new Array(/\[b\](.*?)\[\/b\]/g,'<b>$1</b>');i++;
 etags[i]=new Array(/\[i\](.*?)\[\/i\]/g,'<i>$1</i>');i++;
 etags[i]=new Array(/\[u\](.*?)\[\/u\]/g,'<u>$1</u>');i++;
 etags[i]=new Array(/\[s\](.*?)\[\/s\]/g,'<s>$1</s>');i++;
-//etags[i]=new Array(/\[black\](.*?)\[\/black\]/g,'<span style='color:black'>$1</span>');i++;
-etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<span style='color:$1'>$2</span>',1);i++;
-etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<span style='font-size:$1'>$2</span>',1);i++;
-etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<span style='font-family:$1'>$2</span>',1);i++;
+//etags[i]=new Array(/\[black\](.*?)\[\/black\]/g,'<font color=black>$1</font>');i++;
+etags[i]=new Array(/\[color=(#?[a-z0-9]{3,10})\](.*?)\[\/color\]/g,'<font color="$1">$2</font>',1);i++;
+etags[i]=new Array(/\[size=([1-9]{1})\](.*?)\[\/size\]/g,'<font size="$1">$2</font>',1);i++;
+etags[i]=new Array(/\[font=([A-z ]{3,20})\](.*?)\[\/font\]/g,'<font face="$1">$2</font>',1);i++;
 etags[i]=new Array(/\[sub\](.*?)\[\/sub\]/g,'<sub>$1</sub>');i++;
 etags[i]=new Array(/\[sup\](.*?)\[\/sup\]/g,'<sup>$1</sup>');i++;
 etags[i]=new Array(/\[hr\]/g,'<hr>');i++;
 etags[i]=new Array(/\[left\](.*?)\[\/left\]/g,'<div style="float:left;padding: 4px 10px;">$1</div>');i++;
 etags[i]=new Array(/\[right\](.*?)\[\/right\]/g,'<div style="float:right;padding: 4px 10px;">$1</div>');i++;
-etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<span style='display:block;text-align:center'>$1</span>');i++;
+etags[i]=new Array(/\[center\](.*?)\[\/center\]/g,'<center>$1</center>');i++;
 etags[i]=new Array(/\[img\](https?:\/\/[^ "]+?)\[\/img\]/,'<img src="$1"onload="imgminimum(this)" border=0 style="position:relative; max-width: 500px; max-height: 500px;">',1);i++; //одноразовая замена для лимита
 etags[i]=new Array(/\[url=((ftp|https?):\/\/[^ "]+?)\](.*?)\[\/url\]/g,'<a href="$1" target=_blank>$3</a>');i++;
 etags[i]=new Array(/\[url\]((ftp|https?):\/\/[^ "]+?)\[\/url\]/g,'<a href="$1" target=_blank>$1</a>');i++;
@@ -556,10 +555,10 @@ if(f_t[i][9]>0) icon='movedicon';
 if(f_t[i][10]==1) icon='newicon';
 mod=''; 
 if(moderator==1) {
-mod+=" - <a href=?inc=forum&forum="+forum+"&deltopic="+f_t[i][0]+" onclick='return confirm(\"Вы действительно хотите удалить эту тему?\");'><span class='low'>удалить</a>";
-mod+=" - <a href=?inc=forum&forum="+forum+"&closetopic="+f_t[i][0]+"><span class='low'>"+toclose+"</a>";
-mod+=" - <a href=?inc=forum&forum="+forum+"&pinnetopic="+f_t[i][0]+"><span class='low'>"+topinne+"</a>";
-if(!f_t[i][9]) mod+=" - <a href=# onclick=\"movehtml('"+f_t[i][0]+"'); return false;\"><span class='low'>перенести</span></a><div id=move"+f_t[i][0]+"></div>";
+mod+=" - <a href=?inc=forum&forum="+forum+"&deltopic="+f_t[i][0]+" onclick='return confirm(\"Вы действительно хотите удалить эту тему?\");'><font class=low>удалить</a>";
+mod+=" - <a href=?inc=forum&forum="+forum+"&closetopic="+f_t[i][0]+"><font class=low>"+toclose+"</a>";
+mod+=" - <a href=?inc=forum&forum="+forum+"&pinnetopic="+f_t[i][0]+"><font class=low>"+topinne+"</a>";
+if(!f_t[i][9]) mod+=" - <a href=# onclick=\"movehtml('"+f_t[i][0]+"'); return false;\"><font class=low>перенести</font></a><div id=move"+f_t[i][0]+"></div>";
 }
 t_links=""; s=++f_t[i][6]; if(s>10) t_links=" - ["+genlinks("?inc=forum&forum="+f_t[i][11]+"&topic="+f_t[i][0]+"&site=",Math.ceil(s/10),-1)+"]";
 if(f_t[i][9]) is_moved="Перенесенна: "; else is_moved="";
@@ -572,7 +571,7 @@ var links=genlinks("?inc=forum&forum="+forum+"&site=",sites,site);
 
 if(search) panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <b>Результаты поиска</b></tr></table><br>";
 else if(lasttopics>0) panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <b>Последние активные темы</b></tr></table><br>";
-else panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+"><span style='color:#B00000'>"+f_f[fa][1]+"</span></a> » <a href=#sendmess><span style='color:green'>Создать новую тему</span></a><td align=right style='border:0px;'>Страницы: "+links+"</tr></table><br>";
+else panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+"><font color=#B00000>"+f_f[fa][1]+"</font></a> » <a href=#sendmess><font color=green>Создать новую тему</font></a><td align=right style='border:0px;'>Страницы: "+links+"</tr></table><br>";
 wr(panel);
 wr("<table width=90% align=center >");
 wr("<tr><td colspan=2 class=title>Тема</td><td width=100 class=title>Автор</td><td width=60 class=title align=center>Ответов</td><td width=150 class=title>Обновления</td></tr>");
@@ -588,24 +587,24 @@ var posts=new Array();
 var all_posts="";
 for(var i=0; i<f_p.length;i++) {
 num=site*10+i+1;
-isonline="<span style='color:red'>Неактивен</span>"; 
-for(k=0;k<f_on.length;k++) if(f_on[k][0]==f_p[i][1]) isonline="<span style='color:green'>Активен</span>";
+isonline="<font color=red>Неактивен</font>"; 
+for(k=0;k<f_on.length;k++) if(f_on[k][0]==f_p[i][1]) isonline="<font color=green>Активен</font>";
 mod="";
 if(f_p[i][4]) mod+="<i style='float:left;'>Отредактированно в "+f_p[i][5]+" - "+f_p[i][4]+"</i>";
-if(moderator==1 && num>1) mod+="<input type=checkbox name='delpost["+f_p[i][0]+"]'><a href=?inc=forum&forum="+forum+"&topic="+topic+"&site="+site+"&delpost="+f_p[i][0]+" onclick='return confirm(\"Вы действительно хотите удалить это сообщение?\");'><span class='low'>Удалить</span></a> | ";
-if(mynick==f_p[i][1] || moderator==1) mod+="<a href=?inc=forum&forum="+forum+"&topic="+topic+"&site="+site+"&editpost="+f_p[i][0]+"><span class='low'>Редактировать</span></a> | ";
-if(mynick && myid) mod+="<a href=# onclick='quote("+i+"); return false;'><span class='low'>Цитировать</span></a>";
+if(moderator==1 && num>1) mod+="<input type=checkbox name='delpost["+f_p[i][0]+"]'><a href=?inc=forum&forum="+forum+"&topic="+topic+"&site="+site+"&delpost="+f_p[i][0]+" onclick='return confirm(\"Вы действительно хотите удалить это сообщение?\");'><font class=low>Удалить</font></a> | ";
+if(mynick==f_p[i][1] || moderator==1) mod+="<a href=?inc=forum&forum="+forum+"&topic="+topic+"&site="+site+"&editpost="+f_p[i][0]+"><font class=low>Редактировать</font></a> | ";
+if(mynick && myid) mod+="<a href=# onclick='quote("+i+"); return false;'><font class=low>Цитировать</font></a>";
 avator=""; if(f_p[i][8]) avator="<img src="+f_p[i][8]+" style='margin-top:5px;margin-bottom:5px;'><br>";
 name=""; if(f_p[i][11]) name="Имя: "+f_p[i][11]+"<br>";
 mw=""; if(f_p[i][12]=='0') mw="Пол: мужской<br>"; if(f_p[i][12]=='1') mw="Пол: женский<br>";
 
 message=filter(f_p[i][2],message_img_max);
 if(f_p[i][10]) message+="<div class=signature><hr></div>"+filter(f_p[i][10],signature_img_max);
-posts[i]="<table  width=90% align=center style='table-layout:fixed;'><tr><td class=title width=150 align=left><a name=post"+f_p[i][0]+" href=?inc=forum&forum="+forum+"&topic="+topic+"&post="+f_p[i][0]+"#post"+f_p[i][0]+" class=title>"+f_p[i][3]+"</a></td><td class=title align=right> #"+num+"</td></tr><tr><td width=150 valign=top align=left style=padding-top:10px;><a href=# onclick='put(\""+f_p[i][1]+", \"); return false;'>"+f_p[i][1]+"</a> [<a href=?inc=info&userid="+f_p[i][13]+" target=info>?</a>]<br>"+avator+name+mw+rang(f_p[i][1],f_p[i][7])+"Сообщений:"+f_p[i][7]+"<br>  <a href=?inc=post&act=new&nick="+mynick+"&id="+myid+"&tonick="+f_p[i][1]+"  target=pm><span class='low'>Написать письмо</span></a><br><span class='low'>"+f_p[i][6]+"</span>&nbsp;</td><td valign=top align=left style='padding:10px; word-wrap: break-word;'>"+message+renderForumPostVote(f_p[i][0])+"<tr><td align=left>"+isonline+"<td align=right>"+mod+"</td></tr></table><br>";
+posts[i]="<table  width=90% align=center style='table-layout:fixed;'><tr><td class=title width=150 align=left><a name=post"+f_p[i][0]+" href=?inc=forum&forum="+forum+"&topic="+topic+"&post="+f_p[i][0]+"#post"+f_p[i][0]+" class=title>"+f_p[i][3]+"</a></td><td class=title align=right> #"+num+"</td></tr><tr><td width=150 valign=top align=left style=padding-top:10px;><a href=# onclick='put(\""+f_p[i][1]+", \"); return false;'>"+f_p[i][1]+"</a> [<a href=?inc=info&userid="+f_p[i][13]+" target=info>?</a>]<br>"+avator+name+mw+rang(f_p[i][1],f_p[i][7])+"Сообщений:"+f_p[i][7]+"<br>  <a href=?inc=post&act=new&nick="+mynick+"&id="+myid+"&tonick="+f_p[i][1]+"  target=pm><font class=low>Написать письмо</font></a><br><font class=low>"+f_p[i][6]+"</font>&nbsp;</td><td valign=top align=left style='padding:10px; word-wrap: break-word;'>"+message+renderForumPostVote(f_p[i][0])+"<tr><td align=left>"+isonline+"<td align=right>"+mod+"</td></tr></table><br>";
 all_posts+=posts[i];
 }
 var links=genlinks("?inc=forum&forum="+forum+"&topic="+topic+"&site=",sites,site); 
-panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+">"+f_f[fa][1]+"</a> » <a href=?inc=forum&forum="+forum+"&topic="+topic+"><span style='color:#B00000'>"+f_ta[1]+"</span></a> » <a href=#sendmess><span style='color:green'>Написать ответ</span></a><td align=right style='border:0px;'>Страницы: "+links+"</tr></table><br>";
+panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+">"+f_f[fa][1]+"</a> » <a href=?inc=forum&forum="+forum+"&topic="+topic+"><font color=#B00000>"+f_ta[1]+"</font></a> » <a href=#sendmess><font color=green>Написать ответ</font></a><td align=right style='border:0px;'>Страницы: "+links+"</tr></table><br>";
 
 if(moderator==1) wr("<form name=postsform action='' method=post style=display:inline>");
 
@@ -620,9 +619,9 @@ if(moderator==1) wr("<input type=submit value='Удалить выбранные
 /* КОНЕЦ ЧАСТИ */
 
 /* Отображение формы для создания тем, сообщений и их редактирования */
-if(closedtopic==1 && moderator==0) wr("<span style=\"display:block;text-align:center\"><a name=sendmess></a><b>Эта тема закрыта, вы не можете здесь отправить сообщение!</b></span><br>");
-else if(forum>0 && topic>0 && f_f[fa][8]==2 && moderator==0) wr("<span style=\"display:block;text-align:center\"><a name=sendmess></a><b>Этот раздел только для модераторов!</b></span><br>");
-else if(forum>0 && topic==0 && (f_f[fa][8]==1 || f_f[fa][8]==2) && moderator==0) wr("<span style=\"display:block;text-align:center\"><a name=sendmess></a><b> Создание тем в этом разделе только для модераторов!</b></span><br>");
+if(closedtopic==1 && moderator==0) wr("<center><a name=sendmess></a><b>Эта тема закрыта, вы не можете здесь отправить сообщение!</b></center><br>");
+else if(forum>0 && topic>0 && f_f[fa][8]==2 && moderator==0) wr("<center><a name=sendmess></a><b>Этот раздел только для модераторов!</b></center><br>");
+else if(forum>0 && topic==0 && (f_f[fa][8]==1 || f_f[fa][8]==2) && moderator==0) wr("<center><a name=sendmess></a><b> Создание тем в этом разделе только для модераторов!</b></center><br>");
 else 
 if(forum>0 && mynick && myid) {
 wr("<form name=form action='' method='post'>");
@@ -668,7 +667,7 @@ if(f_on[i][1] && forum>0 && topic>0){
 title_txt = "сейчас читает ответы в теме "+for_name;
 }
 
-    regusers++; if(nickson) nickson+=', '; ishere=''; if(forum!=f_on[i][1] || topic!=f_on[i][2]) ishere='<span style='color:gray'>'; nickson+='<a href=/info/'+f_on[i][0]+' target=_chat title="'+title_txt+'">'+ishere+f_on[i][0]+'</span></a>'; 
+    regusers++; if(nickson) nickson+=', '; ishere=''; if(forum!=f_on[i][1] || topic!=f_on[i][2]) ishere='<font color=gray>'; nickson+='<a href=/info/'+f_on[i][0]+' target=_chat title="'+title_txt+'">'+ishere+f_on[i][0]+'</font></a>'; 
  }
 else guests++;
 }
@@ -684,7 +683,7 @@ wr('<div class="h_utop">');
 var htmls="";
 if(top10 && top10.length>1) {
 for(i=1;i<top10.length;i++) {
-document.write('<div class="hs_pos" id="hs_'+top10[i][2]+'"><span class='hs_p'></span><span class='hs_t'>'+top10[i][2]+'-е место<br/><b>'+top10[i][3]+'</b></span><div class="hu_s hu_'+top10[i][2]+'" onmouseover="utop('+top10[i][2]+')"><div><a href="" title="'+top10[i][0]+'">'+top10[i][1]+'</a></div></div></div>');
+document.write('<div class="hs_pos" id="hs_'+top10[i][2]+'"><span class="hs_p"></span><span class="hs_t">'+top10[i][2]+'-е место<br/><b>'+top10[i][3]+'</b></span><div class="hu_s hu_'+top10[i][2]+'" onmouseover="utop('+top10[i][2]+')"><div><a href="" title="'+top10[i][0]+'">'+top10[i][1]+'</a></div></div></div>');
 }
 } else {
 wr('<div class="u_noclan_text" style="text-align:center;">Рейтинг пока недоступен</div>');

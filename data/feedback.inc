@@ -6,14 +6,14 @@
 <link rel="STYLESHEET" type="text/css" href="style.css">
 </head>
 <body class=feedback-body>
-<span style='display:block;text-align:center'>
+<center>
 <b>Форма обратной связи</b><br><br>
 
 <script>
-if(err==-1) document.write("<span style='color:green'>Ваше письмо отправленно!</span><br>");
-if(err==1) document.write("<span style='color:red'>Заполните все поля пожалуйста!</span><br>");
-if(err==2) document.write("<span style='color:red'>Вы неправильно указали Емеил!</span><br>");
-if(err==3) document.write("<span style='color:red'>Вы неправильно указали код!</span><br>");
+if(err==-1) document.write("<font color=green>Ваше письмо отправленно!</font><br>");
+if(err==1) document.write("<font color=red>Заполните все поля пожалуйста!</font><br>");
+if(err==2) document.write("<font color=red>Вы неправильно указали Емеил!</font><br>");
+if(err==3) document.write("<font color=red>Вы неправильно указали код!</font><br>");
 </script>
 
 <form action='' method=post>
@@ -25,6 +25,5 @@ if(err==3) document.write("<span style='color:red'>Вы неправильно �
 <tr><td colspan=2><img src=index.php?inc=code> <input type=text name=code class=text> <input type=submit name=send class=ok value=Отправить></td></tr>
 </table>
 </form>
-</span>
 </body>
 </html>

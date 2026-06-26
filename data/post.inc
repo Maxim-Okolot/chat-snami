@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Личная почта</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href='/data/vhod/images/favicon.ico' type="image/x-icon">
+<link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
 <link rel="stylesheet" href="https://snami.mpchat.com/gb.css" type="text/css" media="all" />
 <link rel=stylesheet type=text/css href=sovremenuy.css>
 <style>
@@ -228,7 +228,7 @@ if(!msgs.length) {
     var status="&nbsp;"; if(x[6]==0) status="<b style='color:red;' title='новое'>&raquo;</b>"; if(x[6]==2) status="<b style='color:red;' title='важное'>!!!</b>";
     var actions=""; if(out==0) actions="<a href=# onclick='openform(\""+x[3]+"\",\"Re: "+x[7].replace(/\"/g,'\\\"')+"\");return false;' class='mail-btn'>Ответить</a> <a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&del[]="+x[0]+" class='mail-btn'>Удалить</a>";
     wr+="<table class='mail-table'><tr><th>&nbsp;</th><th>Тема сообщения</th><th>Отправитель</th><th>Дата сообщения</th><th>&nbsp;</th></tr>";
-    wr+="<tr><td>"+status+"</td><td align=left><a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&out="+out+"&read="+x[0]+">"+x[7]+"</a></td><td><a href=?inc=info&userid="+x[2]+" target=_blank><span style='color:+x[4]+'><b>"+x[3]+"</b></span></a></td><td>"+x[5]+"</td><td>&nbsp;</td></tr>";
+    wr+="<tr><td>"+status+"</td><td align=left><a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&out="+out+"&read="+x[0]+">"+x[7]+"</a></td><td><a href=?inc=info&userid="+x[2]+" target=_blank><font color="+x[4]+"><b>"+x[3]+"</b></font></a></td><td>"+x[5]+"</td><td>&nbsp;</td></tr>";
     wr+="<tr><td colspan=5 align=left style='background:#fff;'><div style='padding:14px 8px 10px 8px;'>"+x[8]+"<br><br>"+actions+"</div></td></tr>";
     wr+="</table><div style='text-align:center; margin:12px 0 0 0;'><a href=# onclick='history.back(); return false;' class='mail-btn'>Вернуться назад</a></div>";
     document.getElementById('mail-table-wrap').innerHTML += wr;
@@ -239,7 +239,7 @@ if(!msgs.length) {
     for(i=0;i<msgs.length;i++) {
       var x=msgs[i];
       var status="&nbsp;"; if(x[6]==0) status="<b style='color:red;' title='новое'>&raquo;</b>"; if(x[6]==2) status="<b style='color:red;' title='важное'>!!!</b>";
-      wr+="<tr><td>"+status+"</td><td align=left><a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&out="+out+"&read="+x[0]+">"+x[7]+"</a></td><td><a href=?inc=info&userid="+x[2]+" target=_blank><span style='color:+x[4]+'><b>"+x[3]+"</b></span></a></td><td>"+x[5]+"</td><td><input type=checkbox name='del[]' value='"+x[0]+"'></td></tr>";
+      wr+="<tr><td>"+status+"</td><td align=left><a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&out="+out+"&read="+x[0]+">"+x[7]+"</a></td><td><a href=?inc=info&userid="+x[2]+" target=_blank><font color="+x[4]+"><b>"+x[3]+"</b></font></a></td><td>"+x[5]+"</td><td><input type=checkbox name='del[]' value='"+x[0]+"'></td></tr>";
     }
     wr+="</table><div style='margin:12px 0 0 0;'><select name=setas onchange='document.getElementById(\"form\").submit();' class='text'><option value=''>Отметить выбранные как:<option value=2>- важные<option value=1>- прочитанные<option value=0>- непрочитанные</select> <input type=submit value='Удалить выбранные' class='ok'></div></form>";
     document.getElementById('mail-table-wrap').innerHTML += wr;
@@ -250,7 +250,7 @@ if(!msgs.length) {
     for(i=0;i<msgs.length;i++) {
       var x=msgs[i];
       var status="&nbsp;"; if(x[6]==0) status="<b style='color:red;' title='новое'>&raquo;</b>"; if(x[6]==2) status="<b style='color:red;' title='важное'>!!!</b>";
-      wr+="<tr><td>"+status+"</td><td align=left><a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&out="+out+"&read="+x[0]+">"+x[7]+"</a></td><td><a href=?inc=info&userid="+x[2]+" target=_blank><span style='color:+x[4]+'><b>"+x[3]+"</b></span></a></td><td>"+x[5]+"</td><td>&nbsp;</td></tr>";
+      wr+="<tr><td>"+status+"</td><td align=left><a href=?inc=post&userid=%userid%&id=%id%&limit=%limit%&out="+out+"&read="+x[0]+">"+x[7]+"</a></td><td><a href=?inc=info&userid="+x[2]+" target=_blank><font color="+x[4]+"><b>"+x[3]+"</b></font></a></td><td>"+x[5]+"</td><td>&nbsp;</td></tr>";
       if(x[8]) wr+="<tr><td colspan=5 style='background:#fff;'><div style='padding:10px 8px 7px 8px;'>"+x[8]+"</div></td></tr>";
     }
     wr+="</table></form>";

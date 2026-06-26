@@ -2,7 +2,7 @@
 %include=body1.html%
 
 <br>
-<span style='display:block;text-align:center'><b>Помощь по чату</b></span><br>
+<center><b>Помощь по чату</b></center><br>
 
 Ознакомьтесь с нашими <a href=?inc=prav>правилами чата</a>.<br>
 Итак. Я условно разделил окно чата на 3 основных части :A ;B ;C.<br>

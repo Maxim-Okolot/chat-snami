@@ -365,15 +365,15 @@
             <path d="M12 22.75C11.59 22.75 11.25 22.41 11.25 22V19C11.25 18.59 11.59 18.25 12 18.25C12.41 18.25 12.75 18.59 12.75 19V22C12.75 22.41 12.41 22.75 12 22.75Z" fill="#292D32"/>
           </svg>
         </button>
-        <button type="button" class="footer__btn" id="pauseScrollButton" data-action="toggle-scroll-pause" title="Остановить прокрутку чата">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 38H20V10H12V38ZM28 10V38H36V10H28Z" fill="black"/>
-            <defs>
-              <clipPath id="clip0_0_831">
-                <rect width="48" height="48" fill="white"/>
-              </clipPath>
-            </defs>
-          </svg>
+        <button type="button" class="footer__btn footer__btn--scroll-pause" id="pauseScrollButton" data-action="toggle-scroll-pause" title="Остановить прокрутку чата" aria-pressed="false">
+          <span class="footer__scroll-icon-wrap" aria-hidden="true">
+            <svg class="footer__scroll-icon footer__scroll-icon--pause" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 38H20V10H12V38ZM28 10V38H36V10H28Z" fill="currentColor"/>
+            </svg>
+            <svg class="footer__scroll-icon footer__scroll-icon--play" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 10V38L38 24L16 10Z" fill="currentColor"/>
+            </svg>
+          </span>
         </button>
         <button type="button" class="footer__btn" data-action="reload-chat" title="Обновить фрейм">
           <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">

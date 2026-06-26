@@ -7,7 +7,7 @@
   <meta name="keywords" content="чат, общение, радио, развлечения, знакомства" />
   <title>Чат "С нами" — Общение без границ</title>
 
-  <link rel="icon" href="/data/vhod/images/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v6.7.2/css/pro.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
@@ -1172,7 +1172,7 @@
       </a>
 
       <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить меню">
-        <span class='navbar-toggler-icon'></span>
+        <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -1195,8 +1195,8 @@
     <div class="hero-inner">
       <div class="hero-content">
         <div class="hero-badges">
-          <span class='hero-badge'><i class="fas fa-comments"></i> Живое общение</span>
-          <span class='hero-badge'><i class="fas fa-headphones"></i> Радио онлайн</span>
+          <span class="hero-badge"><i class="fas fa-comments"></i> Живое общение</span>
+          <span class="hero-badge"><i class="fas fa-headphones"></i> Радио онлайн</span>
         </div>
 
         <h1 class="hero-title">Чат С Нами</h1>

@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="/base.css">
 </head>
 <body class=search-body>
-<span style='display:block;text-align:center'>
+<center>
 <b>Поиск по никам и анкетам</b><br><br>
 <form action=?inc=search method=post>
 <script>
@@ -30,11 +30,10 @@ else alert("Поиск не доступен!");
 /* Показать результаты поиска */
 if(search==1) {
 document.write("<b>Результаты поиска</b><br><br>");
-for(var i=0;i<u.length;i++) document.write("<a href=?inc=info&userid="+u[i][3]+"  target=_blank><span style='color:+u[i][1]+'>"+u[i][0]+"</span></a><br>");
+for(var i=0;i<u.length;i++) document.write("<a href=?inc=info&userid="+u[i][3]+"  target=_blank><font color="+u[i][1]+">"+u[i][0]+"</font></a><br>");
 if(u.length>0) document.write("<br>");
 document.write("Всего найдено: <b>"+u.length+"</b>");
 }
 </script>
-</span>
 </body>
 </html>

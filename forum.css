@@ -533,7 +533,7 @@ color: #424242;
 
     {
       max-width: 400px;
-		cursor: url('img/zoom_in.cur'), pointer;
+		cursor: url('/assets/img/zoom_in.cur'), pointer;
 		border-radius:3px;
     }
 #p_fans

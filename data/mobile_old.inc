@@ -57,7 +57,7 @@ function pr() {
 	var obj=document.getElementById('users');
 	var online="";var count=0;
 	for (nick in u) if(u[nick][0]==1) {
-		set_nick="<a href=# onclick='parent.sendto(\""+nick+": \"); return false;'><span style='color:#"+u[nick][1]+"'>"+nick+"</span></a>";
+		set_nick="<a href=# onclick='parent.sendto(\""+nick+": \"); return false;'><font color=#"+u[nick][1]+">"+nick+"</font></a>";
 		if(online) online+=", "; online+=set_nick; count++;
 	}
 	obj.innerHTML="В чате ("+count+"): <b>"+online+"</b><br><br>";
@@ -68,7 +68,7 @@ function f(room,cmd,nick,tonick,text,time,colornick,color,var9,var10,var11,var12
 	if(cmd==6 || cmd==7) {if(invisible[nick]) return;}
 	if(!smileon) text = text.replace(/<img src=(http\S+\.(?:gif|jpg)) onclick=\S+ title="(\s\S+\s)" style=cursor:pointer>/gim, '<a href=$1 target=_blank>$2</a>');
 	symbol=""; if(nick==mynick) symbol="• "; if(tonick==mynick) symbol="» ";
-	set_nick="<a href=# onclick='parent.sendto(\""+nick+": \"); return false;'><span style='color:#"+colornick+"'>"+nick+"</span></a>";
+	set_nick="<a href=# onclick='parent.sendto(\""+nick+": \"); return false;'><font color=#"+colornick+">"+nick+"</font></a>";
 	if(cmd==0) wr(symbol+set_nick+": "+text+" ("+time+")");
 	if(cmd==1 || cmd==2) wr(symbol+set_nick+":<b>(приватно)</b> "+text+" ("+time+")");
 	if(cmd==3) wr(set_nick+":<b>(важно)</b> "+text+" ("+time+")");
@@ -135,7 +135,7 @@ function onload() {
 <iframe name=left width=0 height=0 style="display:none;"></iframe>
 <iframe name=hidden width=0 height=0 style="display:none;"></iframe>
 <form id=inchat action='index.php?inc=write' method=post target=hidden onsubmit='return msg_send();' style='text-align:center;display:none;'>
-<span style='display:block;text-align:center'>
+<center>
 <div id=leftdiv style='width:200px; padding:5px; border:1px gray solid;text-align:left;'>
 Загрузка...
 </div>
@@ -150,7 +150,7 @@ document.write("<input type=hidden name=id value='"+parent.myid+"'>");
 <script>var smileon=0;</script>
 <input type=submit value=':)' title='Отображать смайлы' class=btn onclick="if(smileon) {smileon=0; this.style.fontWeight='normal';} else {smileon=1; this.style.fontWeight='bold';}">
 <div id=users style='width:200px; padding:5px; text-align:left;'></div>
-</span>
+</center>
 </form>
 
 

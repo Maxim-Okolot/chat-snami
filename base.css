@@ -134,7 +134,7 @@ main {
   left: 60px;
   right:0;
   bottom:0px;
-  background-image: url(img/alice_in_wonderland_pattern.jpg);z-index:14;
+  background-image: url('/assets/img/alice_in_wonderland_pattern.jpg');z-index:14;
 
 }
 
