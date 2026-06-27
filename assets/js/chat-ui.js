@@ -505,7 +505,7 @@ class ChatFooterActions {
         case 'chat-exit':
           e.preventDefault();
           if (typeof ws !== 'undefined' && ws) ws.close();
-          location.href = '?inc=exit';
+          (window.top || window).location.href = 'index.php?inc=exit';
           break;
 
         case 'media-link': {

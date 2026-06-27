@@ -912,12 +912,12 @@ class NickMessageFormatter {
     return `<span class="chat-msg__greet">${content}</span>`;
   }
 
-  wrapJoinWelcome(greetText, nickPlaceholder) {
-    return `<div class="chat-msg__welcome"><img src="../assets/img/online.gif" alt="" width="28" height="28"><span class="chat-msg__welcome-text">${greetText}</span><span class="chat-msg__welcome-nick">${nickPlaceholder}</span></div>`;
+  wrapJoinWelcome(bodyContent) {
+    return `<div class="message-join"><div class="message-join__header"><span class="message-join__icon" aria-hidden="true">🎉</span><span class="message-join__label">Вход в чат</span></div><div class="message-join__body">${bodyContent}</div></div>`;
   }
 
-  wrapLeaveWelcome(leaveText, nickPlaceholder) {
-    return `<div class="chat-msg__leave"><span class="chat-msg__leave-icon" aria-hidden="true">👋</span><span class="chat-msg__leave-text">${leaveText}</span><span class="chat-msg__leave-nick">${nickPlaceholder}</span></div>`;
+  wrapLeaveWelcome(bodyContent) {
+    return `<div class="message-leave"><div class="message-leave__header"><span class="message-leave__icon" aria-hidden="true">👋</span><span class="message-leave__label">Выход из чата</span></div><div class="message-leave__body">${bodyContent}</div></div>`;
   }
 
   wrapAdminNickLink(nick, colornick) {
@@ -1991,7 +1991,7 @@ class MessageRouter {
           }
           if (kill === 4) act = "window";
           if (kill === 5) act = "prav";
-          parent.location.href = `exit.html?${parent.yourkey}&act=${act}&timeout=${timeout}&grund=${text}`;
+          parent.location.href = `index.php?inc=exit&${parent.yourkey}&act=${act}&timeout=${timeout}&grund=${encodeURIComponent(text)}`;
         }
         let kill_timeout = 0;
         if (text.length > 0) text = ` Причина: ${text}. `;
@@ -2015,10 +2015,11 @@ class MessageRouter {
         if (chatStr(inchat) === '0' && sameRoom(room, myroom)) {
           sound.play(cmd);
           set_nick = `<a href='' class="chat-msg__welcome-nick-link" onclick="insertNickTag('${nick}'); return false;"><span class="chat-msg__nick" style="color:${colornick}">${set_nick}</span></a>`;
-          tadd = nickMessageFormatter.wrapJoinWelcome('Добро пожаловать в чат С нами!', '%nick%');
-          if ((tadda[nick] !== null && tadda[nick] !== undefined) && tadda[nick]) tadd = tadda[nick].replace(nick, "%nick%");
-          if (tadd.search("%nick%") === -1) tadd = `%nick% ${tadd}`;
-          tadd = tadd.replace("%nick%", set_nick);
+          let joinBody = 'Добро пожаловать в чат С нами! %nick%';
+          if ((tadda[nick] !== null && tadda[nick] !== undefined) && tadda[nick]) joinBody = tadda[nick].replace(nick, '%nick%');
+          if (joinBody.search('%nick%') === -1) joinBody = `%nick% ${joinBody}`;
+          joinBody = joinBody.replace('%nick%', set_nick);
+          tadd = nickMessageFormatter.wrapJoinWelcome(joinBody);
           wr(`${set_time}${tadd}`);
         }
         add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
@@ -2031,10 +2032,11 @@ class MessageRouter {
         if (chatStr(inchat) === '1' && sameRoom(room, myroom)) {
           sound.play(cmd);
           set_nick = `<a href='' class="chat-msg__leave-nick-link" onclick="insertNickTag('${nick}'); return false;"><span class="chat-msg__nick" style="color:${colornick}">${set_nick}</span></a>`;
-          tdel = nickMessageFormatter.wrapLeaveWelcome('Нас покидает', '%nick%');
-          if ((tdela[nick] !== null && tdela[nick] !== undefined) && tdela[nick]) tdel = tdela[nick].replace(nick, "%nick%");
-          if (tdel.search("%nick%") === -1) tdel = `%nick% ${tdel}`;
-          tdel = tdel.replace("%nick%", set_nick);
+          let leaveBody = 'Нас покидает %nick%';
+          if ((tdela[nick] !== null && tdela[nick] !== undefined) && tdela[nick]) leaveBody = tdela[nick].replace(nick, '%nick%');
+          if (leaveBody.search('%nick%') === -1) leaveBody = `%nick% ${leaveBody}`;
+          leaveBody = leaveBody.replace('%nick%', set_nick);
+          tdel = nickMessageFormatter.wrapLeaveWelcome(leaveBody);
           wr(`${set_time}${tdel}`);
         }
         deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid);

@@ -125,7 +125,7 @@
               </a>
             </li>
             <li class="chat-submenu__item">
-              <a href="?inc=exit" data-action="chat-exit" class="chat-submenu__link" target="_blank">
+              <a href="index.php?inc=exit" data-action="chat-exit" class="chat-submenu__link">
                 <img src="../assets/img/menu-icons/exit.png" alt="Выход">
                 Выход
               </a>

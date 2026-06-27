@@ -3,6 +3,7 @@ deny from all
 </FilesMatch>
 
 RewriteEngine on
+RewriteRule ^exit\.html$ index.php?inc=exit [L,QSA]
 RewriteRule ^img/(.*)$ assets/img/$1 [L]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
