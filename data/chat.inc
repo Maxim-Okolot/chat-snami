@@ -15,7 +15,16 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#4a90e2">
   <meta name="application-name" content="С нами">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+
+  <script>
+    (function () {
+      if (localStorage.getItem('chat_dark_theme') === '1') {
+        document.documentElement.classList.add('chat-theme-dark');
+        document.documentElement.style.colorScheme = 'dark';
+      }
+    })();
+  </script>
 
   <link rel="canonical" href="https://snami.mpchat.com/">
 
@@ -182,6 +191,11 @@
       <label class="chat-menu__checkbox">
         <input type="checkbox" id="checkGraphNick" checked title="Вкл-выкл графические ники">
         <span>Показывать графники</span>
+      </label>
+
+      <label class="chat-menu__checkbox">
+        <input type="checkbox" id="checkDarkTheme" title="Включить тёмную тему чата">
+        <span>Тёмная тема</span>
       </label>
     </nav>
 
