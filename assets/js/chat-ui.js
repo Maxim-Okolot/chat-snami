@@ -111,6 +111,56 @@ class ChatDarkTheme {
   }
 }
 
+/** Панель смайлов в футере (#mainsmilediv). */
+class ChatSmilePanel {
+  static init() {
+    const iframe = document.querySelector('#mainsmilediv iframe');
+    if (iframe) ChatSmilePanel.bindIframe(iframe);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const panel = document.getElementById('mainsmilediv');
+      if (panel?.classList.contains('smiles--open') && typeof mainsmileon === 'function') {
+        mainsmileon({ matches: 1 });
+      }
+    });
+
+    window.ChatSmilePanelRefresh = () => ChatSmilePanel.refreshIframe();
+  }
+
+  static bindIframe(iframe) {
+    iframe.addEventListener('load', () => ChatSmilePanel.decorateIframe(iframe));
+    if (iframe.contentDocument?.readyState === 'complete') {
+      ChatSmilePanel.decorateIframe(iframe);
+    }
+  }
+
+  static refreshIframe() {
+    const iframe = document.querySelector('#mainsmilediv iframe');
+    if (iframe) ChatSmilePanel.decorateIframe(iframe);
+  }
+
+  static decorateIframe(iframe) {
+    const doc = iframe.contentDocument;
+    if (!doc?.head || !doc.body) return;
+
+    doc.body.classList.add('smile-body');
+
+    if (!doc.getElementById('smile-panel-css')) {
+      const link = doc.createElement('link');
+      link.id = 'smile-panel-css';
+      link.rel = 'stylesheet';
+      link.href = '/assets/css/smile-panel.css';
+      doc.head.appendChild(link);
+    }
+
+    doc.documentElement.classList.toggle(
+      'chat-theme-dark',
+      document.documentElement.classList.contains('chat-theme-dark')
+    );
+  }
+}
+
 /** Уведомление о новой почте. */
 class ChatPostNotifier {
   static init() {
@@ -539,7 +589,8 @@ class ChatFooterActions {
           e.preventDefault();
           const panel = document.getElementById('mainsmilediv');
           if (!panel || typeof mainsmileon !== 'function') return;
-          mainsmileon({ matches: panel.style.display === 'none' ? 0 : 1 });
+          const open = panel.classList.contains('smiles--open');
+          mainsmileon({ matches: open ? 1 : 0 });
           break;
         }
 
@@ -666,6 +717,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ChatMenu.init();
   ChatGraphNickToggle.init();
   ChatDarkTheme.init();
+  ChatSmilePanel.init();
   ChatPostNotifier.init();
   ChatAdminMenu.init();
   ChatDjBanner.init();

@@ -221,6 +221,46 @@ html.chat-theme-dark .footer__btn {
   background: transparent;
 }
 
+html.chat-theme-dark .footer__btn.footer__btn--active {
+  background: var(--chat-grad-main);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 22px rgba(124, 140, 255, 0.22);
+}
+
+html.chat-theme-dark .smiles {
+  background: var(--chat-panel-strong);
+  border-color: var(--chat-border);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+html.chat-theme-dark .smiles__header {
+  background: rgba(124, 140, 255, 0.1);
+  border-bottom-color: var(--chat-border);
+}
+
+html.chat-theme-dark .smiles__title {
+  color: var(--chat-text);
+}
+
+html.chat-theme-dark .smiles__close {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--chat-muted);
+}
+
+html.chat-theme-dark .smiles__close:hover {
+  background: rgba(124, 140, 255, 0.18);
+  color: var(--chat-text);
+}
+
+html.chat-theme-dark .smiles__body {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+html.chat-theme-dark .smiles__body iframe {
+  background: var(--chat-panel-strong);
+}
+
 html.chat-theme-dark .footer__btn-send {
   background: var(--chat-grad-main);
   color: #fff;

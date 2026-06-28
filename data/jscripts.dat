@@ -692,6 +692,19 @@ function wo(url, name, w, h, scroll) {
   windowOpener.open(url, name, w, h, scroll);
 }
 
+/** Встроенная панель смайлов в футере (#mainsmilediv). ev.matches: 1 — скрыть, 0 — показать. */
+function mainsmileon(ev) {
+  var panel = document.getElementById('mainsmilediv');
+  if (!panel) return;
+  var open = !(ev && ev.matches);
+  panel.classList.toggle('smiles--open', open);
+  panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+  document.querySelectorAll('[data-action="toggle-smiles"]').forEach(function (btn) {
+    btn.classList.toggle('footer__btn--active', open);
+  });
+  if (open && window.ChatSmilePanelRefresh) window.ChatSmilePanelRefresh();
+}
+
 
 /** Чтение и запись cookie чата. */
 class CookieStorage {

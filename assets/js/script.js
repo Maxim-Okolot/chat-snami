@@ -692,6 +692,19 @@ function wo(url, name, w, h, scroll) {
   windowOpener.open(url, name, w, h, scroll);
 }
 
+/** Встроенная панель смайлов в футере (#mainsmilediv). ev.matches: 1 — скрыть, 0 — показать. */
+function mainsmileon(ev) {
+  var panel = document.getElementById('mainsmilediv');
+  if (!panel) return;
+  var open = !(ev && ev.matches);
+  panel.classList.toggle('smiles--open', open);
+  panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+  document.querySelectorAll('[data-action="toggle-smiles"]').forEach(function (btn) {
+    btn.classList.toggle('footer__btn--active', open);
+  });
+  if (open && window.ChatSmilePanelRefresh) window.ChatSmilePanelRefresh();
+}
+
 
 /** Чтение и запись cookie чата. */
 class CookieStorage {
@@ -914,7 +927,8 @@ class NickMessageFormatter {
   /** Текст сообщения с цветом/размером/шрифтом пользователя. */
   wrapMsgText(content, color, size, face, extraClass) {
     const cls = extraClass ? `chat-msg__text ${extraClass}` : 'chat-msg__text';
-    return ` <span class="${cls}" style="color:${color};font-size:${chatFontSizePx(size)};font-family:${face}">${content}</span> `;
+    const textColor = chatMessageTextColor(color);
+    return ` <span class="${cls}" style="color:${textColor};font-size:${chatFontSizePx(size)};font-family:${face}">${content}</span> `;
   }
 
   /** Ник с динамическим цветом; modClass: sm | lg. */
