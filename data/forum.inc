@@ -1,65 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <script src="/assets/js/site-theme-boot.js"></script>
+  <meta charset="utf-8">
+  <title>Форум — Чат «С нами»</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4a90e2">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/forum.css">
   <link rel="stylesheet" href="/assets/css/site-theme.css">
-<title>Форум чата "С нами"</title>
-<meta charset="utf-8">
-<link id="style" rel="stylesheet" type="text/css" href="/1.css">
-<link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
-<script src="//mpchat.com/api.js"></script>
-<script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
-
-<script>
-var mynick='';
-var myid=0;
-var loadtime='0';
-var error='0';
-var forum='0';
-var topic='0';
-var site='0';
-var sites='0';
-var mods='FunnyBunny, SweetBanny, PassionFlower';
-var moderator='0';
-var closedtopic='0';
-var lasttopics='0';
-var lastposts='0';
-var search='';
-var f_on=new Array();
-f_on[0]=new Array('','0','0');
-
-var f_f=new Array();
-var f_t=new Array();
-var f_p=new Array();
-var top10 = (typeof top10 !== "undefined" && top10) ? top10 : new Array();
-f_f[0]=new Array('1','Тестовый форум','Описание','','','','','','','','0','','');
-
-var edittopic='';
-var editmessage='';
-var newpost='0';
-</script>
+  <script src="//mpchat.com/api.js"></script>
+  <script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
 </head>
-
-<body class=forum-body>
-
-
-<div style='width: 100% !important; min-height: 100%; margin:0 auto;'>
-
-<div>
-<center>
-<header>
-<br>
-<center><img src="https://vmfile.com/upload/833/177832375.png"><br></center> 
-</header> 
- 
+<body class="forum-body">
+  <div class="forum-brand">
+    <a href="index.php">Чат «С нами»</a>
+  </div>
+  <div class="forum-shell">
+    <center>
 <script>
-/* Поля для авторизации */
-document.write("<table width=90%><tr><td align=center><form action='?inc=forum' method='post'>");
-if(!mynick || !myid)  document.write("<b>Ник[<a href=?inc=reg target=_blank title='Зарегистрировать ник'>Р</a>]:</b> <input name=nick type=text size=15 class=text> <b>Пароль[<a href=?inc=mail target=_blank title='Выслать пароль'>?</a>]:</b> <input name=pass type=password  size=15 class=text> <input type=hidden name=cookie_on value=1> <input type=submit value='Войти' class=ok>");
-else document.write("<b>Здравствуйте "+mynick+"!</b> <a href=?inc=forum&cookie_off=1>Выйти</a>");
-document.write("<br><a href=?inc=forum&lasttopics=10>Последние активные темы</a> | <a href=?inc=forum&mark=readed>Отметить все темы как прочитанные</a> | <a href=# onclick='document.getElementById(\"searchform\").style.display=\"block\";return false;'>Поиск по темам</a><br><div id=searchform style='display:none;'>Поиск: <input type=text name=search class=text> <input type=submit class=ok value='Найти'></div></td></tr></form></table><br>");
 
-/* Обработчик ошибок */
+var top10 = (typeof top10 !== "undefined" && top10) ? top10 : [];
+
+/* Поля для авторизации */
+document.write("<form action='?inc=forum' method='post'><div class='forum-auth'>");
+if(!mynick || !myid)  document.write("<b>Ник[<a href=?inc=reg target=_blank title='Зарегистрировать ник'>Р</a>]:</b> <input name=nick type=text size=15 class=text> <b>Пароль[<a href=?inc=mail target=_blank title='Выслать пароль'>?</a>]:</b> <input name=pass type=password size=15 class=text> <input type=hidden name=cookie_on value=1> <input type=submit value='Войти' class=ok>");
+else document.write("<b>Здравствуйте "+mynick+"!</b> <a href=?inc=forum&cookie_off=1>Выйти</a>");
+document.write("</div><div class='forum-toolbar'><a href=?inc=forum&lasttopics=10>Последние активные темы</a><a href=?inc=forum&mark=readed>Отметить все темы как прочитанные</a><a href=# onclick='document.getElementById(\"searchform\").style.display=\"block\";return false;'>Поиск по темам</a></div><div id=searchform style='display:none;'>Поиск: <input type=text name=search class=text> <input type=submit class=ok value='Найти'></div></form><br>");
 if(error==1) alert('Ошибка авторизации!');
 if(error==2) alert('Вы заблокированы модератором!');
 if(error==3) alert('Попытка флуда - не пишите так часто!');
@@ -498,7 +467,7 @@ return true;
 /* Отображение форумов */ 
 if(forum==0 && topic==0 && lasttopics==0) {
   wr("<table width=90% align=center >");
-  wr("<tr><td class=title colspan=2 style='border-radius: 5px 0 0 0;  border-left: none;'>Раздел о чате</td><td width=60 class=title align=center>Тем</td><td width=60 class=title align=center>Ответов</td><td width=30% class=title style='border-radius: 0 5px 0 0;'>Обновления</td></tr>");
+  wr("<tr><td class=title colspan=2>Раздел о чате</td><td width=60 class=title align=center>Тем</td><td width=60 class=title align=center>Ответов</td><td width=30% class=title>Обновления</td></tr>");
   
   if(1) {
     // Основной раздел //
@@ -509,7 +478,7 @@ if(forum==0 && topic==0 && lasttopics==0) {
     if(forums[11]) wr(forums[11]);
   }
   
-  wr("<tr><td class=title colspan=2 style='border-radius: 5px 0 0 0;  border-left: none;'>Радио чата</td><td width=60 class=title align=center>Тем</td><td width=60 class=title align=center>Ответов</td><td width=30% class=title style='border-radius: 0 5px 0 0;'>Обновления</td></tr>");
+  wr("<tr><td class=title colspan=2>Радио чата</td><td width=60 class=title align=center>Тем</td><td width=60 class=title align=center>Ответов</td><td width=30% class=title>Обновления</td></tr>");
   
   if(1) {
     // Радио чата //
@@ -517,7 +486,7 @@ if(forum==0 && topic==0 && lasttopics==0) {
     if(forums[4]) wr(forums[4]);
   }
   
-  wr("<tr><td class=title colspan=2 style='border-radius: 5px 0 0 0;  border-left: none;'>Досуг</td><td width=60 class=title align=center>Тем</td><td width=60 class=title align=center>Ответов</td><td width=30% class=title style='border-radius: 0 5px 0 0;'>Обновления</td></tr>");
+  wr("<tr><td class=title colspan=2>Досуг</td><td width=60 class=title align=center>Тем</td><td width=60 class=title align=center>Ответов</td><td width=30% class=title>Обновления</td></tr>");
   
   if(1) {
     // Досуг //
@@ -571,9 +540,9 @@ if(f_t.length==0) {all_topics="<tr><td colspan=5 align=center>В этом фор
 if(f_t.length==0 && search) {all_topics="<tr><td colspan=5 align=center>Ничего не найдено!</td></tr>";sites=1;}
 var links=genlinks("?inc=forum&forum="+forum+"&site=",sites,site); 
 
-if(search) panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <b>Результаты поиска</b></tr></table><br>";
-else if(lasttopics>0) panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <b>Последние активные темы</b></tr></table><br>";
-else panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+"><font color=#B00000>"+f_f[fa][1]+"</font></a> » <a href=#sendmess><font color=green>Создать новую тему</font></a><td align=right style='border:0px;'>Страницы: "+links+"</tr></table><br>";
+if(search) panel="<table class='forum-breadcrumb' width=90%><tr><td align=left><a href=?inc=forum>Forum</a> » <b>Результаты поиска</b></tr></table><br>";
+else if(lasttopics>0) panel="<table class='forum-breadcrumb' width=90%><tr><td align=left><a href=?inc=forum>Forum</a> » <b>Последние активные темы</b></tr></table><br>";
+else panel="<table class='forum-breadcrumb' width=90%><tr><td align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+"><font color=#B00000>"+f_f[fa][1]+"</font></a> » <a href=#sendmess><font color=green>Создать новую тему</font></a><td align=right>Страницы: <span class='forum-pager'>"+links+"</span></tr></table><br>";
 wr(panel);
 wr("<table width=90% align=center >");
 wr("<tr><td colspan=2 class=title>Тема</td><td width=100 class=title>Автор</td><td width=60 class=title align=center>Ответов</td><td width=150 class=title>Обновления</td></tr>");
@@ -606,7 +575,7 @@ posts[i]="<table  width=90% align=center style='table-layout:fixed;'><tr><td cla
 all_posts+=posts[i];
 }
 var links=genlinks("?inc=forum&forum="+forum+"&topic="+topic+"&site=",sites,site); 
-panel="<table width=90%><tr><td style='border:0px;' align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+">"+f_f[fa][1]+"</a> » <a href=?inc=forum&forum="+forum+"&topic="+topic+"><font color=#B00000>"+f_ta[1]+"</font></a> » <a href=#sendmess><font color=green>Написать ответ</font></a><td align=right style='border:0px;'>Страницы: "+links+"</tr></table><br>";
+panel="<table class='forum-breadcrumb' width=90%><tr><td align=left><a href=?inc=forum>Forum</a> » <a href=?inc=forum&forum="+forum+">"+f_f[fa][1]+"</a> » <a href=?inc=forum&forum="+forum+"&topic="+topic+"><font color=#B00000>"+f_ta[1]+"</font></a> » <a href=#sendmess><font color=green>Написать ответ</font></a><td align=right>Страницы: <span class='forum-pager'>"+links+"</span></tr></table><br>";
 
 if(moderator==1) wr("<form name=postsform action='' method=post style=display:inline>");
 
@@ -650,7 +619,7 @@ var regusers=0;
 var nickson="";
 var for_name = "";
 var title_txt = "сейчас смотрит разделы на форуме";
-wr("<br><div class='box_bottom'><table  width='90%' align=center style='border-radius: 6px;'><tr><td class=title align=left style='border-radius: 5px 5px 0 0; border-left:none;'>Статистика форума</td></tr><tr><td align=left>")
+wr("<br><div class='box_bottom'><table width='90%'><tr><td class=title align=left>Статистика форума</td></tr><tr><td align=left>")
 for(i=0;i<f_on.length;i++) {
 if(f_on[i][0]) {
  if(f_on[i][1] && forum>0 && topic==0){
@@ -716,29 +685,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
-
-<script>
-// Dark Mode
-(function() {
-  var theme = localStorage.getItem('forum_theme') || 'light';
-  if (theme === 'dark') {
-    document.body.classList.add('dark-mode');
-  }
-  
-  var btn = document.createElement('button');
-  btn.className = 'theme-toggle';
-  btn.innerHTML = theme === 'dark' ? '☀️ Светлая' : '🌙 Темная';
-  btn.onclick = function() {
-    document.body.classList.toggle('dark-mode');
-    var isDark = document.body.classList.contains('dark-mode');
-    localStorage.setItem('forum_theme', isDark ? 'dark' : 'light');
-    this.innerHTML = isDark ? '☀️ Светлая' : '🌙 Темная';
-  };
-  document.body.appendChild(btn);
-})();
-</script>
-
-
-
+    </center>
+  </div>
+  <div class="forum-footer">Загружено за: <script>document.write(loadtime);</script></div>
 </body>
 </html>

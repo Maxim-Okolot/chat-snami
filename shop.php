@@ -77,7 +77,7 @@ if(is_file("data/shop/$myid.sys")) {
 
 
 //moderator links
-$modlinks=""; if($moderator) $modlinks="| <a href=?inc=shop&do=create>Мастерская</a> | <a href=?inc=shop&do=moderate>Модерация</a> | <a href=?inc=shop&do=log>Логи</a>";
+$modlinks=""; if($moderator) $modlinks="<a href=?inc=shop&do=create>Мастерская</a><a href=?inc=shop&do=moderate>Модерация</a><a href=?inc=shop&do=log>Логи</a>";
 
 $changenickform=""; if($admin) 
 $changenickform="<form action='' method=get>
@@ -120,7 +120,7 @@ if(is_file("data/shop/$myid.sys")) {
 
 
 //moderator links
-$modlinks=""; if($moderator) $modlinks="| <a href=?inc=shop&do=create>Мастерская</a> | <a href=?inc=shop&do=moderate>Модерация</a> | <a href=?inc=shop&do=log>Логи</a>";
+$modlinks=""; if($moderator) $modlinks="<a href=?inc=shop&do=create>Мастерская</a><a href=?inc=shop&do=moderate>Модерация</a><a href=?inc=shop&do=log>Логи</a>";
 
 $changenickform=""; if($admin) 
 $changenickform="<form action='' method=get>
@@ -182,9 +182,9 @@ if($do=="log" && $moderator) {
 	}
 	if(!$nn) $output.="<tr><td colspan=4>Ничего не найдено!</td></tr>";
 	$output.="</table><br>";
-	if($p) $output.="<a href=?inc=$inc&do=$do&p=".($p-1).">Назад</a> ";
+	if($p) $output.="<div class='shop-pagination'><a href=?inc=$inc&do=$do&p=".($p-1).">Назад</a> ";
 	$output.="<b>[".($p+1)."]</b>";
-	if($nn==10) $output.=" <a href=?inc=$inc&do=$do&p=".($p+1).">Дальше</a>";
+	if($nn==10) $output.=" <a href=?inc=$inc&do=$do&p=".($p+1).">Дальше</a></div>";
 }
 
 
@@ -467,7 +467,7 @@ $output .= "<div class='products-grid'>";
 
 foreach($shop as $key=>$x) {
     $text=$x[4];
-    $text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<span style='color:red'>скрытый текст</span>", $text);
+    $text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<span class='shop-hidden-text'>скрытый текст</span>", $text);
     $date=date("d.m.y",$x[7]);
     $cc=$x[6]-(int)$x[10];
     $count=$x[6]; if(!$count) $count="неограничено";
@@ -508,7 +508,7 @@ foreach($shop as $key=>$x) {
 // Закрываем сетку товаров
 $output .= "</div>";
 
-$output.="Всего найдено <b>$num</b>";
+$output.="<div class='shop-summary'>Всего найдено <b>$num</b></div>";
 	if(count($cats)) {
     $output .= "</div></div>"; // Закрываем products-content и shop-container
 }
@@ -519,7 +519,7 @@ if($do=="my") {
 	$htmlitems=[];
 	foreach($items as $key=>$x) {
 		$text=$x[4];
-		$text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<span style='color:red'>$1</span>", $text);
+		$text=preg_replace('#\[hide\](.*?)\[/hide\]#s', "<span class='shop-hidden-text'>$1</span>", $text);
 		$date=date("d.m.y",$x[7]);
 		$expire=(int)$x[11]; if($expire) $expire="Срок годности до: <b>".date("d.m.y",$x[11])."</b><br>"; else $expire="";
 		$actions="<a href=# onclick='give(\"$x[0]\",\"$x[7]\");'>Подарить</a> | <a href='?inc=$inc&do=my&sell=$x[0]&from=$x[7]' onclick='return confirm(\"Вы уверенны?\");'>Выкинуть</a>";
@@ -531,7 +531,7 @@ if($do=="my") {
 	krsort($htmlitems);
 	$output.="<script>function give(forid,from) {document.giveform.forid.value=forid; document.giveform.from.value=from;}</script>
 	".implode("",$htmlitems)."
-	Всего найдено <b>$num</b>";
+	<div class='shop-summary'>Всего найдено <b>$num</b></div>";
 }
 
 //PAYMENT EXTRAS
@@ -542,289 +542,38 @@ if($do=="extra") {
 
 //OUTPUT HTML
 $points=$u['points'] ?? 0;
-if($error) $error="<span style='color:red'>$error</span><br><br>";
+$statusHtml = $error ? "<div class=\"shop-status\">$error</div>" : "";
 echo "<!DOCTYPE html>
-<html>
+<html lang=\"ru\">
 <head>
-<Title>Виртуальный магазин</title>
-<meta charset=\"utf-8\">
-<link rel=stylesheet type=text/css href=sovremenuy.css>
-<style>
-body.shop-body { 
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    min-height: 100vh; 
-    padding: 20px; 
-}
-
-.shop-container {
-    display: flex;
-    gap: 20px;
-    max-width: 1400px;
-    margin: 0 auto;
-    align-items: flex-start;
-}
-
-.categories-sidebar {
-    width: 250px;
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
-    position: sticky;
-    top: 20px;
-}
-
-.categories-sidebar::-webkit-scrollbar {
-    width: 8px;
-}
-
-.categories-sidebar::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.categories-sidebar::-webkit-scrollbar-thumb {
-    background: #667eea;
-    border-radius: 10px;
-}
-
-.categories-sidebar::-webkit-scrollbar-thumb:hover {
-    background: #764ba2;
-}
-
-.categories-sidebar h3 {
-    color: #667eea;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 18px;
-    border-bottom: 2px solid #667eea;
-    padding-bottom: 10px;
-}
-
-.category-item {
-    display: block;
-    padding: 12px 15px;
-    margin: 5px 0;
-    background: #f5f7fa;
-    border-radius: 8px;
-    color: #333;
-    text-decoration: none;
-    transition: all 0.3s;
-    border-left: 3px solid transparent;
-}
-
-.category-item:hover {
-    background: #667eea;
-    color: white;
-    border-left-color: #764ba2;
-    transform: translateX(5px);
-}
-
-.category-item.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-left-color: #764ba2;
-}
-
-.category-count {
-    float: right;
-    background: rgba(255,255,255,0.3);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-}
-
-.products-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin: 20px 0;
-}
-
-.product-card {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.product-image {
-    width: 150px;
-    height: 150px;
-    object-fit: contain;
-    border-radius: 8px;
-    margin: 0 auto 12px auto;
-    display: block;
-    background: #f5f7fa;
-    padding: 10px;
-}
-
-.product-id {
-    color: #999;
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-
-.product-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 8px;
-    min-height: 40px;
-}
-
-.product-description {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 10px;
-    line-height: 1.4;
-    flex-grow: 1;
-}
-
-.product-meta {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 8px;
-}
-
-.product-footer {
-    border-top: 1px solid #eee;
-    padding-top: 10px;
-    margin-top: 10px;
-}
-
-.product-stock {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.product-price {
-    font-size: 18px;
-    font-weight: bold;
-    color: #667eea;
-    margin-bottom: 12px;
-}
-
-.product-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.product-actions a {
-    flex: 1;
-    text-align: center;
-    padding: 8px 12px;
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white !important;
-    border-radius: 6px;
-    font-size: 13px;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.product-actions a:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-@media (max-width: 1200px) {
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .shop-container {
-        flex-direction: column;
-    }
-    .categories-sidebar {
-        width: 100%;
-        position: static;
-    }
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* НЕ затрагиваем select для градиентов - только прячем селект категорий */
-.shop-container + select.text {
-    display: none;
-}
-
-/* Стили для таблиц - НЕ трогаем font внутри */
-table { 
-    border-collapse: collapse; 
-    width: 100%; 
-    background: white; 
-    border-radius: 10px; 
-    overflow: hidden; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-    margin: 15px 0; 
-}
-
-table tr:hover { 
-    background: #f5f5f5; 
-}
-
-table td { 
-    padding: 12px; 
-    border-bottom: 1px solid #eee; 
-}
-
-table img { 
-    border-radius: 8px; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-    max-width: 100px; 
-}
-
-/* Ссылки - НЕ трогаем внутри таблиц и форм */
-center > a { 
-    color: #667eea; 
-    text-decoration: none; 
-    transition: color 0.3s; 
-}
-
-center > a:hover { 
-    color: #764ba2; 
-    text-decoration: underline; 
-}
-
-.product-card a {
-    color: #667eea;
-    text-decoration: none
-}
-
-
-</style>
+  <script src=\"/assets/js/site-theme-boot.js\"></script>
+  <meta charset=\"utf-8\">
+  <title>Магазин — Чат «С нами»</title>
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+  <meta name=\"theme-color\" content=\"#4a90e2\">
+  <meta name=\"color-scheme\" content=\"light dark\">
+  <link rel=\"icon\" href=\"/assets/img/favicon.ico\" type=\"image/x-icon\">
+  <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap\" rel=\"stylesheet\">
+  <link rel=\"stylesheet\" href=\"/assets/css/shop.css\">
+  <link rel=\"stylesheet\" href=\"/assets/css/site-theme.css\">
 </head>
-<body class=shop-body>
-<span style='display:block;text-align:center'><b>Виртуальный магазин</b><br><br>
-<a href=?inc=$inc&do=buy>Магазин</a> | <a href=?inc=$inc&do=my>Мои вещи</a> | <a href=?inc=$inc&do=extra>Функции</a> $modlinks
-<br><br>
-$changenickform
-У вас <b>$points</b> пунктов. В магазине уже куплено <b>$c_items</b>. <br><br>
-$error
-$output
-<br><br>
-</span>
+<body class=\"shop-body\">
+  <div class=\"shop-brand\">
+    <a href=\"index.php\">Чат «С нами»</a>
+  </div>
+  <div class=\"shop-shell\">
+    <h1 class=\"shop-title\">Виртуальный магазин</h1>
+    <nav class=\"shop-nav\">
+      <a href=\"?inc=$inc&do=buy\">Магазин</a>
+      <a href=\"?inc=$inc&do=my\">Мои вещи</a>
+      <a href=\"?inc=$inc&do=extra\">Функции</a>
+      $modlinks
+    </nav>
+    <div class=\"shop-nick-form\">$changenickform</div>
+    <div class=\"shop-stats\">У вас <b>$points</b> пунктов. В магазине уже куплено <b>$c_items</b>.</div>
+    $statusHtml
+    <div class=\"shop-content\">$output</div>
+  </div>
 </body>
 </html>
 ";

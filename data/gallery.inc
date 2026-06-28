@@ -1,103 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <script src="/assets/js/site-theme-boot.js"></script>
+  <meta charset="utf-8">
+  <title>Фотогалерея — Чат «С нами»</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4a90e2">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/gallery.css">
   <link rel="stylesheet" href="/assets/css/site-theme.css">
-<META http-equiv=Content-Type content="text/html; charset=UTF-8">
-<link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
-<link rel="stylesheet" href="https://snami.mpchat.com/gb.css" type="text/css" media="all" />
-<link id="style" rel="stylesheet" type="text/css" href="/2.css">
-<link rel=stylesheet type=text/css href=sovremenuy.css>
+  <base href="./">
+  <script src="//mpchat.com/api.js"></script>
+  <script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
 </head>
-<base href="./"> 
-<script src="//mpchat.com/api.js"></script>
-<script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
-<!--<script>
-var date = new Date(); // Получаем текущие дату и время
-  var h = date.getHours(); // Получаем текущий час
-  if (h < 8 || h > 22) document.getElementById("style").href = "style_night.css"; 
-</script>-->
-
-
-</head>
-
-
-<style>
-body {
-padding: 0px;
-    margin: 0px;
-    background: url(https://live.mts.ru/image/1300x1300/iskusstvo_po-novomu-4338bf64-659f-2573-9505-18a3af3a68b6.jpg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-}
-.table_gal td {
-font-family: 'Kurale' !important;
-font-size: 14px !important;
-background-color: #fff;
-border: none;
-padding: 25px;
-padding-bottom:0;
-box-shadow: 0 0 10px rgb(0 0 0 / 10%);
-border-radius: 10px;
-transition: box-shadow 1s;
-min-width: 130px;
-}
-
-.table_gal td:hover {
-box-shadow: 0 0 20px rgb(0 0 0 / 100%);
-transition: box-shadow 1s;
-}
-
-.table_gal2 {
-    border: none;
-}
-
-.table_gal2 td {
-border: 1px #ebebeb solid;
-padding: 20px;
-}
-
-a {
-font-family: 'Kurale' !important;
-font-size: 18px !important;
-}
-
-.table_gal {
-    border: none;
-    border-collapse: inherit;
-	border-spacing: 15px;
-}
-
-.like_count {
-    background: #f0f2f5;
-    text-align: center;
-    margin-bottom: 5px;
-    width: 50px;
-    border-radius: 20px;
-    padding: 2px 5px 2px 5px;
-    margin-top: 5px;
-    justify-content: space-evenly;
-    align-items: center;
-    display: flex;
-}
-
-		.photo_2 {
-    width: 150px;
-    height: 184px;
-  background-size: cover;
-  border-radius:5px;
-  object-fit: cover;
-	}
-	
-	td {
-	border: 1px #e4e4e4 solid;
-	}
-</style>
-
-<center>
-<br>
-<script>
+<body class="gallery-body">
+  <div class="gallery-brand">
+    <a href="index.php">Чат «С нами»</a>
+  </div>
+  <div class="gallery-shell">
+    <center>
+    <script>
 
 
 /* Печатает строку */
@@ -294,24 +218,28 @@ return info;
 }
 
 /* Печатает ссылку на галерею с всеми фотографиями */
-wr("<a href=?inc=gallery><b>Галерея чата ("+gal_c+")</b></a><br><br>");
+wr("<a href=?inc=gallery class='gallery-home-link'><b>Галерея чата ("+gal_c+")</b></a><br><br>");
 
 /* Печатает алфавит галерей для режима загрузки юзерами */
 if(gal_upload>0) {
+wr("<div class='gallery-abc'>");
 sym="0-9"; if(g_a[sym]) sym="<a href=?inc=gallery&abc="+sym+" title='Галерей: "+g_a[sym]+"'>"+sym+"</a>"; wr(sym+" ");
 for(var i=65;i<1072;i++) {
 sym=String.fromCharCode(i); 
 if(g_a[sym]) sym="<a href=?inc=gallery&abc="+sym+" title='Галерей: "+g_a[sym]+"'>"+sym+"</a>"; wr(sym+" ");
 if(i==90) {i=1039;wr("<br>");}
 }
-wr("<br><br>");
+wr("</div><br>");
 }
 
 /* ФОРМИРОВАНИЕ ГАЛЕРЕИ */
 
 /* Печатает список галерей */
+if(g_g.length) {
+wr("<div class='gallery-albums'>");
 for(var i=0;i<g_g.length;i++) wr("<a href='?inc=gallery&gallery="+g_g[i][2]+"'>"+g_g[i][0]+"("+g_g[i][1]+")</a> ");
-if(g_g.length) wr("<br><br>");
+wr("</div><br>");
+}
 
 /* Печатает название актуальной галереи */
 if(gallery) wr("<b>"+galleryname+"</b><br><br>");
@@ -324,12 +252,12 @@ var sites=Math.ceil(gal_ac/gal_ps);
 var links=mp_genlinks("?inc=gallery&gallery="+gallery+"&site=",sites,site);
 var tr=5;
 var atr=0;
-wr(links+"<br><br><table class='table_gal' id='gitems'>");
+wr("<div class='gallery-pager'>"+links+"</div><br><table class='table_gal' id='gitems'>");
 for(var i=0;i<g_f.length;i++) {if(atr==0) wr("<tr>");atr++;if(atr==5) atr=0;
 if(moderator==1) todel="<div><a href='?inc=gallery&gallery="+gallery+"&delfoto="+g_f[i][0]+"' onclick='return confirm(\"Вы действительно хотите удалить эту фотографию?\");' class=low><img src='https://soulty.ru/img/button_del.jpg' width=40px/></a></div><br>"; else todel="";
 wr("<td align=center valign=top><a href='?inc=gallery&gallery="+gallery+"&foto="+g_f[i][0]+"'><img class='photo_2' src=data/gallery/image/"+g_f[i][0]+".jpg border=0 ></a><br>"+fotoinfo(g_f[i], "?inc=gallery&gallery="+gallery+"&foto="+g_f[i][0])+todel+"</td>");
 }
-wr("</table><br>"+links+"<br><br>");
+wr("</table><br><div class='gallery-pager'>"+links+"</div><br>");
 }
 /* Форма для загрузки фото пользователями если вкл. */
 if(gal_upload>0) {
@@ -375,9 +303,9 @@ var links=genlinks("?inc=gallery&gallery="+gallery+"&foto="+afoto[0]+"&site=",si
 /* Вывод комментариев */
 if(sites>0) {
 if(moderator==1) wr("<form name=postsform action='' method=post style=display:inline>");
-wr(links+'<br><br>');
+wr("<div class='gallery-pager'>"+links+"</div><br>");
 wr(all_posts);
-wr(links+'<br><br>');
+wr("<div class='gallery-pager'>"+links+"</div><br>");
 if(moderator==1) wr("</form>");
 }
 
@@ -404,17 +332,8 @@ else {document.getElementById(i).style.opacity = opacity/100};} } ;
 
 
 </script>
-
-
-
-
-</center>
-
-
-
-
-
-Загружено за: <script>document.write(loadtime);</script>
-</center>
+    </center>
+  </div>
+  <div class="gallery-footer">Загружено за: <script>document.write(loadtime);</script></div>
 </body>
 </html>

@@ -781,6 +781,21 @@ function ign_ok(nick) {
 }
 
 
+const CHAT_DARK_MSG_COLOR = '#eef2ff';
+
+function isChatDarkTheme() {
+  try {
+    if (document.documentElement.classList.contains('chat-theme-dark')) return true;
+    if (typeof SiteTheme !== 'undefined' && SiteTheme.isEnabled && SiteTheme.isEnabled()) return true;
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('chat_dark_theme') === '1') return true;
+  } catch (e) {}
+  return false;
+}
+
+function chatMessageTextColor(color) {
+  return isChatDarkTheme() ? CHAT_DARK_MSG_COLOR : color;
+}
+
 /**
  * Форматирование ников и текста в ленте сообщений.
  */

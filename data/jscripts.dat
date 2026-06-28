@@ -781,6 +781,21 @@ function ign_ok(nick) {
 }
 
 
+const CHAT_DARK_MSG_COLOR = '#eef2ff';
+
+function isChatDarkTheme() {
+  try {
+    if (document.documentElement.classList.contains('chat-theme-dark')) return true;
+    if (typeof SiteTheme !== 'undefined' && SiteTheme.isEnabled && SiteTheme.isEnabled()) return true;
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('chat_dark_theme') === '1') return true;
+  } catch (e) {}
+  return false;
+}
+
+function chatMessageTextColor(color) {
+  return isChatDarkTheme() ? CHAT_DARK_MSG_COLOR : color;
+}
+
 /**
  * Форматирование ников и текста в ленте сообщений.
  */
@@ -899,7 +914,8 @@ class NickMessageFormatter {
   /** Текст сообщения с цветом/размером/шрифтом пользователя. */
   wrapMsgText(content, color, size, face, extraClass) {
     const cls = extraClass ? `chat-msg__text ${extraClass}` : 'chat-msg__text';
-    return ` <span class="${cls}" style="color:${color};font-size:${chatFontSizePx(size)};font-family:${face}">${content}</span> `;
+    const textColor = chatMessageTextColor(color);
+    return ` <span class="${cls}" style="color:${textColor};font-size:${chatFontSizePx(size)};font-family:${face}">${content}</span> `;
   }
 
   /** Ник с динамическим цветом; modClass: sm | lg. */
