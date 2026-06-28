@@ -1,0 +1,339 @@
+:root {
+  --love-bg: #070b18;
+  --love-panel: rgba(15, 20, 39, 0.92);
+  --love-border: rgba(255, 255, 255, 0.08);
+  --love-text: #eef2ff;
+  --love-muted: #aab3d4;
+  --love-primary: #7c8cff;
+  --love-accent: #ff5ca8;
+  --love-accent-2: #33d6c8;
+  --love-danger: #ff6b7a;
+  --love-success: #2be39f;
+  --love-radius-lg: 22px;
+  --love-grad-main: linear-gradient(135deg, #7c8cff 0%, #ff5ca8 55%, #33d6c8 100%);
+  --love-grad-pink: linear-gradient(135deg, #ff5ca8 0%, #9a5cff 100%);
+  --love-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(124, 140, 255, .15), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 92, 168, .14), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(51, 214, 200, .10), transparent 28%),
+    linear-gradient(180deg, #090d1b 0%, #0b1020 45%, #070b18 100%);
+}
+
+body.love-body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  color: var(--love-text);
+  background: transparent;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 24px 16px 40px;
+}
+
+body.love-body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, .03) 0%, transparent 40%),
+    radial-gradient(circle at 50% 0%, rgba(124, 140, 255, .10), transparent 35%);
+  pointer-events: none;
+}
+
+.love-brand {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.love-brand a {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: .3px;
+}
+
+.love-family {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.love-body .love-shell {
+  display: contents;
+}
+
+.love-heading {
+  position: relative;
+  z-index: 1;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.love-subheading {
+  position: relative;
+  z-index: 1;
+  color: var(--love-muted);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.love-icon {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: rgba(255, 92, 168, 0.12);
+  border: 1px solid rgba(255, 92, 168, 0.24);
+}
+
+.love-error {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 107, 122, 0.12);
+  border: 1px solid rgba(255, 107, 122, 0.28);
+  color: #ffb4bc;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.love-body b,
+.love-body strong {
+  color: var(--love-text);
+  font-weight: 700;
+}
+
+.love-body a {
+  color: #aeb8ff;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.love-body a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.love-body table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--love-border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.love-body table tr + tr td {
+  border-top: 1px solid var(--love-border);
+}
+
+.love-body table td {
+  padding: 13px 16px;
+  vertical-align: top;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.love-body table td:first-child {
+  width: 38%;
+  color: var(--love-muted);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.love-body table td:last-child {
+  color: var(--love-text);
+}
+
+.love-body form {
+  margin-top: 18px;
+  text-align: left;
+}
+
+.love-body table form {
+  margin-top: 0;
+}
+
+.love-body input[type="text"],
+.love-body input[type="password"],
+.love-body select,
+.love-body textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--love-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--love-text);
+  font: inherit;
+  outline: none;
+}
+
+.love-body input[type="text"]:focus,
+.love-body select:focus,
+.love-body textarea:focus {
+  border-color: rgba(124, 140, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(124, 140, 255, 0.14);
+}
+
+.love-body input[type="submit"],
+.love-body input[type="button"],
+.love-body button,
+.love-body .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--love-grad-main);
+  color: #fff;
+  font: 600 0.92rem/1 'Inter', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(124, 140, 255, .18);
+  transition: transform .2s ease, opacity .2s ease;
+}
+
+.love-body input[type="submit"]:hover,
+.love-body button:hover,
+.love-body .btn:hover {
+  transform: translateY(-1px);
+  opacity: .96;
+}
+
+.love-body input[name="divorce"],
+.love-body input[value="Развод"],
+.love-body input[value*="Разорв"] {
+  background: rgba(255, 107, 122, 0.18);
+  color: #ffb4bc;
+  border: 1px solid rgba(255, 107, 122, 0.28);
+  box-shadow: none;
+}
+
+.love-body .search_result {
+  margin-top: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(17, 24, 44, 0.96);
+  border: 1px solid var(--love-border);
+  text-align: left;
+}
+
+.love-body .search_result li {
+  list-style: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--love-text);
+}
+
+.love-body .search_result li:hover {
+  background: rgba(124, 140, 255, 0.14);
+}
+
+.love-body .rings-engage-ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.love-body .rings-engage-ul li {
+  cursor: pointer;
+  border-radius: 12px;
+  border: 1px solid var(--love-border);
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.love-body .rings-engage-ul li.active,
+.love-body .rings-engage-ul li:hover {
+  border-color: rgba(255, 92, 168, 0.45);
+  background: rgba(255, 92, 168, 0.1);
+}
+
+.love-body font[color="red"],
+.love-body .error-msg {
+  color: #ffb4bc !important;
+}
+
+.love-body font[color="green"] {
+  color: var(--love-success) !important;
+}
+
+.love-body br + br {
+  display: block;
+  content: "";
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  body.love-body {
+    padding: 22px 16px 28px;
+  }
+
+  .love-body table,
+  .love-body table tbody,
+  .love-body table tr,
+  .love-body table td {
+    display: block;
+    width: 100%;
+  }
+
+  .love-body table td:first-child {
+    width: 100%;
+    border-bottom: none;
+    padding-bottom: 4px;
+  }
+
+  .love-body table td:last-child {
+    padding-top: 0;
+    padding-bottom: 14px;
+  }
+
+  .love-body table tr + tr td {
+    border-top: none;
+  }
+
+  .love-body table tr {
+    border-top: 1px solid var(--love-border);
+    padding-top: 8px;
+  }
+}

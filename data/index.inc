@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="чат С нами - современный чат для общения, развлечения и знакомств" />

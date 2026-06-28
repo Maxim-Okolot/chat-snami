@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head> 
+<head>
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css"> 
 <META http-equiv=Content-Type content="text/html; charset=UTF-8">
 <link rel=STYLESHEET type=text/css href=style.css>
 <title>Приват с %pnick%</title>

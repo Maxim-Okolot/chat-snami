@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script src="/assets/js/site-theme-boot.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,17 +17,7 @@
   <meta name="theme-color" content="#4a90e2">
   <meta name="application-name" content="С нами">
   <meta name="color-scheme" content="light dark">
-
-  <script>
-    (function () {
-      if (localStorage.getItem('chat_dark_theme') === '1') {
-        document.documentElement.classList.add('chat-theme-dark');
-        document.documentElement.style.colorScheme = 'dark';
-      }
-    })();
-  </script>
-
-  <link rel="canonical" href="https://snami.mpchat.com/">
+<link rel="canonical" href="https://snami.mpchat.com/">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="С нами">
@@ -59,6 +50,7 @@
   <script src="../assets/js/chat-ui.js" defer></script>
 
   <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
 </head>
 
 
@@ -110,7 +102,7 @@
               </a>
             </li>
             <li class="chat-submenu__item">
-              <a href="https://snami.mpchat.com/love" class="chat-submenu__link" target="_blank">
+              <a href="index.php?inc=love" class="chat-submenu__link" target="_blank">
                 <img src="../assets/img/menu-icons/love.png" alt="Моя семья">
                 Моя семья
               </a>

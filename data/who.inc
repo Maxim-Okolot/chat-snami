@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
 <META http-equiv=Content-Type content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="https://snami.mpchat.com/gb.css" type="text/css" media="all" />
 <link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">

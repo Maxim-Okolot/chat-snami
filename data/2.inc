@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Отправить заявку - Радио Ленин ФМ</title>

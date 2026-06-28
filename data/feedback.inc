@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
 <title>Форма обратной связи</title>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="STYLESHEET" type="text/css" href="style.css">

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
 <title>Форум чата "С нами"</title>
 <meta charset="utf-8">
 <link id="style" rel="stylesheet" type="text/css" href="/1.css">

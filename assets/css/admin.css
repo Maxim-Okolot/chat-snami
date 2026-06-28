@@ -1,0 +1,293 @@
+:root {
+  --admin-bg: #c8d0db;
+  --admin-panel: #e8edf3;
+  --admin-border: rgba(120, 140, 190, 0.22);
+  --admin-text: #505a68;
+  --admin-heading: #505a68;
+  --admin-label: #4a6b82;
+  --admin-link: #4a6b82;
+  --admin-link-hover: #2a7ae2;
+  --admin-input-bg: #fff;
+  --admin-success: #1e8c1e;
+  --admin-error: #d32f2f;
+  --admin-radius-lg: 18px;
+  --admin-radius-md: 12px;
+  --admin-shadow: 0 2px 8px rgba(34, 60, 80, 0.12);
+  --admin-grad-btn: linear-gradient(135deg, #5a7d96 0%, #4a6b82 100%);
+  --admin-ban-bg: rgba(255, 255, 255, 0.55);
+}
+
+html.chat-theme-dark {
+  --admin-bg: #070b18;
+  --admin-panel: rgba(17, 24, 44, 0.88);
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-text: #eef2ff;
+  --admin-heading: #eef2ff;
+  --admin-label: #aab3d4;
+  --admin-link: #aeb8ff;
+  --admin-link-hover: #fff;
+  --admin-input-bg: rgba(255, 255, 255, 0.06);
+  --admin-success: #2be39f;
+  --admin-error: #ffb4bc;
+  --admin-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+  --admin-grad-btn: linear-gradient(135deg, #7c8cff 0%, #ff5ca8 55%, #33d6c8 100%);
+  --admin-ban-bg: rgba(255, 255, 255, 0.04);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body.admin-body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px 14px 32px;
+  font-family: 'Inter', 'Manrope', sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+}
+
+html.chat-theme-dark body.admin-body {
+  background:
+    radial-gradient(circle at top left, rgba(124, 140, 255, .15), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 92, 168, .14), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(51, 214, 200, .10), transparent 28%),
+    linear-gradient(180deg, #090d1b 0%, #0b1020 45%, #070b18 100%);
+}
+
+.admin-brand {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 12px;
+  text-align: center;
+}
+
+.admin-brand a {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--admin-heading);
+  text-decoration: none;
+  letter-spacing: .3px;
+}
+
+html:not(.chat-theme-dark) .admin-brand a {
+  color: #505a68;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 22px 20px 20px;
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  box-shadow: var(--admin-shadow);
+}
+
+html.chat-theme-dark .admin-container {
+  backdrop-filter: blur(14px);
+}
+
+.admin-title {
+  margin: 0 0 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--admin-heading);
+}
+
+.admin-status,
+.admin-error {
+  text-align: center;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.admin-error:empty {
+  display: none;
+  margin: 0;
+}
+
+.admin-error font[color='red'],
+.admin-error .error-msg {
+  color: var(--admin-error) !important;
+  font-weight: 600;
+}
+
+.admin-msg--error {
+  color: var(--admin-error);
+  font-weight: 600;
+}
+
+.admin-msg--success {
+  color: var(--admin-success);
+  font-weight: 600;
+}
+
+.admin-form table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.admin-form td {
+  vertical-align: middle;
+  padding: 0;
+}
+
+.admin-form td:first-child {
+  width: 34%;
+  padding-right: 10px;
+  color: var(--admin-label);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.admin-form label {
+  cursor: pointer;
+}
+
+.admin-form .text,
+.admin-form select.text {
+  width: 100%;
+  max-width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-input-bg);
+  color: var(--admin-text);
+  font: inherit;
+}
+
+.admin-form .text:focus,
+.admin-form select.text:focus {
+  outline: none;
+  border-color: rgba(124, 140, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(124, 140, 255, 0.12);
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.admin-actions .ok {
+  min-width: 140px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--admin-grad-btn);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(74, 107, 130, 0.22);
+}
+
+.admin-actions .ok:hover {
+  opacity: 0.95;
+}
+
+.admin-close {
+  color: var(--admin-link);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-close:hover {
+  color: var(--admin-link-hover);
+  text-decoration: underline;
+}
+
+.admin-banlist {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--admin-border);
+}
+
+.admin-banlist:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.admin-banlist b,
+.admin-banlist strong {
+  display: block;
+  margin-bottom: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  color: var(--admin-heading);
+}
+
+.admin-banlist table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--admin-ban-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-md);
+  overflow: hidden;
+}
+
+.admin-banlist td,
+.admin-banlist th {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--admin-border);
+  font-size: 0.92rem;
+}
+
+.admin-banlist tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-banlist a {
+  color: var(--admin-link);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-banlist a:hover {
+  color: var(--admin-link-hover);
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  body.admin-body {
+    padding: 14px 10px 24px;
+  }
+
+  .admin-container {
+    padding: 18px 14px 16px;
+  }
+
+  .admin-form table,
+  .admin-form tbody,
+  .admin-form tr,
+  .admin-form td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-form td:first-child {
+    width: 100%;
+    padding-right: 0;
+    padding-bottom: 4px;
+  }
+
+  .admin-form tr {
+    margin-bottom: 8px;
+  }
+}

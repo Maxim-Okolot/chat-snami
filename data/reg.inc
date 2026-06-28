@@ -1,3 +1,5 @@
+  <script src="/assets/js/site-theme-boot.js"></script>
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
 %include=header.html%
 
 <style>

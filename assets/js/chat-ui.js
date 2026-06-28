@@ -104,30 +104,10 @@ class ChatGraphNickToggle {
 
 /** Чекбокс «тёмная тема» (#checkDarkTheme). */
 class ChatDarkTheme {
-  static STORAGE_KEY = 'chat_dark_theme';
-
   static init() {
-    const checkbox = document.getElementById('checkDarkTheme');
-    if (!checkbox) return;
-
-    const saved = localStorage.getItem(this.STORAGE_KEY);
-    const enabled = saved === '1';
-    checkbox.checked = enabled;
-    this.apply(enabled);
-
-    checkbox.addEventListener('change', () => {
-      const on = checkbox.checked;
-      localStorage.setItem(this.STORAGE_KEY, on ? '1' : '0');
-      this.apply(on);
-    });
-  }
-
-  static apply(enabled) {
-    document.documentElement.classList.toggle('chat-theme-dark', enabled);
-    document.documentElement.style.colorScheme = enabled ? 'dark' : 'light';
-
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = enabled ? '#070b18' : '#4a90e2';
+    if (window.SiteTheme) {
+      SiteTheme.initCheckbox('checkDarkTheme');
+    }
   }
 }
 

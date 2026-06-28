@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Анкета %nick%</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href='/assets/img/favicon.ico' type="image/x-icon">
+  <script src="/assets/js/site-theme-boot.js"></script>
   <link rel="stylesheet" href="../assets/css/profile.css">
+  <link rel="stylesheet" href="/assets/css/site-theme.css">
 
   <script src="/profile-rating.js"></script>
   <script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
