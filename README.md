@@ -20,7 +20,6 @@
 
 - **Backend:** PHP, mpchat, MySQL, файловое хранилище (`.sys`, `.dat`)
 - **Frontend:** JavaScript (ES6+), jQuery, CSS
-- **Сборка:** Node.js (утилиты в `scripts/`, без npm-зависимостей в продакшене)
 
 ## Требования
 
@@ -28,7 +27,6 @@
 - MySQL
 - Установленный движок **mpchat** на сервере (`/usr/share/php/mpchat/`)
 - Apache с `mod_rewrite` и `.htaccess` **или** эквивалентная конфигурация Nginx
-- Node.js 18+ — только для локальной разработки и утилит
 
 ## Структура проекта
 
@@ -47,14 +45,12 @@ chat-snami/
 ├── assets/
 │   ├── css/                  # Стили (style.css, site-theme.css, страничные темы)
 │   ├── js/
-│   │   ├── jscripts.dat →    # см. sync-script-js.js
 │   │   ├── script.js         # Локальная копия jscripts.dat
 │   │   ├── snamik.js         # Бот «Снамик»
 │   │   ├── chat-ui.js        # UI чата (меню, футер, тема, панель смайлов)
 │   │   └── site-theme-boot.js
 │   ├── img/                  # Статика (legacy /img/ → rewrite в .htaccess)
 │   └── audio/
-├── scripts/                  # Node-утилиты разработки
 └── .htaccess                 # Rewrite, защита *.inc/*.dat/*.sys
 ```
 
@@ -74,29 +70,12 @@ chat-snami/
 
 | Файл | Назначение |
 |------|------------|
-| `data/jscripts.dat` | **Источник правды** — ядро чата, подставляется в шаблон как `%scripts%` |
-| `assets/js/script.js` | Зеркало для локальной отладки; синхронизируется скриптом |
+| `data/jscripts.dat` | Ядро чата, подставляется в шаблон как `%scripts%` |
+| `assets/js/script.js` | Локальная копия `jscripts.dat` для отладки |
 | `assets/js/snamik.js` | Бот «Снамик»; подключается **до** `%scripts%` в `chat.inc` |
 | `assets/js/chat-ui.js` | Современный UI: боковые панели, футер, тёмная тема, смайлы |
 
-После изменений ядра чата:
-
-```bash
-node scripts/sync-script-js.js
-```
-
-Монолитная сборка (legacy, один файл `%scripts%`):
-
-```bash
-node scripts/build-jscripts.js
-# → data/jscripts.monolith.dat
-```
-
-Проверка связки шаблона и скриптов:
-
-```bash
-node scripts/verify-chat-ui.js
-```
+После правок ядра чата синхронизируйте `assets/js/script.js` с `data/jscripts.dat`.
 
 ### Стили и тема
 
@@ -104,12 +83,6 @@ node scripts/verify-chat-ui.js
 - `assets/css/site-theme.css` — тёмная тема и оформление standalone-страниц
 - Страничные стили: `shop.css`, `forum.css`, `gallery.css`, `clan.css`, `smile-panel.css` и др.
 - Standalone-страницы подключают `site-theme-boot.js` и класс `{page}-body` на `<body>`
-
-Пересборка фрагмента тёмной темы из `style.css`:
-
-```bash
-node scripts/build-site-theme-css.js
-```
 
 ### Шаблоны mpchat
 
@@ -131,7 +104,3 @@ node scripts/build-site-theme-css.js
 - `.htaccess` запрещает прямой доступ к `*.inc`, `*.dat`, `*.sys`
 - Секреты и локальные override'ы — только в `config.php` и `api/yandex_translate.local.php` (в `.gitignore`)
 - Не коммитьте дампы `data/*.sys` с пользовательскими данными
-
-## Лицензия
-
-Код сайта и кастомизации распространяется в рамках проекта «С нами». Движок mpchat — отдельный продукт со своими условиями использования.

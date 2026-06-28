@@ -1,5 +1,6 @@
 .idea
 .cursor
+scripts
 node_modules/
 .sys
 api/yandex_translate.local.php
