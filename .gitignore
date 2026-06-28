@@ -1,4 +1,5 @@
 .idea
+.cursor
 .sys
 api/yandex_translate.local.php
 config.php
