@@ -69,10 +69,25 @@ if($x[0]>0 || $x[1]>0 || $x[2]>0) $birthday=implode(".",$x);
 $vars['birthday']=$birthday;
 
 //set status
-$status="";
-$a=file("data/status.sys");
-for($i=0;$i<count($a);$i++) {$x=explode("|",$a[$i]); if($x[0]==$u1['status']) {$status=$x[1]; break;}}
-$vars['status']=$status;
+$status = 'Житель';
+$statusId = (int)($u1['status'] ?? 0);
+if (is_file('data/status.sys')) {
+	$a = file('data/status.sys');
+	if (is_array($a)) {
+		for ($i = 0, $n = count($a); $i < $n; $i++) {
+			$x = explode('|', $a[$i]);
+			if (isset($x[0], $x[1]) && (string)$x[0] === (string)$u1['status']) {
+				$status = trim($x[1]);
+				break;
+			}
+		}
+	}
+}
+if ($status === '') {
+	$status = 'Житель';
+}
+$vars['status'] = $status;
+$vars['status_id'] = $statusId;
 
 //set fields
 $fields=explode("<",$u1['fields']);
@@ -127,7 +142,8 @@ if(is_file("data/clan/clan.sys")) {
 $u_nav_menu_c = '';
 
 //################### Добавка в друзья кнопки ###################//
-$user_id = (int)$u['id'];
+$user_id = isset($u['id']) ? (int)$u['id'] : 0;
+$current_user_nick = isset($u['nick']) ? (string)$u['nick'] : '';
 $u1_id   = (int)$u1['id'];
 // Проверка на наличие в друзьях (обоюдно)
 $q1 = "SELECT COUNT(*) AS c FROM snami_frends 
@@ -157,7 +173,7 @@ $vars['friend_profile_block'] = '';
 
 // В друзья (старая навигация + блок в карточке анкеты)
 if (
-    $u1['id'] != $u['id'] && // чужая анкета
+    $u1['id'] != $user_id && // чужая анкета
     $u1['nick'] != $cfg['nick_r'] &&    // не бот
     $vars['field17'] != '1'             // и не скрытая анкета
 ) {
@@ -213,7 +229,7 @@ if (
 
 //################### Навигация ###################//
 $u_nav_menu = "";
-$u_nav_menu.= '<span class='nav_btn'>';
+$u_nav_menu.= '<span class="nav_btn">';
 $u_nav_menu.= $u_nav_menu_c;
 $u_nav_menu.= '</span>';
 if($u1['nick']==$cfg['nick_r']) $vars['u_nav']=''; else $vars['u_nav']=$u_nav_menu;
@@ -246,6 +262,9 @@ if ($k_post == 0) {
 
     while ($row = mysqli_fetch_assoc($res)) {
         $user = readuser("", $row['user']);
+        if (!$user || empty($user['nick'])) {
+            continue;
+        }
         $avatar = ($user['icon'] == '' || $user['icon'] == '-' ? '/assets/img/nophoto.jpg' : $user['icon']);
         $nick = $user['nick'];
         $friend_html = '<div class="wrap-friends"><img src="'.$avatar.'" class="avatar"/><a href="index.php?inc=info&userid='.$row['user'].'" target="_blank">'.$nick.'</a></div>';
@@ -270,7 +289,7 @@ $output .= "</div></div>";
 // Не показываем блок, если это бот или если в поле 17 указано 1
 $vars['friends'] = (
     $u1['nick'] == $cfg['nick_r'] || 
-    ($vars['field18'] == '1' && $u1['nick'] != $u['nick'])
+    ($vars['field18'] == '1' && $u1['nick'] != $current_user_nick)
 ) ? '' : $output;
 
 
@@ -292,5 +311,15 @@ $vars['profile_viewer_json'] = $profileViewerPayload !== false
     : '{"nick":"","avatar":""}';
 
 //output
-foreach($vars as $k=>$v) if(!strlen($v) && !substr_count($k,"field")) $vars[$k]="";
+foreach ($vars as $k => $v) {
+	if ($k === 'status_id' || $k === 'profile_viewer_json') {
+		continue;
+	}
+	if (is_int($v) || is_float($v)) {
+		continue;
+	}
+	if (!strlen((string)$v) && !substr_count($k, 'field')) {
+		$vars[$k] = '';
+	}
+}
 

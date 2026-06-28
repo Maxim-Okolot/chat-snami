@@ -2,14 +2,19 @@
 <html lang="ru">
 <head>
   <script src="/assets/js/site-theme-boot.js"></script>
-  <link rel="stylesheet" href="../assets/css/profile.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4a90e2">
+  <meta name="color-scheme" content="light dark">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/profile.css">
   <link rel="stylesheet" href="/assets/css/site-theme.css">
 
   <script src="/profile-rating.js"></script>
   <script src="?inc=informer&jsonp=mp_init&getmsg=1&inchat=1&lastreg=10&counter=1&birthday=1"></script>
 </head>
 
-<body>
+<body class="profile-body">
 
 <div class="profile-card">
 
@@ -47,19 +52,17 @@
       <div class="title-block">
         <h1>%nick%</h1>
       </div>
-      <div class="status-badge">
-        <script>
-          var child = new Array;
-          child['FunnyBunnu']='<span style="color:#2a7ae2;"><b>Админ</b></span>';
-          child['Каспер']='<span style="color:#2a7ae2;"><b>Техник</b></span>';
-          child['Igor_Moscow']='<span style="color:#2a7ae2;"><b>Dj</b></span>';
-          if(child['%nick%']!=null) document.write(child['%nick%']);
-          else document.write("<span style='color:#888;'>Житель</span>");
-          if('%nick%'=='Магнэто') document.write('<style>.info-body {background-image: url(http://zoohall.com.ua/uploads/posts/2010-09/1284281751_abstact-background-mix-8.jpg);}</style>')
-          if('%nick%'=='cyber') document.write('<style>.info-body {background-image: url(http://i58.fastpic.ru/big/2013/0829/5a/7c0cb74189576681afc614097127155a.jpg); background-size: 800px 600px;}</style>')
-        </script>
+      <div class="status-badge" data-status-id="%status_id%">
+        <span class="status-badge__text">%status%</span>
+      </div>
+    </div>
 
-        <script>
+    <script>
+      if('%nick%'=='Магнэто') document.write('<style>.profile-body {background-image: url(http://zoohall.com.ua/uploads/posts/2010-09/1284281751_abstact-background-mix-8.jpg); background-size: cover;}</style>');
+      if('%nick%'=='cyber') document.write('<style>.profile-body {background-image: url(http://i58.fastpic.ru/big/2013/0829/5a/7c0cb74189576681afc614097127155a.jpg); background-size: 800px 600px;}</style>');
+    </script>
+
+    <script>
           window.friendAvatars = {
             "FunnyBunny": "https://snami.mpchat.com/assets/img/no_avatar_par.png",
             "Каспер": "/data/foto/1751810217.jpg",
@@ -82,9 +85,7 @@
             "Иволга": "/assets/img/no_avatar.png",
             "Caramel": "/assets/img/no_avatar.png"
           };
-        </script>
-      </div>
-    </div>
+    </script>
 
     <div class="info-list">
       <div class="info-row">

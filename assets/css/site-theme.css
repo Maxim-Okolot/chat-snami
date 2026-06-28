@@ -17,7 +17,7 @@ html.chat-theme-dark {
   --accent-dark: #eef2ff;
 }
 
-html.chat-theme-dark body:not(.chat-body):not(.love-body):not(.top100-body):not(.post-body):not(.set-body):not(.admin-body):not(.shop-body):not(.clan-body):not(.gallery-body):not(.forum-body) {
+html.chat-theme-dark body:not(.chat-body):not(.love-body):not(.top100-body):not(.post-body):not(.set-body):not(.admin-body):not(.shop-body):not(.clan-body):not(.gallery-body):not(.forum-body):not(.profile-body) {
   color: var(--site-text) !important;
   background:
     radial-gradient(circle at top left, rgba(124,140,255,.15), transparent 28%),

@@ -118,7 +118,7 @@ class ChatConfig {
     this.stn[3] = '<img src=https://imgs.su/upload/737/1906560560.gif width=35  title=Гл.Модер>';
     this.stn[4] = '<img title="Житель" src="https://imgs.su/upload/827/535147782.gif">';
     this.stn[5] = '<img title="Житель" src="https://imgs.su/upload/827/535147782.gif">';
-    this.stn[6] = '<img src=https://snami.mpchat.com/texnik.png width=35  title=Техник>';
+    this.stn[6] = '<img src="/assets/img/status/texnik.png" width="35" height="35" title="Техник" alt="Техник">';
     this.stn[7] = '<img src=https://snami.mpchat.com/djm.png width=35  title=Радиоведущий>';
     this.stn[8] = '<img src=https://snami.mpchat.com/djj.png width=35  title=Радиоведушая>';
     this.stn[9] = '<img src=https://snami.mpchat.com/moder.png width=35  title=Модератор>';
