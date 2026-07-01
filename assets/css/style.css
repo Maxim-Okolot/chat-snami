@@ -18,7 +18,12 @@
 }
 
 input[type="file"] {
-  display: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 ::-webkit-scrollbar {
@@ -102,6 +107,7 @@ select {
     width: 100%;
     margin: 25px 0 0;
     position: relative;
+    padding-right: 58px;
 
     > p {
       padding-right: 65px;
@@ -205,9 +211,13 @@ select {
 }
 
 .private-message {
-  background: #eef3f8;
+  position: relative;
+  background: rgba(241, 241, 241, .5);
+  border: 1px solid rgba(255, 0, 0, .5);
+  border-left: 4px solid rgba(255, 0, 0, .5);
+  margin: 4px 0;
   border-radius: 8px;
-  padding: 8px 12px 10px;
+  padding: 8px 58px 10px 12px;
 
   a {
     display: inline-block;
@@ -219,13 +229,6 @@ select {
       display: block;
     }
   }
-}
-
-.private-message {
-  background: rgba(241, 241, 241, .5);
-  border: 1px solid rgba(255, 0, 0, .5);
-  border-left: 4px solid rgba(255, 0, 0, .5);
-  margin: 4px 0;
 }
 
 .message-for-me {
@@ -258,7 +261,7 @@ select {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  padding-bottom: 7px;
+  padding: 0 58px 7px 0;
   border-bottom: 1px solid rgba(74, 144, 226, .16);
 }
 
@@ -329,7 +332,7 @@ select {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  padding-bottom: 7px;
+  padding: 0 58px 7px 0;
   border-bottom: 1px solid rgba(56, 161, 105, .16);
 }
 
@@ -400,7 +403,7 @@ select {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  padding-bottom: 7px;
+  padding: 0 58px 7px 0;
   border-bottom: 1px solid rgba(219, 39, 119, .16);
 }
 
@@ -471,7 +474,7 @@ select {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  padding-bottom: 7px;
+  padding: 0 58px 7px 0;
   border-bottom: 1px solid rgba(79, 70, 229, .16);
 }
 
@@ -547,7 +550,7 @@ select {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  padding-bottom: 7px;
+  padding: 0 58px 7px 0;
   border-bottom: 1px solid rgba(13, 148, 136, .16);
 }
 
@@ -630,7 +633,7 @@ select {
   align-items: center;
   gap: 8px;
   margin: 0 0 8px;
-  padding-bottom: 7px;
+  padding: 0 58px 7px 0;
   border-bottom: 1px solid rgba(100, 116, 139, .16);
 }
 
@@ -687,15 +690,30 @@ select {
 
 .time-message {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0;
+  right: 0;
+  z-index: 1;
   color: #636363;
   transition: .3s ease;
   cursor: pointer;
   font: 400 12px/1 var(--font);
+  white-space: nowrap;
 
   &:hover {
     color: var(--color-black);
+  }
+}
+
+.message-for-me,
+.message-for-everyone,
+.message-for-dev,
+.message-for-parn,
+.message-join,
+.message-leave,
+.private-message {
+  .time-message {
+    top: 10px;
+    right: 14px;
   }
 }
 
@@ -1664,11 +1682,11 @@ select {
 }
 
 .icon-clan::before {
-  background: center/cover url("../img/icons/clan.svg");
+  background: center/contain no-repeat url("../img/icons/clan.svg");
 }
 
 .icon-love::before {
-  background: center/cover url("../img/icons/ring.svg");
+  background: center/contain no-repeat url("../img/icons/ring.svg");
 }
 
 
@@ -1898,7 +1916,6 @@ select {
     z-index: 120;
     min-width: 220px;
     max-width: min(92vw, 320px);
-    max-height: min(60vh, 420px);
     overflow: auto;
     padding: 10px;
     flex-direction: column;
@@ -1944,6 +1961,10 @@ select {
     background: #c2d4e2;
     color: #4a6b82;
   }
+}
+
+.footer__btn--file {
+  position: relative;
 }
 
 .footer__btn-icon-wrap {

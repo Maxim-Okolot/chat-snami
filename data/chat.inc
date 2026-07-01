@@ -43,8 +43,8 @@
   <link rel="shortcut icon" href="../assets/img/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="../assets/img/favicon.ico">
 
-  <script src="../assets/js/jquery.js"></script>
-  <script src="../assets/js/snamik.js"></script>
+  <script src="/assets/js/jquery.js"></script>
+  <script src="/assets/js/snamik.js"></script>
   <script src="?inc=informer&getmsg=1&inchat=1&lastreg=10&birthday=1>"></script>
   <script>%scripts%</script>
   <script src="../assets/js/chat-ui.js" defer></script>
@@ -403,7 +403,7 @@
             </svg>
           </span>
         </button>
-        <label type="button" class="footer__btn" data-action="pick-file" title="Выбрать картинку для загрузки">
+        <label class="footer__btn footer__btn--file" title="Выбрать картинку для загрузки">
           <span class="footer__btn-icon-wrap" aria-hidden="true">
             <svg class="footer__btn-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M33 14V34C33 38.4183 29.4183 42 25 42C20.5817 42 17 38.4183 17 34V12C17 9.23858 19.2386 7 22 7C24.7614 7 27 9.23858 27 12V30C27 31.1046 26.1046 32 25 32C23.8954 32 23 31.1046 23 30V14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>

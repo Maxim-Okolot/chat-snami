@@ -400,6 +400,85 @@ var SNAMIK_BOT = (function () {
     return '';
   }
 
+  function snamikNormalizeNick(nick) {
+    return String(nick == null ? '' : nick).replace(/\s+/g, ' ').trim();
+  }
+
+  function snamikGetMyNick() {
+    var i;
+    var wins = [];
+    try {
+      if (typeof window !== 'undefined') wins.push(window);
+      if (typeof parent !== 'undefined' && parent !== window) wins.push(parent);
+      if (typeof top !== 'undefined' && top !== window) wins.push(top);
+    } catch (e) {
+    }
+    for (i = 0; i < wins.length; i++) {
+      try {
+        if (wins[i] && wins[i].mynick) {
+          var fromWin = snamikNormalizeNick(wins[i].mynick);
+          if (fromWin) return fromWin;
+        }
+      } catch (e) {
+      }
+    }
+    try {
+      if (typeof parent !== 'undefined' && parent.frames && parent.frames.length) {
+        for (i = 0; i < parent.frames.length; i++) {
+          try {
+            var fw = parent.frames[i];
+            if (fw && fw.mynick) {
+              var fromFrame = snamikNormalizeNick(fw.mynick);
+              if (fromFrame) return fromFrame;
+            }
+          } catch (e) {
+          }
+        }
+      }
+    } catch (e) {
+    }
+    try {
+      var form = document.forms && document.forms.fmsg;
+      if (form && form.nick && form.nick.value) {
+        var fromForm = snamikNormalizeNick(form.nick.value);
+        if (fromForm) return fromForm;
+      }
+    } catch (e) {
+    }
+    return '';
+  }
+
+  function snamikBotPrefixLen() {
+    return 9; /* "[Снамик] " */
+  }
+
+  function snamikIsBotOutgoing(msg) {
+    return String(msg == null ? '' : msg).indexOf('[Снамик] ') === 0;
+  }
+
+  function snamikDirectWriteBot(bodyHtml) {
+    if (typeof wr !== 'function') return false;
+    var nick = snamikGetMyNick() || 'Вы';
+    var d = new Date();
+    var t = `${(`0${d.getHours()}`).slice(-2)}:${(`0${d.getMinutes()}`).slice(-2)}:${(`0${d.getSeconds()}`).slice(-2)}`;
+    var sendtoFn = (typeof parent !== 'undefined' && parent.sendto) ? 'parent.sendto' : 'sendto';
+    var set_time = `<span class='time-message' onclick='${sendtoFn}(" см. ${t} ");'>${t}</span> `;
+    var label = typeof snamikBotLabelHtml === 'function'
+      ? snamikBotLabelHtml(0, typeof sizenick !== 'undefined' ? sizenick : 0, typeof facenick !== 'undefined' ? facenick : 0)
+      : '<span class="snimik-bot-label">[Снамик]</span> ';
+    var nickWrap = typeof wrapNickForMsg === 'function'
+      ? wrapNickForMsg(0, nick, typeof mycolornick !== 'undefined' ? mycolornick : '', typeof sizenick !== 'undefined' ? sizenick : 0, typeof facenick !== 'undefined' ? facenick : 0, 'tonick')
+      : `<span class="tonick">${nick}</span>:`;
+    var cls = String(bodyHtml).indexOf('snimik-bot-cmdlist') >= 0
+      ? 'snimik-bot-msg snimik-bot-msg--rich'
+      : 'snimik-bot-msg';
+    var set_text = typeof nickMessageFormatter !== 'undefined' && nickMessageFormatter.wrapMsgText
+      ? nickMessageFormatter.wrapMsgText(' ' + bodyHtml, typeof mycolor !== 'undefined' ? mycolor : '', typeof size !== 'undefined' ? size : '', typeof face !== 'undefined' ? face : '', cls)
+      : `<span class="${cls}">${bodyHtml}</span>`;
+    wr(set_time + label + nickWrap + set_text);
+    return true;
+  }
+
   function snamikPostWrite(msg) {
     var key = snamikGetYourkey();
     var doc = document;
@@ -419,8 +498,11 @@ var SNAMIK_BOT = (function () {
 
     addField('text', msg);
     addField('trans', '0');
-    if (typeof mynick !== 'undefined' && mynick) addField('nick', mynick);
-    if (typeof myid !== 'undefined' && myid) addField('id', String(myid));
+    var nick = snamikGetMyNick();
+    if (nick) addField('nick', nick);
+    var id = (typeof myid !== 'undefined' && myid) ? myid :
+      (typeof parent !== 'undefined' && parent.myid ? parent.myid : '');
+    if (id) addField('id', String(id));
     doc.body.appendChild(f);
     f.submit();
     setTimeout(function () {
@@ -437,6 +519,7 @@ var SNAMIK_BOT = (function () {
   }
 
   var snamikPendingReplies = {};
+  var snamikSelfEchoSuppressUntil = 0;
 
   function snamikTrackOutgoingReply(msg) {
     snamikPendingReplies[String(msg)] = Date.now();
@@ -445,12 +528,15 @@ var SNAMIK_BOT = (function () {
   function snamikShouldSkipDuplicateReply(nick, text) {
     text = String(text == null ? '' : text);
     if (text.substring(0, 9) !== '[Снамик] ') return false;
-    var myNick = (typeof mynick !== 'undefined' && mynick) ? snamikNormalizeNick(mynick) : '';
-    if (!myNick || snamikNormalizeNick(nick) !== myNick) return false;
+    if (!snamikNickIsMe(nick, snamikGetMyNick())) return false;
+
+    /* Уже показали ответ локально — не дублировать эхом с сервера (другой цвет/шрифт). */
+    if (Date.now() < snamikSelfEchoSuppressUntil) return true;
+
     var key = text;
     var stamp = snamikPendingReplies[key];
-    if (!stamp) return false;
     if (stamp === 'shown') return true;
+
     if (typeof stamp === 'number' && (Date.now() - stamp) < 20000) {
       snamikPendingReplies[key] = 'shown';
       return false;
@@ -459,6 +545,7 @@ var SNAMIK_BOT = (function () {
   }
 
   var snamikSuppressServerBotUntil = 0;
+  var snamikDisplayingLocally = false;
 
   function snamikMarkServerBotSuppress(ms) {
     snamikSuppressServerBotUntil = Date.now() + (ms || 10000);
@@ -473,20 +560,77 @@ var SNAMIK_BOT = (function () {
     snamikMarkServerBotSuppress(10000);
   }
 
+  function snamikSubmitChatMessage(msg) {
+    var form = document.forms && document.forms.fmsg;
+    if (form && form.text) {
+      var prevCmd = form.cmd ? form.cmd.value : '';
+      var prevTonick = form.tonick ? form.tonick.value : '';
+      var prevText0 = form.text0 ? form.text0.value : '';
+      if (form.cmd) form.cmd.value = '';
+      if (form.tonick) form.tonick.value = '';
+      if (form.text0) form.text0.value = '';
+      form.text.value = msg;
+      form.submit();
+      if (form.cmd) form.cmd.value = prevCmd;
+      if (form.tonick) form.tonick.value = prevTonick;
+      if (form.text0) form.text0.value = prevText0;
+      return true;
+    }
+    return false;
+  }
+
+  function snamikDisplayBotLocally(msg) {
+    msg = String(msg == null ? '' : msg);
+    if (!snamikIsBotOutgoing(msg)) return false;
+    var bodyHtml = formatBotMessage(msg.substring(snamikBotPrefixLen()));
+    var ok = snamikDirectWriteBot(bodyHtml);
+    if (ok) {
+      snamikPendingReplies[msg] = 'shown';
+      snamikSelfEchoSuppressUntil = Date.now() + 20000;
+    }
+    return ok;
+  }
+
   const send = msg => {
+    msg = String(msg == null ? '' : msg);
     snamikTrackOutgoingReply(msg);
-    snamikPostWrite(msg);
     snamikOnBotCommandHandled();
+    var shown = snamikDisplayBotLocally(msg);
+    if (shown) snamikSelfEchoSuppressUntil = Date.now() + 20000;
+    if (!snamikSubmitChatMessage(msg)) snamikPostWrite(msg);
   };
 
-  function snamikNormalizeNick(nick) {
-    return String(nick == null ? '' : nick).replace(/\s+/g, ' ').trim();
+  function snamikNormalizeCommandText(text) {
+    var t = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
+    if (t.charAt(0) === '%') t = t.slice(1).trim();
+    var i;
+    for (i = 0; i < 3; i++) {
+      var fm = t.match(/^\((b|i|u|center|size)\)\s+(.*)\s+\(\/\1\)$/i);
+      if (fm) t = fm[2].trim();
+      else break;
+    }
+    if (t.charAt(0) !== '/' && t.indexOf('/') >= 0) {
+      var cm = t.match(/(\/\S+(?:\s+\S+)*)/);
+      if (cm) t = cm[1].trim();
+    }
+    return t;
+  }
+
+  function snamikNickIsMe(nick, myNick) {
+    if (!myNick || !nick) return false;
+    if (nick === myNick) return true;
+    try {
+      if (typeof nickEquals === 'function') return nickEquals(nick, myNick);
+    } catch (e) {
+    }
+    return snamikNormalizeNick(nick).toLowerCase() === snamikNormalizeNick(myNick).toLowerCase();
   }
 
   function snamikParseUserText(text) {
     var t = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     var addrMatch = t.match(/^[^:\/]+\s*:\s+(\S.*)$/);
     if (addrMatch) t = addrMatch[1].trim();
+    t = snamikNormalizeCommandText(t);
     var prefixes = ['/vsem ', '/dev ', '/parn ', '/privat ', '/privat2 ', '/me ', '/call '];
     for (var i = 0; i < prefixes.length; i++) {
       if (t.indexOf(prefixes[i]) === 0) {
@@ -508,7 +652,7 @@ var SNAMIK_BOT = (function () {
   }
 
   function snamikWasHandled(key) {
-    return !!(key && snamikHandledOutgoing[key] && (Date.now() - snamikHandledOutgoing[key]) < 2500);
+    return !!(key && snamikHandledOutgoing[key] && (Date.now() - snamikHandledOutgoing[key]) < 15000);
   }
 
   const broadcast = (obj, tag) =>
@@ -866,7 +1010,8 @@ ${rows || 'Пока пусто'}`;
   }
 
   /* ======== LISTENER (вызывается из основного f) ======== */
-  function listener(room, cmd, nick, tonick, text, time) {
+  function listener(room, cmd, nick, tonick, text, time, opts) {
+    opts = opts || {};
     text = String(text == null ? '' : text);
     /* --- Всегда применяем счёт/состояние, чтобы синхронизироваться между клиентами --- */
     if (text.startsWith(SCORE_TAG)) {
@@ -879,19 +1024,21 @@ ${rows || 'Пока пусто'}`;
     }
 
     /* --- Определяем собственный ник, который известен в разных реализациях --- */
-    var myNick = (typeof mynick !== 'undefined' && mynick) ? mynick :
-      (typeof parent !== 'undefined' && parent.mynick ? parent.mynick : null);
-    myNick = snamikNormalizeNick(myNick);
+    var myNick = snamikGetMyNick();
     nick = snamikNormalizeNick(nick);
 
     /* Если не удалось определить собственный ник — подстраховка: не отвечаем во избежание дублей */
     if (!myNick) return;
 
     /* --- Реагируем ТОЛЬКО на сообщения, отправленные текущим пользователем --- */
-    if (nick !== myNick) return;
+    if (!snamikNickIsMe(nick, myNick)) return;
 
     var parsed = snamikParseUserText(text);
     var isCmd = parsed.isCmd;
+
+    /* Slash-команды — только при отправке из формы (hookOutgoing), не из эха WebSocket. */
+    if (isCmd && !opts.fromOutgoing) return;
+
     var raw = parsed.raw;
     var parts = parsed.parts;
     var command = parsed.command;
@@ -935,12 +1082,35 @@ ${rows || 'Пока пусто'}`;
   }
 
   function onOutgoingMessage(text) {
-    var nick = (typeof mynick !== 'undefined' && mynick) ? snamikNormalizeNick(mynick) : '';
-    if (!nick) return;
+    var nick = snamikGetMyNick();
+    if (!nick) {
+      return {ok: false, reason: 'no_nick'};
+    }
     var now = new Date();
     var time = `${(`0${now.getHours()}`).slice(-2)}:${(`0${now.getMinutes()}`).slice(-2)}:${(`0${now.getSeconds()}`).slice(-2)}`;
     var room = (typeof myroom !== 'undefined') ? myroom : 0;
-    listener(room, 0, nick, '', String(text), time);
+    listener(room, 0, nick, '', String(text), time, {fromOutgoing: true});
+    return {ok: true, nick: nick, scheduled: true, delayMs: 1500};
+  }
+
+  /** Проверка вывода в ленту без команды (консоль). */
+  function testDisplay() {
+    var ok = snamikDirectWriteBot(formatBotMessage(CMDLIST_MARKER));
+    return {ok: ok, hasWr: typeof wr === 'function', hasLeftdiv: !!document.getElementById('leftdiv')};
+  }
+
+  /** Ручной вызов: SNAMIK_BOT.runCommand('/помощь') */
+  function runCommand(text) {
+    text = String(text == null ? '' : text).replace(/^\s+/, '');
+    var parsed = snamikParseUserText(text);
+    if (!parsed.isCmd) {
+      return {ok: false, reason: 'not_command', hint: 'Нужен слэш: /помощь'};
+    }
+    var result = onOutgoingMessage(text);
+    if (result && result.ok) {
+      result.hint = 'Ответ появится в ленте через ~1.5 сек';
+    }
+    return result;
   }
 
   function shouldSkipEcho(nick, text) {
@@ -952,14 +1122,110 @@ ${rows || 'Пока пусто'}`;
     return snamikIsServerBotNick(nick);
   }
 
+  /** Вызывается из ChatInputController.send() при отправке сообщения. */
+  function hookOutgoing(text) {
+    var hookText = String(text == null ? '' : text).replace(/^\s+/, '');
+    var hookParsed = snamikParseUserText(hookText);
+    if (!hookParsed || !hookParsed.isCmd) return;
+    var myNick = snamikGetMyNick();
+    if (!myNick) return;
+    var dedupeKey = `${myNick}|${hookParsed.fullText}`;
+    if (snamikWasHandled(dedupeKey)) return;
+    onOutgoingMessage(hookText);
+  }
+
+  /** Вызывается из MessageRouter.handle() для каждого входящего сообщения. */
+  function hookIncoming(room, cmd, nick, tonick, text, time) {
+    try {
+      listener(room, cmd, nick, tonick, text, time);
+    } catch (e) {
+    }
+    if (snamikDisplayingLocally) return false;
+    if (shouldSkipServerBot(nick, text)) return true;
+    if (shouldSkipEcho(nick, text)) return true;
+    return false;
+  }
+
+  function isPublicBotMessage(text) {
+    return String(text == null ? '' : text).indexOf('[Снамик] ') === 0;
+  }
+
+  function formatPublicMessage(text) {
+    return formatBotMessage(String(text == null ? '' : text).substring('[Снамик] '.length));
+  }
+
   return {
     listener: listener,
     onOutgoingMessage: onOutgoingMessage,
+    hookOutgoing: hookOutgoing,
+    hookIncoming: hookIncoming,
+    runCommand: runCommand,
+    testDisplay: testDisplay,
+    getMyNick: snamikGetMyNick,
+    wasCommandHandled: snamikWasHandled,
     shouldSkipEcho: shouldSkipEcho,
     shouldSkipServerBot: shouldSkipServerBot,
+    isPublicBotMessage: isPublicBotMessage,
+    formatPublicMessage: formatPublicMessage,
     parseUserText: snamikParseUserText,
     formatMessage: formatBotMessage,
-    version: '5.3'
+    version: '5.3.4'
   };
 
 })(); // --- END SNAMIK BOT v5 -----------------------------------------------
+
+/** Подключение к форме чата, если jscripts.dat на сервере ещё без hookOutgoing в send(). */
+(function snamikWireChatInput() {
+  function buildOutgoingFromForm() {
+    try {
+      var form = document.fmsg;
+      if (!form || !form.text0) return '';
+      var msg = String(form.text0.value || '');
+      if (form.tonick && form.tonick.value && form.tonick.value !== 'Всем') {
+        var tn = String(form.tonick.value);
+        if (tn && msg.indexOf(tn) !== 0) {
+          if (tn.charAt(tn.length - 1) !== ':') tn += ':';
+          if (tn.charAt(tn.length - 1) === ':') tn += ' ';
+          msg = tn + msg;
+        }
+      }
+      if (form.cmd && form.cmd.value) msg = form.cmd.value + msg;
+      return msg.replace(/^\s+/, '');
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function tryWire() {
+    if (typeof SNAMIK_BOT === 'undefined' || !SNAMIK_BOT.hookOutgoing) return;
+    if (typeof chatInputController === 'undefined' || !chatInputController ||
+      typeof chatInputController.send !== 'function') {
+      setTimeout(tryWire, 50);
+      return;
+    }
+    if (chatInputController.send.__snamikWired) return;
+    var origSend = chatInputController.send.bind(chatInputController);
+    chatInputController.send = function () {
+      var pre = buildOutgoingFromForm();
+      var result = origSend.apply(this, arguments);
+      /* hookOutgoing уже вызван внутри send() через jscripts — wire только если не сработало */
+      try {
+        if (result !== false && pre && SNAMIK_BOT.parseUserText(pre).isCmd) {
+          var myNick = SNAMIK_BOT.getMyNick ? SNAMIK_BOT.getMyNick() : '';
+          var dedupeKey = myNick + '|' + SNAMIK_BOT.parseUserText(pre).fullText;
+          if (SNAMIK_BOT.wasCommandHandled && SNAMIK_BOT.wasCommandHandled(dedupeKey)) return result;
+          SNAMIK_BOT.hookOutgoing(pre);
+        }
+      } catch (e) {
+      }
+      return result;
+    };
+    chatInputController.send.__snamikWired = 1;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryWire);
+  } else {
+    tryWire();
+  }
+})();

@@ -2,6 +2,7 @@
 <html>
 <head>
   <script src="/assets/js/site-theme-boot.js"></script>
+  <script src="/assets/js/snamik.js"></script>
   <link rel="stylesheet" href="/assets/css/site-theme.css">
 <title>%title%</title>
 <meta http-equiv='Content-Type' content="text/html; charset=UTF-8">

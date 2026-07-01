@@ -119,9 +119,9 @@ class ChatConfig {
     this.stn[4] = '<img title="Житель" src="https://imgs.su/upload/827/535147782.gif">';
     this.stn[5] = '<img title="Житель" src="https://imgs.su/upload/827/535147782.gif">';
     this.stn[6] = '<img src="/assets/img/status/texnik.png" width="35" height="35" title="Техник" alt="Техник">';
-    this.stn[7] = '<img src=https://snami.mpchat.com/djm.png width=35  title=Радиоведущий>';
-    this.stn[8] = '<img src=https://snami.mpchat.com/djj.png width=35  title=Радиоведушая>';
-    this.stn[9] = '<img src=https://snami.mpchat.com/moder.png width=35  title=Модератор>';
+    this.stn[7] = '<img src="/assets/img/status/djm.png" width="35" height="35" title="Радиоведущий" alt="Радиоведущий">';
+    this.stn[8] = '<img src="/assets/img/status/djj.png" width="35" height="35" title="Радиоведушая" alt="Радиоведушая">';
+    this.stn[9] = '<img src="/assets/img/status/moder.png" width="35" height="35" title="Модератор" alt="Модератор">';
 
     this.stn2 = [];
 
@@ -915,13 +915,13 @@ class NickMessageFormatter {
   }
 
   /** Обёртка «Сообщение для Вас» для адресованных сообщений. */
-  wrapForMe(content) {
-    return `<div class="message-for-me"><div class="message-for-me__header"><span class="message-for-me__icon" aria-hidden="true">✉</span><span class="message-for-me__label">Сообщение для Вас</span></div><div class="message-for-me__body">${content}</div></div>`;
+  wrapForMe(content, setTime = '') {
+    return `<div class="message-for-me"><div class="message-for-me__header"><span class="message-for-me__icon" aria-hidden="true">✉</span><span class="message-for-me__label">Сообщение для Вас</span>${setTime}</div><div class="message-for-me__body">${content}</div></div>`;
   }
 
   /** Обёртка «Сообщение для всех» для команды /vsem. */
   wrapForEveryone(set_time, set_nick, text) {
-    return `<div class="message-for-everyone"><div class="message-for-everyone__header"><span class="message-for-everyone__icon" aria-hidden="true">📢</span><span class="message-for-everyone__label">Сообщение для всех</span></div><div class="message-for-everyone__body">${set_time}${set_nick}${text}</div></div>`;
+    return `<div class="message-for-everyone"><div class="message-for-everyone__header"><span class="message-for-everyone__icon" aria-hidden="true">📢</span><span class="message-for-everyone__label">Сообщение для всех</span>${set_time}</div><div class="message-for-everyone__body">${set_nick}${text}</div></div>`;
   }
 
   /** Текст сообщения с цветом/размером/шрифтом пользователя. */
@@ -941,12 +941,12 @@ class NickMessageFormatter {
     return `<span class="chat-msg__greet">${content}</span>`;
   }
 
-  wrapJoinWelcome(bodyContent) {
-    return `<div class="message-join"><div class="message-join__header"><span class="message-join__icon" aria-hidden="true">🎉</span><span class="message-join__label">Вход в чат</span></div><div class="message-join__body">${bodyContent}</div></div>`;
+  wrapJoinWelcome(bodyContent, setTime = '') {
+    return `<div class="message-join"><div class="message-join__header"><span class="message-join__icon" aria-hidden="true">🎉</span><span class="message-join__label">Вход в чат</span>${setTime}</div><div class="message-join__body">${bodyContent}</div></div>`;
   }
 
-  wrapLeaveWelcome(bodyContent) {
-    return `<div class="message-leave"><div class="message-leave__header"><span class="message-leave__icon" aria-hidden="true">👋</span><span class="message-leave__label">Выход из чата</span></div><div class="message-leave__body">${bodyContent}</div></div>`;
+  wrapLeaveWelcome(bodyContent, setTime = '') {
+    return `<div class="message-leave"><div class="message-leave__header"><span class="message-leave__icon" aria-hidden="true">👋</span><span class="message-leave__label">Выход из чата</span>${setTime}</div><div class="message-leave__body">${bodyContent}</div></div>`;
   }
 
   wrapAdminNickLink(nick, colornick) {
@@ -1023,11 +1023,11 @@ class NickMessageFormatter {
   }
 
   wrapDevBroadcast(set_time, set_nick, text) {
-    return `<div class="message-for-dev"><div class="message-for-dev__header"><span class="message-for-dev__icon" aria-hidden="true">🌸</span><span class="message-for-dev__label">Сообщение для девушек</span></div><div class="message-for-dev__body">${set_time}${set_nick}${text}</div></div>`;
+    return `<div class="message-for-dev"><div class="message-for-dev__header"><span class="message-for-dev__icon" aria-hidden="true">🌸</span><span class="message-for-dev__label">Сообщение для девушек</span>${set_time}</div><div class="message-for-dev__body">${set_nick}${text}</div></div>`;
   }
 
   wrapParnBroadcast(set_time, set_nick, text) {
-    return `<div class="message-for-parn"><div class="message-for-parn__header"><span class="message-for-parn__icon" aria-hidden="true">👔</span><span class="message-for-parn__label">Сообщение для парней</span></div><div class="message-for-parn__body">${set_time}${set_nick}${text}</div></div>`;
+    return `<div class="message-for-parn"><div class="message-for-parn__header"><span class="message-for-parn__icon" aria-hidden="true">👔</span><span class="message-for-parn__label">Сообщение для парней</span>${set_time}</div><div class="message-for-parn__body">${set_nick}${text}</div></div>`;
   }
 
   wrapForumNotice(nick, set_nick, topicTitle, topicId, forumId) {
@@ -1160,8 +1160,8 @@ function isMessageAddressedToMe(nick, tonick, text, rawText) {
   return nickMessageFormatter.isAddressedToMe(nick, tonick, text, rawText);
 }
 
-function wrapMessageForMe(content) {
-  return nickMessageFormatter.wrapForMe(content);
+function wrapMessageForMe(content, setTime) {
+  return nickMessageFormatter.wrapForMe(content, setTime);
 }
 
 function nickEquals(a, b) {
@@ -1907,11 +1907,11 @@ class MessageRouter {
           if (loaded && shouldPlayGenderBroadcastSound('parn')) sound.play(0);
           return 1;
         }
-        let msgBody = symbol + set_time + set_nick + set_text;
+        let msgBody = symbol + set_nick + set_text;
         if (isMessageAddressedToMe(nick, tonick, text, textForMentionCheck)) {
-          towr = wrapMessageForMe(msgBody);
+          towr = wrapMessageForMe(msgBody, set_time);
         } else {
-          towr = `${msgBody}`;
+          towr = `${set_time}${msgBody}`;
         }
         if (nick === mynick || tonick === mynick) myhistory += towr;
         if (nick === nick_r && loaded === 1) {
@@ -1944,10 +1944,10 @@ class MessageRouter {
         set_text = nickMessageFormatter.wrapMsgText(` ${set_text}`, color, size, face);
 
         // Формируем сообщение
-        let towrContent = symbol + set_nick + set_text + set_time;
+        let towrContent = symbol + set_nick + set_text;
 
         // Создаем приватное сообщение с классом
-        let privMsgHtml = `<div class="private-message"><div class="private-header">Приватно от ${nick}:</div>${towrContent}</div>`;
+        let privMsgHtml = `<div class="private-message"><div class="private-header">Приватно от ${nick}:</div>${set_time}${towrContent}</div>`;
 
         // Вставляем сообщение в нужный контейнер
         if (nick === mynick || tonick === mynick) myhistory += towrContent;
@@ -2048,8 +2048,8 @@ class MessageRouter {
           if ((tadda[nick] !== null && tadda[nick] !== undefined) && tadda[nick]) joinBody = tadda[nick].replace(nick, '%nick%');
           if (joinBody.search('%nick%') === -1) joinBody = `%nick% ${joinBody}`;
           joinBody = joinBody.replace('%nick%', set_nick);
-          tadd = nickMessageFormatter.wrapJoinWelcome(joinBody);
-          wr(`${set_time}${tadd}`);
+          tadd = nickMessageFormatter.wrapJoinWelcome(joinBody, set_time);
+          wr(tadd);
         }
         add(nick, colornick, st, mw, icon, status, inchat, time, room, love, clan, userid);
         if (nick === mynick) mymw = mw;
@@ -2065,8 +2065,8 @@ class MessageRouter {
           if ((tdela[nick] !== null && tdela[nick] !== undefined) && tdela[nick]) leaveBody = tdela[nick].replace(nick, '%nick%');
           if (leaveBody.search('%nick%') === -1) leaveBody = `%nick% ${leaveBody}`;
           leaveBody = leaveBody.replace('%nick%', set_nick);
-          tdel = nickMessageFormatter.wrapLeaveWelcome(leaveBody);
-          wr(`${set_time}${tdel}`);
+          tdel = nickMessageFormatter.wrapLeaveWelcome(leaveBody, set_time);
+          wr(tdel);
         }
         deleteUser(nick, colornick, st, mw, icon, status, inchat, time, room, userid);
         break;
@@ -2443,6 +2443,10 @@ function msg_send() {
   return chatInputController.send();
 }
 
+function msg_flood() {
+  alert('В чате включен антифлудер, вы не можете писать чаще, чем разрешено админом!');
+}
+
 function msg_reset() {
   return chatInputController.resetFileInput();
 }
@@ -2754,7 +2758,42 @@ function loadframes() {
 
 chatFrameLoader.schedulePageLoadWarning();
 
+/** Подключение SNAMIK_BOT к чату, если в snamik.js нет алиасов hook* (старый кэш). */
+(function snamikBotBridge() {
+  if (typeof SNAMIK_BOT === 'undefined' || !SNAMIK_BOT) return;
 
+  if (!SNAMIK_BOT.hookOutgoing && SNAMIK_BOT.onOutgoingMessage) {
+    SNAMIK_BOT.hookOutgoing = function (text) {
+      var hookText = String(text == null ? '' : text).replace(/^\s+/, '');
+      var hookParsed = SNAMIK_BOT.parseUserText ? SNAMIK_BOT.parseUserText(hookText) : null;
+      if (hookParsed && hookParsed.isCmd) SNAMIK_BOT.onOutgoingMessage(hookText);
+    };
+  }
+
+  if (!SNAMIK_BOT.hookIncoming && SNAMIK_BOT.listener) {
+    SNAMIK_BOT.hookIncoming = function () {
+      try {
+        SNAMIK_BOT.listener.apply(null, arguments);
+      } catch (e) {
+      }
+      if (SNAMIK_BOT.shouldSkipServerBot && SNAMIK_BOT.shouldSkipServerBot(arguments[2], arguments[4])) return true;
+      if (SNAMIK_BOT.shouldSkipEcho && SNAMIK_BOT.shouldSkipEcho(arguments[2], arguments[4])) return true;
+      return false;
+    };
+  }
+
+  if (!SNAMIK_BOT.isPublicBotMessage) {
+    SNAMIK_BOT.isPublicBotMessage = function (text) {
+      return String(text == null ? '' : text).indexOf('[Снамик] ') === 0;
+    };
+  }
+
+  if (!SNAMIK_BOT.formatPublicMessage && SNAMIK_BOT.formatMessage) {
+    SNAMIK_BOT.formatPublicMessage = function (text) {
+      return SNAMIK_BOT.formatMessage(String(text == null ? '' : text).substring('[Снамик] '.length));
+    };
+  }
+})();
 
 /* Загрузка чата сразу после загрузки DOM */
 document.addEventListener('DOMContentLoaded', loadframes);

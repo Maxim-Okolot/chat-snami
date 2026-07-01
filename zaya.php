@@ -295,6 +295,19 @@ function handleGetUserRequests() {
     ]);
 }
 
+function formatRadioChatMessage($type, $messageText) {
+    $icon = "<img width='50' height='45' src='https://vmfile.com/upload/838/386616193.png' align='middle'>";
+
+    if ($type === 'efir_exit') {
+        return "<div style='color:#e0e0e0;background:linear-gradient(135deg,#4a4a4a 0%,#2b2b2b 100%);font-family:Comic Sans MS,sans-serif;font-size:17px;padding:8px 14px 8px 10px;display:inline-block;border-radius:8px;margin:2px;border-left:4px solid #c0392b;box-shadow:0 2px 8px rgba(0,0,0,0.35);'>"
+            . "<img width='44' height='40' src='https://vmfile.com/upload/838/386616193.png' align='middle' style='opacity:0.65;filter:grayscale(100%);vertical-align:middle;margin-right:4px;'> "
+            . "<span style='color:#f5f5f5;font-style:italic;letter-spacing:0.3px;'>" . $messageText . "</span></div>";
+    }
+
+    return "<div style='color: white; background-color: #453b4a; font-family: Comic Sans MS; font-size: 18px; padding: 5px; display: inline-block; border-radius: 5px; margin: 2px; text-shadow: -0.5px -0.5px 0 #fff, 0.5px -0.5px 0 #fff, -0.5px 0.5px 0 #fff, 0.5px 0.5px 0 #fff;'>"
+        . $icon . " " . $messageText . "</div>";
+}
+
 function handleSendMessage($json, $user) {
     $type = $json['type'] ?? 'normal';
     $text = trim($json['text'] ?? '');
@@ -306,15 +319,8 @@ function handleSendMessage($json, $user) {
     }
     
     try {
-        $messageText = '';
-        
-        switch ($type) {
-            case 'normal': $messageText = $text; break;
-            default: $messageText = $text;
-        }
-        
-$simpleMessage = "<div style='color: white; background-color: #453b4a; font-family: Comic Sans MS; font-size: 18px; padding: 5px; display: inline-block; border-radius: 5px; margin: 2px; text-shadow: -0.5px -0.5px 0 #fff, 0.5px -0.5px 0 #fff, -0.5px 0.5px 0 #fff, 0.5px 0.5px 0 #fff;'>
-<img width='50' height='45' src='https://vmfile.com/upload/838/386616193.png' align='middle'> " . $messageText . "</div>";
+        $messageText = $text;
+        $simpleMessage = formatRadioChatMessage($type, $messageText);
         
         if (function_exists('sendmsg')) {
             sendmsg(array(

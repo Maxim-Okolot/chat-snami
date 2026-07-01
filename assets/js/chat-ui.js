@@ -376,13 +376,36 @@ class ChatScrollPause {
   }
 }
 
+/** Загрузка файлов включена, если сервер не выставил loadfile_on = 0. */
+function isChatUploadEnabled() {
+  if (typeof loadfile_on === 'undefined') return true;
+  return Number(loadfile_on) > 0;
+}
+
+function openChatFilePicker() {
+  if (!isChatUploadEnabled()) {
+    alert('Загрузка картинок временно отключена администратором.');
+    return;
+  }
+  document.querySelector('input[name="loadfile"]')?.click();
+}
+
 /** Сжатие JPG/PNG и проверка GIF перед отправкой. */
 class ChatFileUpload {
   static init() {
     const fileInput = document.querySelector('input[name="loadfile"]');
     if (!fileInput) return;
 
-    const uploadsEnabled = Number(typeof loadfile_on !== 'undefined' ? loadfile_on : 0) > 0;
+    const uploadsEnabled = isChatUploadEnabled();
+
+    const fileLabel = document.querySelector('.footer__btn--file');
+    if (fileLabel) {
+      fileLabel.addEventListener('click', (e) => {
+        if (isChatUploadEnabled()) return;
+        e.preventDefault();
+        alert('Загрузка картинок временно отключена администратором.');
+      });
+    }
 
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -576,8 +599,7 @@ class ChatFooterActions {
 
         case 'upload-photo':
           e.preventDefault();
-          if (Number(typeof loadfile_on !== 'undefined' ? loadfile_on : 0) === 0) return;
-          document.getElementsByName('loadfile')[0]?.click();
+          openChatFilePicker();
           break;
 
         case 'start-quiz':
@@ -630,11 +652,6 @@ class ChatFooterActions {
         case 'reload-chat':
           e.preventDefault();
           if (typeof loadframes === 'function') loadframes();
-          break;
-
-        case 'pick-file':
-          e.preventDefault();
-          document.getElementsByName('loadfile')[0]?.click();
           break;
 
         case 'open-settings':

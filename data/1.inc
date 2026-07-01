@@ -723,10 +723,10 @@
         }
     }
 
-    function sendBroadcastMessage(messageText) {
+    function sendBroadcastMessage(messageText, messageType) {
         const messageData = {
             action: 'SendMessage',
-            type: 'normal',
+            type: messageType || 'normal',
             text: messageText,
             name: ''
         };
@@ -1266,7 +1266,7 @@
             btn.classList.remove('exit');
             
             stopRequestsTracking();
-            sendBroadcastMessage(' вышел из эфира');
+            sendBroadcastMessage(' вышел из эфира', 'efir_exit');
             
             fetch('index.php?inc=zaya', {
                 method: 'POST',
